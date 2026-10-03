@@ -13,10 +13,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name'); // Nombre
+            $table->string('apellidos'); // Agregado según RF-11
+            $table->string('telefono')->unique(); // Obligatorio y único según RF-11 y RF-12
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->date('fecha_nacimiento')->nullable(); // Opcional según RF-11
+            
+            // Relación usuario-rol (Subtarea 5)
+            $table->foreignId('role_id')->constrained('roles');
+
             $table->rememberToken();
             $table->timestamps();
         });
