@@ -92,37 +92,118 @@
             flex-direction: column;
             align-items: center;
             z-index: 15;
-            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.85));
+            filter: drop-shadow(14px 18px 24px rgba(4, 12, 32, 0.85)) 
+                    drop-shadow(0 0 16px rgba(20, 55, 130, 0.35));
             pointer-events: none;
         }
 
-        .pole-ball {
-            width: 28px;
-            height: 28px;
+        /* Sombra proyectada detrás del poste sobre la pared (Azul oscuro tenue) */
+        .desktop-barber-pole::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 18px;
+            width: 70px;
+            height: calc(100% - 12px);
+            background: radial-gradient(ellipse at center, rgba(20, 50, 120, 0.45) 0%, rgba(12, 30, 75, 0.3) 50%, rgba(5, 12, 35, 0.15) 75%, transparent 95%);
+            filter: blur(16px);
+            border-radius: 35px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Sombra de apoyo elíptica en la base para asentar el poste */
+        .desktop-barber-pole::after {
+            content: '';
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 20px;
+            background: radial-gradient(ellipse at center, rgba(16, 45, 110, 0.45) 0%, rgba(8, 20, 55, 0.35) 45%, rgba(0, 0, 0, 0.7) 70%, transparent 90%);
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d1d5db 45%, #4b5563 85%, #1f2937 100%);
-            margin-bottom: -5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            filter: blur(5px);
+            z-index: -1;
+            pointer-events: none;
         }
 
+        /* Remate superior: esfera de latón antiguo */
+        .pole-ball {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #fff2d1 0%, #d8be82 35%, #8f723b 70%, #3e2e13 100%);
+            margin-bottom: -4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            z-index: 3;
+            position: relative;
+        }
+
+        /* Cúpula superior de latón / bronce vintage con moldura escalonada */
         .pole-cap-top {
-            width: 72px;
-            height: 30px;
-            background: linear-gradient(90deg, #374151 0%, #9ca3af 25%, #ffffff 50%, #9ca3af 75%, #374151 100%);
-            border-radius: 8px 8px 0 0;
-            box-shadow: inset 0 2px 2px rgba(255,255,255,0.7), 0 3px 6px rgba(0,0,0,0.5);
+            width: 76px;
+            height: 52px;
+            background: linear-gradient(90deg, 
+                #23170a 0%, 
+                #4e391b 15%, 
+                #8c713b 32%, 
+                #cfb578 48%, 
+                #fbf0cb 53%, 
+                #cfb578 58%, 
+                #8c713b 72%, 
+                #4e391b 88%, 
+                #23170a 100%
+            );
+            border-radius: 38px 38px 4px 4px / 44px 44px 6px 6px;
+            position: relative;
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 240, 195, 0.5),
+                inset 0 -3px 4px rgba(20, 12, 4, 0.8),
+                0 3px 6px rgba(0,0,0,0.6);
+            z-index: 2;
         }
 
+        /* Moldura de anillo inferior de la cúpula */
+        .pole-cap-top::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -2px;
+            right: -2px;
+            height: 12px;
+            background: linear-gradient(90deg, 
+                #1e1408 0%, 
+                #5c4520 18%, 
+                #b89c5f 46%, 
+                #fae8b4 52%, 
+                #b89c5f 58%, 
+                #5c4520 82%, 
+                #1e1408 100%
+            );
+            border-radius: 6px;
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.7),
+                inset 0 1px 1px rgba(255, 245, 210, 0.7),
+                inset 0 -2px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Cilindro de cristal exterior */
         .pole-cylinder {
-            width: 62px;
-            height: 320px;
+            width: 66px;
+            height: 310px;
             position: relative;
             overflow: hidden;
-            border-left: 2px solid rgba(255,255,255,0.45);
-            border-right: 2px solid rgba(255,255,255,0.45);
-            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            border-left: 2px solid rgba(255, 255, 255, 0.35);
+            border-right: 2px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 
+                inset 0 0 12px rgba(0, 0, 0, 0.85),
+                0 0 15px rgba(0, 0, 0, 0.7);
+            background: #0d1117;
+            z-index: 1;
         }
 
+        /* Franjas rotatorias clásicas de barbería (Rojo, Blanco y Azul) */
         .pole-stripes {
             position: absolute;
             top: -120px;
@@ -130,45 +211,99 @@
             width: 100%;
             height: calc(100% + 240px);
             background: repeating-linear-gradient(
-                -45deg,
-                #d1121d 0px,
-                #d1121d 22px,
-                #ffffff 22px,
-                #ffffff 44px,
-                #143b8c 44px,
-                #143b8c 66px,
-                #ffffff 66px,
-                #ffffff 88px
+                -42deg,
+                #c81c2b 0px,
+                #c81c2b 20px,
+                #f5f5f7 20px,
+                #f5f5f7 40px,
+                #173f91 40px,
+                #173f91 60px,
+                #f5f5f7 60px,
+                #f5f5f7 80px
             );
             animation: barberPoleScroll 4s linear infinite;
         }
 
+        /* Reflejo realista del tubo de cristal */
         .pole-glass-reflection {
             position: absolute;
             inset: 0;
-            background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(255,255,255,0.45) 25%, rgba(255,255,255,0.08) 50%, transparent 65%, rgba(0,0,0,0.65) 100%);
+            background: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.6) 0%, 
+                rgba(255, 255, 255, 0.5) 18%, 
+                rgba(255, 255, 255, 0.12) 28%, 
+                transparent 48%, 
+                rgba(0, 0, 0, 0.1) 68%, 
+                rgba(255, 255, 255, 0.28) 90%, 
+                rgba(0, 0, 0, 0.65) 100%
+            );
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Base inferior de latón / bronce con copa redondeada */
+        .pole-cap-bottom {
+            width: 76px;
+            height: 52px;
+            background: linear-gradient(90deg, 
+                #23170a 0%, 
+                #4e391b 15%, 
+                #8c713b 32%, 
+                #cfb578 48%, 
+                #fbf0cb 53%, 
+                #cfb578 58%, 
+                #8c713b 72%, 
+                #4e391b 88%, 
+                #23170a 100%
+            );
+            border-radius: 4px 4px 38px 38px / 6px 6px 44px 44px;
+            position: relative;
+            box-shadow: 
+                inset 0 3px 4px rgba(20, 12, 4, 0.8),
+                inset 0 -2px 4px rgba(255, 240, 195, 0.35),
+                0 4px 8px rgba(0,0,0,0.6);
             z-index: 2;
         }
 
-        .pole-cap-bottom {
-            width: 72px;
-            height: 32px;
-            background: linear-gradient(90deg, #374151 0%, #9ca3af 25%, #ffffff 50%, #9ca3af 75%, #374151 100%);
-            border-radius: 0 0 10px 10px;
-            box-shadow: inset 0 -2px 2px rgba(0,0,0,0.4), 0 3px 6px rgba(0,0,0,0.5);
+        /* Moldura de anillo superior de la base */
+        .pole-cap-bottom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -2px;
+            right: -2px;
+            height: 12px;
+            background: linear-gradient(90deg, 
+                #1e1408 0%, 
+                #5c4520 18%, 
+                #b89c5f 46%, 
+                #fae8b4 52%, 
+                #b89c5f 58%, 
+                #5c4520 82%, 
+                #1e1408 100%
+            );
+            border-radius: 6px;
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.7),
+                inset 0 1px 1px rgba(255, 245, 210, 0.7),
+                inset 0 -2px 2px rgba(0, 0, 0, 0.8);
         }
 
+        /* Remate esférico inferior de latón antiguo */
         .pole-finial {
-            width: 22px;
-            height: 22px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d1d5db 45%, #4b5563 85%, #1f2937 100%);
-            margin-top: -4px;
+            background: radial-gradient(circle at 35% 30%, #fff2d1 0%, #d8be82 35%, #8f723b 70%, #3e2e13 100%);
+            margin-top: -3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            z-index: 3;
+            position: relative;
         }
 
         @keyframes barberPoleScroll {
             0% { transform: translateY(0); }
-            100% { transform: translateY(88px); }
+            100% { transform: translateY(80px); }
         }
 
         /* ==========================================
@@ -192,15 +327,34 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
-        .brand-emblem {
-            display: flex;
+        .brand-logo-wrapper {
+            position: relative;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
-            margin-bottom: 8px;
+            padding: 6px;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+        }
+
+        .brand-logo-wrapper:hover {
+            transform: translateY(-2px) scale(1.025);
+        }
+
+        .brand-logo-img {
+            width: 330px;
+            max-width: 88vw;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 20px rgba(209, 18, 29, 0.18));
+            transition: filter 0.35s ease;
+        }
+
+        .brand-logo-wrapper:hover .brand-logo-img {
+            filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 30px rgba(209, 18, 29, 0.35));
         }
 
         /* Mini postes a los costados del logo */
@@ -604,30 +758,47 @@
 
         @media (max-width: 768px) {
             body {
-                padding: 60px 16px 70px;
+                padding: 24px 16px 50px;
                 justify-content: flex-start;
             }
 
+            /* En móviles el encabezado se coloca arriba en flujo natural, sin superponerse */
             .top-header-right {
-                top: 16px;
-                right: 16px;
+                position: relative;
+                top: auto;
+                right: auto;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin-bottom: 12px;
+                z-index: 5;
             }
 
             .top-header-right .tagline {
-                font-size: 9.5px;
-                letter-spacing: 1.2px;
+                font-size: 10.5px;
+                letter-spacing: 1.8px;
+                text-align: center;
             }
 
             .barber-stripes-mini {
-                width: 38px;
+                width: 44px;
                 height: 4px;
+                margin-top: 2px;
+            }
+
+            /* Tamaño del logo optimizado para celulares sin desbordar ni chocar */
+            .brand-logo-img {
+                width: 285px;
+                max-width: 86vw;
             }
 
             .bottom-left-tagline {
                 position: relative;
                 bottom: auto;
                 left: auto;
-                margin-top: 30px;
+                margin-top: 26px;
                 font-size: 11.5px;
                 letter-spacing: 1px;
                 text-align: center;
@@ -635,17 +806,16 @@
             }
 
             .bottom-right-swoosh {
-                width: 170px;
-                height: 120px;
+                width: 150px;
+                height: 105px;
+                opacity: 0.35;
+                pointer-events: none;
+                z-index: 1;
             }
 
             .login-card {
                 padding: 26px 20px 22px;
                 border-radius: 16px;
-            }
-
-            .brand-title {
-                font-size: 22px;
             }
 
             .card-title {
@@ -683,42 +853,13 @@
 
         <!-- Logo e identificación de marca -->
         <header class="brand-header">
-            <div class="brand-emblem">
-                <!-- Mini poste izquierdo -->
-                <div class="mini-pole" aria-hidden="true">
-                    <div class="mini-cap"></div>
-                    <div class="mini-body">
-                        <div class="mini-stripes"></div>
-                        <div class="mini-glass"></div>
-                    </div>
-                    <div class="mini-cap"></div>
-                </div>
-
-                <!-- Silueta de barbero con pompadour y barba -->
-                <div class="barber-icon-center">
-                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Silueta de caballero barbero en blanco -->
-                        <path d="M50 12 C38 12 30 20 31 32 C26 35 23 41 25 47 C26 51 29 54 33 56 C32 61 34 67 38 72 C43 78 52 82 62 82 C68 82 73 79 76 75 C77 71 75 67 71 65 C66 62 62 57 61 52 C66 50 69 46 70 41 C71 36 69 32 66 30 C70 26 71 20 68 15 C64 12 58 12 50 12 Z" fill="#ffffff" />
-                        <!-- Detalles de cabello y corte estilizado -->
-                        <path d="M46 18 C52 18 58 21 61 26 C57 24 51 23 45 23 C39 23 35 25 33 28 C34 22 39 18 46 18 Z" fill="#0b0e14" />
-                        <path d="M57 41 C52 41 47 37 45 34 C47 36 50 37 55 37 C59 37 61 35 62 33 C61 38 60 41 57 41 Z" fill="#0b0e14" />
-                        <path d="M49 54 C55 54 60 57 63 63 C59 60 55 59 50 59 C46 59 43 60 41 62 C42 57 45 54 49 54 Z" fill="#0b0e14" />
-                    </svg>
-                </div>
-
-                <!-- Mini poste derecho -->
-                <div class="mini-pole" aria-hidden="true">
-                    <div class="mini-cap"></div>
-                    <div class="mini-body">
-                        <div class="mini-stripes"></div>
-                        <div class="mini-glass"></div>
-                    </div>
-                    <div class="mini-cap"></div>
-                </div>
+            <div class="brand-logo-wrapper">
+                <img 
+                    src="{{ asset('images/logo.png') }}" 
+                    alt="Beauty & Barber Studio" 
+                    class="brand-logo-img"
+                >
             </div>
-
-            <h1 class="brand-title">Beauty &amp;<br>Barber Studio</h1>
-            <p class="brand-subtitle">BARBERÍA &amp; ESTÉTICA</p>
         </header>
 
         <!-- Tarjeta del formulario (Glassmorphism oscuro) -->
@@ -741,8 +882,8 @@
                     <input 
                         type="email" 
                         name="email" 
-                        placeholder="Correo electrónico o usuario" 
-                        aria-label="Correo electrónico o usuario" 
+                        placeholder="Iniciar sesión por correo"
+                        aria-label="Iniciar sesión por correo"
                         class="form-input" 
                         pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" 
                         title="Introduce un correo electrónico válido (ej. usuario@dominio.com)" 
