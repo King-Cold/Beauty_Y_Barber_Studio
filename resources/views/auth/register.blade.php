@@ -24,6 +24,7 @@
         }
 
         body {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -38,7 +39,7 @@
             background-attachment: fixed;
             font-family: 'Montserrat', sans-serif;
             color: #ffffff;
-            padding: 36px 16px;
+            padding: 6px 16px;
             position: relative;
         }
 
@@ -92,35 +93,84 @@
             flex-direction: column;
             align-items: center;
             z-index: 15;
-            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.85));
+            pointer-events: none;
+            filter: drop-shadow(14px 20px 35px rgba(0, 0, 0, 0.95))
+                    drop-shadow(25px 0 50px rgba(16, 52, 138, 0.5));
+        }
+
+        /* Halo y sombra azul ambiental que integra el poste al fondo */
+        .desktop-barber-pole::before {
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: -20px;
+            width: 150px;
+            height: calc(100% + 50px);
+            background: radial-gradient(ellipse at 45% 50%, rgba(20, 65, 160, 0.45) 0%, rgba(10, 32, 85, 0.28) 42%, rgba(5, 15, 45, 0.12) 65%, transparent 78%);
+            filter: blur(28px);
+            z-index: -1;
             pointer-events: none;
         }
 
         .pole-ball {
-            width: 28px;
-            height: 28px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d1d5db 45%, #4b5563 85%, #1f2937 100%);
-            margin-bottom: -5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            background: radial-gradient(circle at 35% 30%, #fff7d6 0%, #e2be72 35%, #b88d37 65%, #5a3e11 95%);
+            margin-bottom: -4px;
+            z-index: 3;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), inset -1px -1px 2px rgba(0, 0, 0, 0.4);
         }
 
         .pole-cap-top {
             width: 72px;
-            height: 30px;
-            background: linear-gradient(90deg, #374151 0%, #9ca3af 25%, #ffffff 50%, #9ca3af 75%, #374151 100%);
-            border-radius: 8px 8px 0 0;
-            box-shadow: inset 0 2px 2px rgba(255,255,255,0.7), 0 3px 6px rgba(0,0,0,0.5);
+            height: 40px;
+            background: 
+                radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.75) 0%, transparent 60%),
+                linear-gradient(90deg, 
+                    #432d0c 0%, 
+                    #7f5b1d 15%, 
+                    #d4a954 35%, 
+                    #fff4c2 50%, 
+                    #d4a954 65%, 
+                    #7f5b1d 85%, 
+                    #432d0c 100%
+                );
+            border-radius: 36px 36px 4px 4px;
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.85),
+                inset 0 -3px 4px rgba(0, 0, 0, 0.6),
+                0 4px 10px rgba(0, 0, 0, 0.7);
+            position: relative;
+            z-index: 2;
+        }
+
+        .pole-cap-top::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: -2px;
+            width: 76px;
+            height: 7px;
+            background: linear-gradient(90deg, #48300d 0%, #946c25 20%, #fff2ba 50%, #946c25 80%, #48300d 100%);
+            border-radius: 3px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.8);
         }
 
         .pole-cylinder {
-            width: 62px;
-            height: 320px;
+            width: 60px;
+            height: 290px;
             position: relative;
             overflow: hidden;
-            border-left: 2px solid rgba(255,255,255,0.45);
-            border-right: 2px solid rgba(255,255,255,0.45);
-            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            border-left: 2px solid rgba(255, 255, 255, 0.45);
+            border-right: 2px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 
+                0 0 30px rgba(16, 52, 138, 0.45),
+                0 15px 35px rgba(0, 0, 0, 0.85),
+                inset 0 0 22px rgba(0, 0, 0, 0.7),
+                inset 0 12px 16px rgba(0, 0, 0, 0.65),
+                inset 0 -12px 16px rgba(0, 0, 0, 0.65);
+            z-index: 1;
         }
 
         .pole-stripes {
@@ -146,24 +196,62 @@
         .pole-glass-reflection {
             position: absolute;
             inset: 0;
-            background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(255,255,255,0.45) 25%, rgba(255,255,255,0.08) 50%, transparent 65%, rgba(0,0,0,0.65) 100%);
+            background: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.65) 0%, 
+                rgba(0, 0, 0, 0.15) 16%, 
+                rgba(255, 255, 255, 0.55) 32%, 
+                rgba(255, 255, 255, 0.12) 50%, 
+                transparent 72%, 
+                rgba(0, 0, 0, 0.45) 88%, 
+                rgba(255, 255, 255, 0.3) 100%
+            );
             z-index: 2;
+            pointer-events: none;
         }
 
         .pole-cap-bottom {
             width: 72px;
-            height: 32px;
-            background: linear-gradient(90deg, #374151 0%, #9ca3af 25%, #ffffff 50%, #9ca3af 75%, #374151 100%);
-            border-radius: 0 0 10px 10px;
-            box-shadow: inset 0 -2px 2px rgba(0,0,0,0.4), 0 3px 6px rgba(0,0,0,0.5);
+            height: 40px;
+            background: 
+                radial-gradient(ellipse at 50% 80%, rgba(255, 255, 255, 0.55) 0%, transparent 60%),
+                linear-gradient(90deg, 
+                    #432d0c 0%, 
+                    #7f5b1d 15%, 
+                    #d4a954 35%, 
+                    #fff4c2 50%, 
+                    #d4a954 65%, 
+                    #7f5b1d 85%, 
+                    #432d0c 100%
+                );
+            border-radius: 4px 4px 36px 36px;
+            box-shadow: 
+                inset 0 -2px 4px rgba(255, 255, 255, 0.7),
+                inset 0 3px 4px rgba(0, 0, 0, 0.6),
+                0 8px 16px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 2;
+        }
+
+        .pole-cap-bottom::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -2px;
+            width: 76px;
+            height: 7px;
+            background: linear-gradient(90deg, #48300d 0%, #946c25 20%, #fff2ba 50%, #946c25 80%, #48300d 100%);
+            border-radius: 3px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.6);
         }
 
         .pole-finial {
-            width: 22px;
-            height: 22px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d1d5db 45%, #4b5563 85%, #1f2937 100%);
+            background: radial-gradient(circle at 35% 30%, #fff7d6 0%, #e2be72 35%, #b88d37 65%, #5a3e11 95%);
             margin-top: -4px;
+            z-index: 3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.75), inset -1px -1px 2px rgba(0, 0, 0, 0.4);
         }
 
         @keyframes barberPoleScroll {
@@ -192,48 +280,50 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
         }
 
         .brand-emblem {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
-            margin-bottom: 8px;
+            gap: 16px;
         }
 
         .mini-pole {
-            width: 12px;
-            height: 44px;
+            width: 14px;
+            height: 54px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.75))
+                    drop-shadow(0 0 8px rgba(20, 59, 140, 0.35));
         }
 
         .mini-cap {
-            width: 12px;
+            width: 14px;
             height: 4px;
-            background: #d1d5db;
+            background: linear-gradient(90deg, #533a12 0%, #e2be72 50%, #533a12 100%);
             border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
         }
 
         .mini-body {
-            width: 9px;
-            height: 36px;
+            width: 10px;
+            height: 46px;
             position: relative;
             overflow: hidden;
-            border-left: 1px solid rgba(255,255,255,0.7);
-            border-right: 1px solid rgba(255,255,255,0.7);
+            border-left: 1px solid rgba(255, 255, 255, 0.55);
+            border-right: 1px solid rgba(255, 255, 255, 0.55);
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.65);
         }
 
         .mini-stripes {
             position: absolute;
-            top: -50px;
+            top: -120px;
             left: 0;
             width: 100%;
-            height: 120px;
+            height: calc(100% + 240px);
             background: repeating-linear-gradient(
                 -45deg,
                 #d1121d 0px,
@@ -255,37 +345,35 @@
         }
 
         .barber-icon-center {
-            width: 68px;
-            height: 68px;
+            width: 104px;
+            height: 94px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .barber-icon-center svg {
+        .barber-icon-center img {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+            object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.7));
+            transition: transform 0.25s ease;
         }
 
-        .brand-title {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #ffffff;
-            line-height: 1.15;
-            letter-spacing: -0.01em;
-            text-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
+        .barber-icon-center img:hover {
+            transform: scale(1.03);
         }
 
-        .brand-subtitle {
-            font-size: 10.5px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.85);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-top: 4px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
 
         /* ==========================================
@@ -293,48 +381,52 @@
            ========================================== */
         .register-card {
             width: 100%;
-            background: rgba(14, 18, 24, 0.78);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 20px;
-            padding: 28px 28px 24px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            margin-top: 8px;
+            background: rgba(14, 18, 24, 0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 16px;
+            padding: 12px 24px 10px;
+            box-shadow: 
+                0 30px 70px rgba(0, 0, 0, 0.88),
+                0 10px 25px rgba(0, 0, 0, 0.6),
+                0 0 45px rgba(20, 59, 140, 0.18),
+                0 0 0 1px rgba(255, 255, 255, 0.06);
+            margin-top: 2px;
             display: flex;
             flex-direction: column;
         }
 
         .card-heading {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
         }
 
         .card-badge {
             display: inline-block;
-            padding: 3px 12px;
+            padding: 2px 8px;
             background: rgba(209, 18, 29, 0.15);
             border: 1px solid rgba(209, 18, 29, 0.4);
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 9.5px;
             font-weight: 600;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             color: #ff525e;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 2px;
         }
 
         .card-title {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: 24px;
+            font-size: 19px;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             letter-spacing: -0.01em;
         }
 
         .card-subtitle {
-            font-size: 13px;
+            font-size: 11.5px;
             color: rgba(255, 255, 255, 0.75);
             font-weight: 400;
         }
@@ -345,24 +437,24 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            row-gap: 22px;
-            column-gap: 16px;
+            row-gap: 7px;
+            column-gap: 14px;
             width: 100%;
-            margin-bottom: 50px;
+            margin-bottom: 8px;
         }
 
         .field-container {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 2px;
             width: 100%;
         }
 
         .field-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: rgba(255, 255, 255, 0.85);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             margin-left: 2px;
             display: flex;
             align-items: center;
@@ -377,7 +469,7 @@
         .field-label .optional-mark {
             color: rgba(255, 255, 255, 0.45);
             font-weight: 400;
-            font-size: 10.5px;
+            font-size: 10px;
         }
 
         .input-group {
@@ -389,9 +481,9 @@
 
         .field-icon {
             position: absolute;
-            left: 14px;
-            width: 18px;
-            height: 18px;
+            left: 11px;
+            width: 15px;
+            height: 15px;
             color: rgba(255, 255, 255, 0.6);
             pointer-events: none;
             display: flex;
@@ -408,14 +500,14 @@
 
         .form-input {
             width: 100%;
-            height: 46px;
-            padding: 0 14px 0 42px;
-            font-size: 14px;
+            height: 36px;
+            padding: 0 12px 0 36px;
+            font-size: 13px;
             font-family: 'Montserrat', sans-serif;
             color: #ffffff;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.22);
-            border-radius: 10px;
+            border-radius: 8px;
             outline: none;
             transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
         }
@@ -482,9 +574,9 @@
         .legal-section {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 6px;
-            margin-bottom: 6px;
+            gap: 5px;
+            margin-top: 0;
+            margin-bottom: 0;
             width: 100%;
         }
 
@@ -497,7 +589,7 @@
         .legal-checkbox-container {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
             user-select: none;
         }
@@ -511,10 +603,10 @@
         }
 
         .custom-checkbox-box {
-            width: 18px;
-            height: 18px;
-            min-width: 18px;
-            border-radius: 4px;
+            width: 15px;
+            height: 15px;
+            min-width: 15px;
+            border-radius: 3px;
             background: #d1121d;
             border: 1px solid #d1121d;
             display: flex;
@@ -530,8 +622,8 @@
         }
 
         .check-svg {
-            width: 11px;
-            height: 10px;
+            width: 10px;
+            height: 9px;
             display: block;
         }
 
@@ -540,8 +632,8 @@
         }
 
         .legal-text {
-            font-size: 12.5px;
-            line-height: 1.45;
+            font-size: 11px;
+            line-height: 1.35;
             color: rgba(255, 255, 255, 0.85);
             font-weight: 400;
         }
@@ -562,21 +654,21 @@
            ========================================== */
         .submit-btn {
             width: 100%;
-            height: 48px;
-            margin-top: 16px;
-            padding: 0 20px;
+            height: 38px;
+            margin-top: 8px;
+            padding: 0 18px;
             background: #d1121d;
             color: #ffffff;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 9px;
+            gap: 8px;
             transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
             box-shadow: 0 4px 18px rgba(209, 18, 29, 0.45);
         }
@@ -592,8 +684,8 @@
         }
 
         .btn-arrow {
-            width: 17px;
-            height: 17px;
+            width: 16px;
+            height: 16px;
             transition: transform 0.2s ease;
         }
 
@@ -605,8 +697,8 @@
            ENLACE HACIA INICIO DE SESIÓN
            ========================================== */
         .login-prompt {
-            margin-top: 18px;
-            font-size: 13px;
+            margin-top: 8px;
+            font-size: 12px;
             color: rgba(255, 255, 255, 0.75);
             text-align: center;
         }
@@ -640,7 +732,7 @@
             letter-spacing: 1.5px;
             z-index: 20;
             pointer-events: none;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.9));
         }
 
         .scissor-icon {
@@ -661,6 +753,8 @@
             height: 180px;
             pointer-events: none;
             z-index: 10;
+            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85))
+                    drop-shadow(0 0 35px rgba(20, 59, 140, 0.25));
         }
 
         .bottom-right-swoosh svg {
@@ -670,8 +764,15 @@
         }
 
         /* ==========================================
-           ADAPTACIÓN RESPONSIVA (MÓVIL / TABLET)
+           ADAPTACIÓN RESPONSIVA (DESKTOP SIN SCROLL)
            ========================================== */
+        @media (min-width: 769px) {
+            html, body {
+                height: 100vh;
+                overflow: hidden;
+            }
+        }
+
         @media (max-width: 1100px) {
             .desktop-barber-pole {
                 display: none;
@@ -713,6 +814,30 @@
             body {
                 padding: 40px 14px 60px;
                 justify-content: flex-start;
+            }
+
+            .barber-icon-center {
+                width: 90px;
+                height: 82px;
+            }
+
+            .mini-pole {
+                width: 12px;
+                height: 46px;
+            }
+
+            .mini-cap {
+                width: 12px;
+                height: 3px;
+            }
+
+            .mini-body {
+                width: 9px;
+                height: 40px;
+            }
+
+            .brand-emblem {
+                gap: 12px;
             }
 
             .form-grid {
@@ -796,6 +921,7 @@
 
         <!-- Logo e identificación de marca -->
         <header class="brand-header">
+            <h1 class="sr-only">Beauty &amp; Barber Studio - Registro de Cliente</h1>
             <div class="brand-emblem">
                 <!-- Mini poste izquierdo -->
                 <div class="mini-pole" aria-hidden="true">
@@ -807,14 +933,9 @@
                     <div class="mini-cap"></div>
                 </div>
 
-                <!-- Silueta de barbero con pompadour y barba -->
+                <!-- Logo oficial Beauty & Barber Studio -->
                 <div class="barber-icon-center">
-                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M50 12 C38 12 30 20 31 32 C26 35 23 41 25 47 C26 51 29 54 33 56 C32 61 34 67 38 72 C43 78 52 82 62 82 C68 82 73 79 76 75 C77 71 75 67 71 65 C66 62 62 57 61 52 C66 50 69 46 70 41 C71 36 69 32 66 30 C70 26 71 20 68 15 C64 12 58 12 50 12 Z" fill="#ffffff" />
-                        <path d="M46 18 C52 18 58 21 61 26 C57 24 51 23 45 23 C39 23 35 25 33 28 C34 22 39 18 46 18 Z" fill="#0b0e14" />
-                        <path d="M57 41 C52 41 47 37 45 34 C47 36 50 37 55 37 C59 37 61 35 62 33 C61 38 60 41 57 41 Z" fill="#0b0e14" />
-                        <path d="M49 54 C55 54 60 57 63 63 C59 60 55 59 50 59 C46 59 43 60 41 62 C42 57 45 54 49 54 Z" fill="#0b0e14" />
-                    </svg>
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo Beauty & Barber Studio" class="brand-logo-img">
                 </div>
 
                 <!-- Mini poste derecho -->
@@ -827,9 +948,6 @@
                     <div class="mini-cap"></div>
                 </div>
             </div>
-
-            <h1 class="brand-title">Beauty &amp;<br>Barber Studio</h1>
-            <p class="brand-subtitle">BARBERÍA &amp; ESTÉTICA</p>
         </header>
 
         <!-- Tarjeta del formulario (Glassmorphism oscuro) -->
