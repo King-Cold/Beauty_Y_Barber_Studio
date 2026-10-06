@@ -264,7 +264,7 @@
            ========================================== */
         .main-auth-wrapper {
             width: 100%;
-            max-width: 620px;
+            max-width: 800px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -535,6 +535,12 @@
         /* Ajuste específico para contraseña con botón de ojo */
         .password-group .form-input {
             padding-right: 44px;
+        }
+
+        /* Ocultar el ícono de ojo nativo de navegadores como Edge */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
         }
 
         .toggle-password-btn {
@@ -958,7 +964,7 @@
                 <p class="card-subtitle">Completa tus datos para agendar tus citas con facilidad</p>
             </div>
 
-            <form action="#" method="POST" id="registerForm">
+            <form action="{{ route('register.post') }}" method="POST" id="registerForm">
                 @csrf
                 
                 <!-- Cuadrícula con 2 campos por fila -->
@@ -1082,6 +1088,8 @@
                                 placeholder="Contraseña" 
                                 aria-label="Contraseña" 
                                 class="form-input" 
+                                minlength="8"
+                                maxlength="12"
                                 required
                             >
                             <button 
@@ -1130,14 +1138,14 @@
                     <!-- Casilla de aceptación de Términos y Condiciones -->
                     <div class="legal-group">
                         <label class="legal-checkbox-container" for="terms">
-                            <input type="checkbox" id="terms" name="terms" class="real-checkbox" required>
+                            <input type="checkbox" id="terms" name="terms" class="real-checkbox">
                             <span class="custom-checkbox-box">
                                 <svg class="check-svg" viewBox="0 0 12 10" fill="none">
                                     <path d="M1.5 5L4.5 8L10.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </span>
                             <span class="legal-text">
-                                Acepto los <a href="#" class="legal-link">Términos y Condiciones</a> del estudio.
+                                Acepto los <a href="#" id="linkTerms" class="legal-link">Términos y Condiciones</a> del estudio <span class="required-mark" style="color: #ff3b47; font-weight: 700;" title="Obligatorio">*</span>
                             </span>
                         </label>
                     </div>
@@ -1145,14 +1153,14 @@
                     <!-- Casilla de aceptación del Aviso de Privacidad -->
                     <div class="legal-group">
                         <label class="legal-checkbox-container" for="privacy">
-                            <input type="checkbox" id="privacy" name="privacy" class="real-checkbox" required>
+                            <input type="checkbox" id="privacy" name="privacy" class="real-checkbox">
                             <span class="custom-checkbox-box">
                                 <svg class="check-svg" viewBox="0 0 12 10" fill="none">
                                     <path d="M1.5 5L4.5 8L10.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </span>
                             <span class="legal-text">
-                                He leído y acepto el <a href="#" class="legal-link">Aviso de Privacidad</a>.
+                                He leído y acepto el <a href="#" id="linkPrivacy" class="legal-link">Aviso de Privacidad</a> <span class="required-mark" style="color: #ff3b47; font-weight: 700;" title="Obligatorio">*</span>
                             </span>
                         </label>
                     </div>
@@ -1197,7 +1205,93 @@
     </div>
 
     <!-- Scripts de interactividad -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Manejo de errores de validación con SweetAlert2
+            @if($errors->any())
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '{{ $errors->first() }}',
+                    background: '#0b0e14',
+                    color: '#fff',
+                    confirmButtonColor: '#d1121d'
+                });
+            @endif
+
+            // Validación del formulario antes de enviar
+            const registerForm = document.getElementById('registerForm');
+            const termsCheckbox = document.getElementById('terms');
+            const privacyCheckbox = document.getElementById('privacy');
+
+            if(registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    if (!termsCheckbox.checked || !privacyCheckbox.checked) {
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Políticas requeridas',
+                            text: 'Por favor, asegúrate de aceptar los Términos y Condiciones y el Aviso de Privacidad para continuar.',
+                            background: '#0b0e14',
+                            color: '#fff',
+                            confirmButtonColor: '#d1121d'
+                        });
+                    }
+                });
+            }
+
+            // Ventana modal de Términos y Condiciones
+            const linkTerms = document.getElementById('linkTerms');
+            if (linkTerms) {
+                linkTerms.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Términos y Condiciones',
+                        html: '<div style="text-align: left; font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,0.85); max-height: 320px; overflow-y: auto; padding-right: 12px; font-family: \'Montserrat\', sans-serif;">' +
+                              '<h4 style="color: #fff; margin-bottom: 6px; font-weight: 600;">1. Uso del Servicio</h4>' +
+                              '<p style="margin-bottom: 14px;">Al registrarte en Beauty & Barber Studio, aceptas utilizar nuestros servicios para uso personal, cumpliendo con nuestras políticas de respeto hacia nuestro personal y otros clientes.</p>' +
+                              '<h4 style="color: #fff; margin-bottom: 6px; font-weight: 600;">2. Política de Cancelaciones</h4>' +
+                              '<p style="margin-bottom: 14px;">Las citas deben cancelarse o reprogramarse con al menos 24 horas de anticipación. De lo contrario, nos reservamos el derecho de generar una penalización en su próxima visita.</p>' +
+                              '<h4 style="color: #fff; margin-bottom: 6px; font-weight: 600;">3. Responsabilidad</h4>' +
+                              '<p>No nos hacemos responsables por la pérdida, daño o robo de objetos personales olvidados en nuestras instalaciones. Le sugerimos mantener sus pertenencias cerca.</p>' +
+                              '</div>',
+                        background: 'rgba(14, 18, 24, 0.95)',
+                        color: '#ffffff',
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#d1121d',
+                        width: '550px',
+                        backdrop: `rgba(0,0,0,0.6) backdrop-filter: blur(4px)`
+                    });
+                });
+            }
+
+            // Ventana modal de Aviso de Privacidad
+            const linkPrivacy = document.getElementById('linkPrivacy');
+            if (linkPrivacy) {
+                linkPrivacy.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Aviso de Privacidad',
+                        html: '<div style="text-align: left; font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,0.85); max-height: 320px; overflow-y: auto; padding-right: 12px; font-family: \'Montserrat\', sans-serif;">' +
+                              '<h4 style="color: #fff; margin-bottom: 6px; font-weight: 600;">1. Datos Recopilados</h4>' +
+                              '<p style="margin-bottom: 14px;">Recopilamos tu nombre, apellidos, teléfono, correo electrónico y opcionalmente tu fecha de nacimiento únicamente con el propósito de gestionar tus citas, crear un perfil de cliente y brindarte un mejor servicio.</p>' +
+                              '<h4 style="color: #fff; margin-bottom: 6px; font-weight: 600;">2. Uso de la Información</h4>' +
+                              '<p style="margin-bottom: 14px;">Tus datos son estrictamente confidenciales. No serán vendidos, alquilados ni compartidos con terceros bajo ninguna circunstancia ajena a nuestra operación interna.</p>' +
+                              '<h4 style="color: #fff; margin-bottom: 6px; font-weight: 600;">3. Seguridad</h4>' +
+                              '<p>Tus contraseñas y datos personales están cifrados en nuestros sistemas y resguardados en servidores seguros con protocolos de autenticación estrictos para prevenir cualquier acceso no autorizado.</p>' +
+                              '</div>',
+                        background: 'rgba(14, 18, 24, 0.95)',
+                        color: '#ffffff',
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#d1121d',
+                        width: '550px',
+                        backdrop: `rgba(0,0,0,0.6) backdrop-filter: blur(4px)`
+                    });
+                });
+            }
+        });
+
         // Alternancia de visibilidad de contraseña
         const togglePasswordBtn = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');

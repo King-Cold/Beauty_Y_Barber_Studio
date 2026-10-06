@@ -316,7 +316,6 @@
             flex-direction: column;
             align-items: center;
             z-index: 10;
-            margin: auto;
         }
 
         /* ==========================================
@@ -347,7 +346,7 @@
         }
 
         .brand-logo-img {
-            width: 330px;
+            width: 260px;
             max-width: 88vw;
             height: auto;
             object-fit: contain;
@@ -677,8 +676,42 @@
         }
 
         /* ==========================================
+           ALERTAS Y NOTIFICACIONES
+           ========================================== */
+        .alert-box {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-error {
+            background: rgba(209, 18, 29, 0.15);
+            border: 1px solid rgba(209, 18, 29, 0.3);
+            color: #ffb4b8;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #a7f3d0;
+        }
+
+        /* ==========================================
            ADAPTACIÓN RESPONSIVA (MÓVIL / TABLET)
            ========================================== */
+        @media (min-width: 1101px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+        }
+
         @media (max-width: 1100px) {
             .desktop-barber-pole {
                 display: none;
@@ -719,7 +752,7 @@
 
             /* Tamaño del logo optimizado para celulares sin desbordar ni chocar */
             .brand-logo-img {
-                width: 285px;
+                width: 220px;
                 max-width: 86vw;
             }
 
@@ -750,6 +783,12 @@
             .card-title {
                 font-size: 21px;
             }
+        }
+
+        /* Ocultar icono de revelar contraseña nativo de Edge para evitar doble icono */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
         }
     </style>
 </head>
@@ -798,6 +837,15 @@
                 <p class="card-subtitle">Inicia sesión para continuar...</p>
             </div>
 
+            @if($errors->any())
+                <div class="alert-box alert-error">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ $errors->first() }}</span>
+                </div>
+            @endif
+
             <form action="#" method="POST">
                 @csrf
                 
@@ -835,7 +883,8 @@
                         placeholder="Contraseña" 
                         aria-label="Contraseña" 
                         class="form-input" 
-                        maxlength="8" 
+                        minlength="8"
+                        maxlength="12" 
                         required
                     >
                     <button 
@@ -881,7 +930,7 @@
 
             <!-- Enlace de registro inferior -->
             <p class="signup-prompt">
-                ¿No tienes una cuenta? <a href="#" class="signup-link">Regístrate</a>
+                ¿No tienes una cuenta? <a href="{{ route('register') }}" class="signup-link">Regístrate</a>
             </p>
         </main>
 
@@ -928,5 +977,29 @@
         }
     </script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: '{{ session("success") }}',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                background: '#10b981',
+                color: '#ffffff',
+                iconColor: '#ffffff',
+                customClass: {
+                    popup: 'colored-toast'
+                }
+            });
+        });
+    </script>
+    @endif
 </body>
 </html>

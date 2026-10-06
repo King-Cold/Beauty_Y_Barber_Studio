@@ -981,7 +981,7 @@
                             <span>Configuración</span>
                         </a>
                         <div class="menu-divider" role="separator"></div>
-                        <a href="{{ route('login') }}" class="menu-item logout-item" role="menuitem">
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="menu-item logout-item" role="menuitem">
                             <div class="menu-item-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -991,6 +991,9 @@
                             </div>
                             <span>Cerrar sesión</span>
                         </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
                     </div>
                 </div>
             </nav>
@@ -1182,5 +1185,25 @@
             }
         });
     </script>
+
+    @if(session('success'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: '{{ session("success") }}',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                background: '#10b981',
+                color: '#ffffff',
+                iconColor: '#ffffff'
+            });
+        });
+    </script>
+    @endif
 </body>
 </html>
