@@ -28,7 +28,8 @@ class TestUsersSeeder extends Seeder
                 'apellidos' => 'Mendoza',
                 'telefono' => '5551234567',
                 'email' => 'carlos.admin@bbs.com',
-                'password' => Hash::make('Admin123!'),
+                'password' => Hash::make('
+                '),
                 'role_id' => 1,
             ],
             [

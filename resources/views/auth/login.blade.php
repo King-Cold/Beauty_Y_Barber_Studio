@@ -859,8 +859,8 @@
                     <input 
                         type="email" 
                         name="email" 
-                        placeholder="Correo electrónico o usuario" 
-                        aria-label="Correo electrónico o usuario" 
+                        placeholder="Correo electrónico" 
+                        aria-label="Correo electrónico" 
                         class="form-input" 
                         pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" 
                         title="Introduce un correo electrónico válido (ej. usuario@dominio.com)" 
