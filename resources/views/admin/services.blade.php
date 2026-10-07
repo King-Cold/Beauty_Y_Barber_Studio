@@ -1031,7 +1031,7 @@
                 <nav class="sidebar-nav" aria-label="Secciones del sistema">
                     
                     <!-- 1. Dashboard -->
-                    <a href="#dashboard" class="nav-item active" aria-current="page" title="Dashboard">
+                    <a href="{{ route('admin.dashboard') }}" class="nav-item" aria-current="page" title="Dashboard">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
@@ -1081,7 +1081,7 @@
                     </a>
 
                     <!-- 5. Servicios -->
-                    <a href="{{ route('admin.services') }}" class="nav-item" title="Servicios">
+                    <a href="{{ route('admin.services') }}" class="nav-item active" title="Servicios">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="6" cy="6" r="3"></circle>
@@ -1118,14 +1118,365 @@
 
         <!-- ÁREA DE CONTENIDO PRINCIPAL -->
         <main id="main-content" class="main-content" role="main">
-            <div class="welcome-header">
-                <h1>¡Bienvenido al Panel de Control!</h1>
+            <!-- Header Section -->
+            <div class="welcome-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <h1>Catálogo de servicios</h1>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('createServiceModal').style.display='flex'; document.body.style.overflow='hidden';" style="background: var(--barber-red); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); transition: all 0.2s;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    Nuevo servicio
+                </a>
+            </div>
+
+
+
+
+
+            <!-- Filters Section -->
+            <div class="panel-card" style="margin-bottom: 24px; padding: 20px;">
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="position: relative;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 12px; color: var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="searchInput" placeholder="Buscar servicios por nombre o descripción..." style="width: 100%; padding: 10px 16px 10px 40px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                        </div>
+                    </div>
+                    <div>
+                        <select id="categoryFilter" style="padding: 10px 16px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; appearance: none; padding-right: 32px; background-image: url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                            <option value="" style="background: var(--bg-header);">Categoría: Todas</option>
+                            <option value="barberia" style="background: var(--bg-header);">Barbería</option>
+                            <option value="estetica" style="background: var(--bg-header);">Estética</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="statusFilter" style="padding: 10px 16px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; appearance: none; padding-right: 32px; background-image: url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                            <option value="" style="background: var(--bg-header);">Estado: Todos</option>
+                            <option value="activo" style="background: var(--bg-header);">Activo</option>
+                            <option value="inactivo" style="background: var(--bg-header);">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="panel-card" style="padding: 0;">
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Servicio</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Duración</th>
+                                <th>Trabajadores</th>
+                                <th>Estado</th>
+                                <th style="text-align: right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($services as $service)
+                            <tr class="service-row" data-name="{{ strtolower($service->name) }}" data-description="{{ strtolower($service->description) }}" data-category="{{ $service->category }}" data-status="{{ $service->is_active ? 'activo' : 'inactivo' }}">
+                                <td>
+                                    <div style="width: 48px; height: 48px; border-radius: 8px; background: rgba(255,255,255,0.05); overflow: hidden; border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                        @if($service->image_path)
+                                        <img src="{{ asset($service->image_path) }}" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ $service->name }}">
+                                        @else
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 700; color: white; margin-bottom: 4px; font-size: 14.5px;">{{ $service->name }}</div>
+                                    <div style="font-size: 12.5px; color: var(--text-muted); max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $service->description ?? 'Sin descripción' }}</div>
+                                </td>
+                                <td><span class="status-badge" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: var(--text-muted);">{{ ucfirst($service->category) }}</span></td>
+                                <td><span style="font-weight: 700; color: white;">${{ number_format($service->price, 2) }}</span></td>
+                                <td><span style="color: var(--text-muted); font-size: 13.5px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>{{ $service->duration_minutes }} min</span></td>
+                                <td>
+                                    <span style="font-size: 12.5px; color: var(--barber-red);">Nadie asignado</span>
+                                </td>
+                                <td>
+                                    @if($service->is_active)
+                                        <span class="status-badge status-confirmed">Activo</span>
+                                    @else
+                                        <span class="status-badge status-cancelled">Inactivo</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                        <button type="button" onclick="openViewServiceModal({{ $service->id }}, {{ json_encode($service->name) }}, {{ json_encode($service->description) }}, {{ $service->price }}, {{ $service->duration_minutes }}, '{{ $service->category }}', {{ json_encode($service->image_path) }})" class="btn-outline" style="padding: 6px; border-radius: 6px; color: var(--text-muted); border-color: var(--border-subtle);" title="Ver detalle">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                        </button>
+                                        <button type="button" onclick="openEditServiceModal({{ $service->id }}, {{ json_encode($service->name) }}, {{ json_encode($service->description) }}, {{ $service->price }}, {{ $service->duration_minutes }}, '{{ $service->category }}', {{ json_encode($service->image_path) }})" class="btn-outline" style="padding: 6px; border-radius: 6px;" title="Modificar servicio">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                        </button>
+                                        <form action="{{ route('admin.services.toggle_status', $service->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('PATCH')
+                                            @if($service->is_active)
+                                            <button type="submit" class="btn-outline" style="padding: 6px; border-radius: 6px; color: var(--barber-red); border-color: rgba(239, 68, 68, 0.3);" title="Desactivar servicio">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                                            </button>
+                                            @else
+                                            <button type="submit" class="btn-outline" style="padding: 6px; border-radius: 6px; color: var(--barber-blue-light); border-color: rgba(0, 85, 255, 0.3);" title="Activar servicio">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                                            </button>
+                                            @endif
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                                    No hay servicios registrados. Haz clic en "Nuevo servicio" para agregar uno.
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
+
+        <!-- MODAL NUEVO SERVICIO -->
+        <div id="createServiceModal" style="display: {{ $errors->any() && old('_method') !== 'PUT' ? 'flex' : 'none' }}; position: fixed; inset: 0; background: rgba(5,10,21,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px;">
+            <div style="background: var(--bg-header); border: 1px solid var(--border-strong); border-radius: 12px; width: 100%; max-width: 600px; max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+                <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="font-size: 1.15rem; font-weight: 700;">Registrar Nuevo Servicio</h2>
+                    <button type="button" onclick="document.getElementById('createServiceForm').reset(); document.getElementById('createServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+                <form id="createServiceForm" action="{{ route('admin.services.store') }}" method="POST" enctype="multipart/form-data" style="padding: 16px 24px;">
+                    @csrf
+
+                    @if($errors->any())
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--barber-red); color: var(--barber-red); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <ul style="margin-left: 20px; font-size: 0.9rem;">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+                    
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Nombre del servicio <span style="color: var(--barber-red);">*</span></label>
+                        <input type="text" name="name" value="{{ old('name') }}" required placeholder="Ej. Corte Clásico" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                    </div>
+
+                    <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 180px;">
+                            <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Precio ($) <span style="color: var(--barber-red);">*</span></label>
+                            <input type="number" step="0.01" min="0" name="price" value="{{ old('price') }}" required placeholder="0.00" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                        </div>
+                        <div style="flex: 1; min-width: 180px;">
+                            <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Duración (min) <span style="color: var(--barber-red);">*</span></label>
+                            <input type="number" min="1" name="duration_minutes" value="{{ old('duration_minutes') }}" required placeholder="45" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Categoría <span style="color: var(--barber-red);">*</span></label>
+                        <select name="category" required style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; appearance: none; padding-right: 32px; background-image: url('data:image/svg+xml;utf8,<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'6 9 12 15 18 9\'/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                            <option value="" disabled {{ old('category') ? '' : 'selected' }} style="background: var(--bg-header);">Selecciona una categoría</option>
+                            <option value="barberia" {{ old('category') == 'barberia' ? 'selected' : '' }} style="background: var(--bg-header);">Barbería</option>
+                            <option value="estetica" {{ old('category') == 'estetica' ? 'selected' : '' }} style="background: var(--bg-header);">Estética</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Descripción <span style="color: var(--barber-red);">*</span></label>
+                        <textarea name="description" rows="2" required placeholder="Detalles del servicio..." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; resize: vertical;">{{ old('description') }}</textarea>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Imagen Referencial <span style="color: var(--barber-red);">*</span></label>
+                        <input type="file" name="image" accept="image/*" required style="width: 100%; padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; font-size: 0.85rem;">
+                        <small style="color: var(--text-muted); display: block; margin-top: 4px;">Solo imágenes (JPG, PNG). Máx 2MB.</small>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+                        <button type="button" onclick="document.getElementById('createServiceForm').reset(); document.getElementById('createServiceModal').style.display='none'; document.body.style.overflow='auto';" class="btn-outline" style="padding: 8px 16px; color: white;">Cancelar</button>
+                        <button type="submit" style="background: var(--barber-blue); color: white; padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">Guardar Servicio</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VER DETALLE SERVICIO -->
+    <div id="viewServiceModal" style="display: none; position: fixed; inset: 0; background: rgba(5,10,21,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px;">
+        <div style="background: var(--bg-header); border: 1px solid var(--border-strong); border-radius: 12px; width: 100%; max-width: 500px; max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 1.15rem; font-weight: 700;">Detalles del Servicio</h2>
+                <button type="button" onclick="document.getElementById('viewServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div style="padding: 24px;">
+                <div id="view_image_container" style="width: 100%; height: 280px; border-radius: 8px; background: rgba(0,0,0,0.2); overflow: hidden; margin-bottom: 20px; display: none; align-items: center; justify-content: center;">
+                    <img id="view_image" src="" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px;">
+                </div>
+                
+                <h3 id="view_name" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: white;"></h3>
+                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <span id="view_category" class="status-badge" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: var(--text-muted);"></span>
+                </div>
+                
+                <p id="view_description" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;"></p>
+                
+                <div style="display: flex; gap: 16px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                    <div style="flex: 1;">
+                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Precio</span>
+                        <span id="view_price" style="font-size: 1.1rem; font-weight: 700; color: white;"></span>
+                    </div>
+                    <div style="flex: 1;">
+                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Duración</span>
+                        <span id="view_duration" style="font-size: 1.1rem; font-weight: 700; color: white;"></span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; text-align: right;">
+                    <button type="button" onclick="document.getElementById('viewServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: var(--barber-blue); color: white; padding: 8px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR SERVICIO -->
+    <div id="editServiceModal" style="display: {{ $errors->any() && old('_method') === 'PUT' ? 'flex' : 'none' }}; position: fixed; inset: 0; background: rgba(5,10,21,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px;">
+        <div style="background: var(--bg-header); border: 1px solid var(--border-strong); border-radius: 12px; width: 100%; max-width: 600px; max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 1.15rem; font-weight: 700;">Modificar Servicio</h2>
+                <button type="button" onclick="document.getElementById('editServiceForm').reset(); document.getElementById('editServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <form id="editServiceForm" action="{{ old('service_id') ? route('admin.services.update', old('service_id')) : '' }}" method="POST" enctype="multipart/form-data" style="padding: 16px 24px;">
+                @csrf
+                @method('PUT')
+                <input type="hidden" id="edit_service_id" name="service_id" value="{{ old('service_id') }}">
+                
+                @if($errors->any() && old('_method') === 'PUT')
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--barber-red); color: var(--barber-red); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+                    <ul style="margin-left: 20px; font-size: 0.9rem;">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Nombre del servicio <span style="color: var(--barber-red);">*</span></label>
+                    <input type="text" id="edit_name" name="name" value="{{ old('name') }}" required placeholder="Ej. Corte Clásico" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 180px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Precio ($) <span style="color: var(--barber-red);">*</span></label>
+                        <input type="number" step="0.01" min="0" id="edit_price" name="price" value="{{ old('price') }}" required placeholder="0.00" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                    </div>
+                    <div style="flex: 1; min-width: 180px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Duración (min) <span style="color: var(--barber-red);">*</span></label>
+                        <input type="number" min="1" id="edit_duration" name="duration_minutes" value="{{ old('duration_minutes') }}" required placeholder="45" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Categoría <span style="color: var(--barber-red);">*</span></label>
+                    <select id="edit_category" name="category" required style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; appearance: none; padding-right: 32px; background-image: url('data:image/svg+xml;utf8,<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'6 9 12 15 18 9\'/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                        <option value="" disabled {{ old('category', '') == '' ? 'selected' : '' }} style="background: var(--bg-header);">Selecciona una categoría</option>
+                        <option value="barberia" {{ old('category') == 'barberia' ? 'selected' : '' }} style="background: var(--bg-header);">Barbería</option>
+                        <option value="estetica" {{ old('category') == 'estetica' ? 'selected' : '' }} style="background: var(--bg-header);">Estética</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Descripción <span style="color: var(--barber-red);">*</span></label>
+                    <textarea id="edit_description" name="description" rows="2" required placeholder="Detalles del servicio..." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; resize: vertical;">{{ old('description') }}</textarea>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Imagen Referencial (Opcional)</label>
+                    
+                    <div id="edit_image_preview_container" style="display: none; margin-bottom: 12px; align-items: center; gap: 12px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                        <img id="edit_current_image" src="" style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Imagen actual (Sube una nueva para reemplazarla)</span>
+                    </div>
+
+                    <input type="file" name="image" accept="image/*" style="width: 100%; padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; font-size: 0.85rem;">
+                    <small style="color: var(--text-muted); display: block; margin-top: 4px;">Dejar vacío para conservar la imagen actual. Solo imágenes (JPG, PNG). Máx 2MB.</small>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+                    <button type="button" onclick="document.getElementById('editServiceForm').reset(); document.getElementById('editServiceModal').style.display='none'; document.body.style.overflow='auto';" class="btn-outline" style="padding: 8px 16px; color: white;">Cancelar</button>
+                    <button type="submit" style="background: var(--barber-blue); color: white; padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">Actualizar Servicio</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- SCRIPTS PARA INTERACTIVIDAD ACCESIBLE -->
     <script>
+        // Si hay un error de validación en la edición, mostrar scroll locked
+        @if($errors->any() && old('_method') === 'PUT')
+            document.body.style.overflow = 'hidden';
+        @endif
+
+        function openEditServiceModal(id, name, description, price, duration, category, imagePath) {
+            const modal = document.getElementById('editServiceModal');
+            const form = document.getElementById('editServiceForm');
+            
+            // Set form action dynamically
+            form.action = `/admin/servicios/${id}`;
+            document.getElementById('edit_service_id').value = id;
+            
+            // Populate fields ONLY IF there is no previous old data being shown from validation error
+            @if(!($errors->any() && old('_method') === 'PUT'))
+            document.getElementById('edit_name').value = name;
+            document.getElementById('edit_price').value = price;
+            document.getElementById('edit_duration').value = duration;
+            document.getElementById('edit_category').value = category;
+            document.getElementById('edit_description').value = description;
+            @endif
+
+            const imgContainer = document.getElementById('edit_image_preview_container');
+            if (imagePath) {
+                document.getElementById('edit_current_image').src = imagePath;
+                imgContainer.style.display = 'flex';
+            } else {
+                imgContainer.style.display = 'none';
+            }
+            
+            // Show modal and lock scroll
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openViewServiceModal(id, name, description, price, duration, category, imagePath) {
+            const modal = document.getElementById('viewServiceModal');
+            
+            document.getElementById('view_name').textContent = name;
+            document.getElementById('view_description').textContent = description || 'Sin descripción detallada.';
+            document.getElementById('view_price').textContent = '$' + parseFloat(price).toFixed(2);
+            document.getElementById('view_duration').textContent = duration + ' min';
+            document.getElementById('view_category').textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            
+            const imgContainer = document.getElementById('view_image_container');
+            if (imagePath) {
+                document.getElementById('view_image').src = imagePath;
+                imgContainer.style.display = 'flex';
+            } else {
+                imgContainer.style.display = 'none';
+            }
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             // --- Menú de Perfil ---
             const dropdownWrapper = document.getElementById('profileDropdownWrapper');
@@ -1183,6 +1534,73 @@
                     mobileToggleBtn.setAttribute('aria-expanded', 'false');
                 });
             }
+
+            // --- Filtros de la Tabla de Servicios ---
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const rows = document.querySelectorAll('.service-row');
+
+            function filterTable() {
+                if (!searchInput || !categoryFilter || !statusFilter) return;
+                
+                const search = searchInput.value.toLowerCase();
+                const category = categoryFilter.value;
+                const status = statusFilter.value;
+
+                // Guardar en sessionStorage para persistir entre recargas
+                sessionStorage.setItem('serviceSearch', searchInput.value);
+                sessionStorage.setItem('serviceCategory', category);
+                sessionStorage.setItem('serviceStatus', status);
+
+                rows.forEach(row => {
+                    const name = row.getAttribute('data-name') || '';
+                    const desc = row.getAttribute('data-description') || '';
+                    const rowCat = row.getAttribute('data-category') || '';
+                    const rowStatus = row.getAttribute('data-status') || '';
+
+                    const matchesSearch = name.includes(search) || desc.includes(search);
+                    const matchesCategory = category === '' || rowCat === category;
+                    const matchesStatus = status === '' || rowStatus === status;
+
+                    if (matchesSearch && matchesCategory && matchesStatus) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            if (searchInput && categoryFilter && statusFilter) {
+                // Recuperar filtros guardados, si no hay estado guardado, por defecto es 'activo'
+                const savedSearch = sessionStorage.getItem('serviceSearch');
+                const savedCategory = sessionStorage.getItem('serviceCategory');
+                const savedStatus = sessionStorage.getItem('serviceStatus');
+
+                @if(session('success') || $errors->any())
+                    // Venimos de recargar la página tras crear, editar o activar/desactivar un servicio
+                    if (savedSearch !== null) searchInput.value = savedSearch;
+                    if (savedCategory !== null) categoryFilter.value = savedCategory;
+                    if (savedStatus !== null) statusFilter.value = savedStatus;
+                @else
+                    // Es una entrada "fresca" desde el menú lateral (Dashboard, etc.)
+                    // Reseteamos todo a la vista por defecto: solo activos
+                    sessionStorage.removeItem('serviceSearch');
+                    sessionStorage.removeItem('serviceCategory');
+                    sessionStorage.removeItem('serviceStatus');
+                    
+                    searchInput.value = '';
+                    categoryFilter.value = '';
+                    statusFilter.value = 'activo';
+                @endif
+
+                // Aplicar filtros iniciales
+                filterTable();
+
+                searchInput.addEventListener('input', filterTable);
+                categoryFilter.addEventListener('change', filterTable);
+                statusFilter.addEventListener('change', filterTable);
+            }
         });
     </script>
 
@@ -1200,7 +1618,10 @@
                 timerProgressBar: true,
                 background: '#10b981',
                 color: '#ffffff',
-                iconColor: '#ffffff'
+                iconColor: '#ffffff',
+                customClass: {
+                    popup: 'colored-toast'
+                }
             });
         });
     </script>
