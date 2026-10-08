@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Trabajador;
 use App\Models\Service;
+use App\Models\HorarioSucursal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class TrabajadorController extends Controller
@@ -66,13 +68,16 @@ class TrabajadorController extends Controller
             ]);
         }
 
+        $branchLimits = HorarioSucursal::getHorariosMap();
+
         return view('admin.trabajadores.index', compact(
             'trabajadores',
             'totalEquipo',
             'activosCount',
             'inactivosCount',
             'servicios',
-            'serviciosCount'
+            'serviciosCount',
+            'branchLimits'
         ));
     }
 
@@ -315,5 +320,175 @@ class TrabajadorController extends Controller
         return redirect()
             ->route('admin.trabajadores.index')
             ->with('success', 'Servicios asociados exitosamente al especialista.');
+    }
+
+    /**
+     * Obtiene el horario configurado para un trabajador junto con los límites de la sucursal.
+     */
+    public function getSchedule(Trabajador $trabajador)
+    {
+        $branchLimits = HorarioSucursal::getHorariosMap();
+
+        return response()->json([
+            'success' => true,
+            'trabajador_id' => $trabajador->id,
+            'trabajador_nombre' => $trabajador->nombre_completo,
+            'horario' => $trabajador->horario,
+            'branch_limits' => $branchLimits,
+        ]);
+    }
+
+    /**
+     * Guarda y valida el horario asignado a un trabajador contra los límites de la sucursal día por día.
+     */
+    public function saveSchedule(Request $request, Trabajador $trabajador)
+    {
+        $branchLimits = HorarioSucursal::getHorariosMap();
+
+        $validated = $request->validate([
+            'horario' => ['required', 'array'],
+        ], [
+            'horario.required' => 'El horario del trabajador es obligatorio.',
+            'horario.array' => 'El formato del horario no es válido.',
+        ]);
+
+        $horarioData = $validated['horario'];
+
+        // Compara los horarios día por día contra la configuración de la sucursal
+        foreach ($horarioData as $dayKey => $dayConfig) {
+            if (!is_array($dayConfig) || empty($dayConfig['entrada']) || empty($dayConfig['salida'])) {
+                continue;
+            }
+
+            $diaLower = strtolower(trim($dayKey));
+            $branchDay = $branchLimits[$diaLower] ?? null;
+
+            if (!$branchDay) {
+                continue;
+            }
+
+            $nombreDia = $branchDay['nombre'] ?? ucfirst($diaLower);
+
+            // Si la sucursal está cerrada este día
+            if (!$branchDay['abierto']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "La sucursal permanece cerrada el día {$nombreDia}. No se puede asignar horario al trabajador.",
+                    'dia' => $nombreDia,
+                ], 422);
+            }
+
+            $horaEntrada = trim($dayConfig['entrada']);
+            $horaSalida = trim($dayConfig['salida']);
+
+            if ($horaEntrada >= $horaSalida) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "La hora de entrada debe ser anterior a la hora de salida para el {$nombreDia}.",
+                    'dia' => $nombreDia,
+                ], 422);
+            }
+
+            $branchApertura = $branchDay['apertura'];
+            $branchCierre = $branchDay['cierre'];
+
+            // Si la entrada es más temprana que la apertura o la salida excede el cierre de la sucursal
+            if ($horaEntrada < $branchApertura || $horaSalida > $branchCierre) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "El horario asignado para el {$nombreDia} excede el horario de la sucursal ({$branchApertura} - {$branchCierre})",
+                    'dia' => $nombreDia,
+                    'branch_limits' => [
+                        'apertura' => $branchApertura,
+                        'cierre' => $branchCierre,
+                    ],
+                ], 422);
+            }
+        }
+
+        // Asegurar que la columna 'horario' exista de forma resiliente
+        if (!Schema::hasColumn('trabajadores', 'horario')) {
+            Schema::table('trabajadores', function ($table) {
+                $table->json('horario')->nullable();
+            });
+        }
+
+        $trabajador->horario = $horarioData;
+        $trabajador->save();
+
+        $freshTrabajador = $trabajador->fresh();
+        $estadoTexto = $freshTrabajador->getEstadoDisponibilidadHoy();
+        $estadoHoy = $freshTrabajador->estaLaborandoHoy();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Horario de {$trabajador->nombre_completo} configurado correctamente.",
+            'data' => $freshTrabajador->horario,
+            'trabajador_id' => $trabajador->id,
+            'trabajador_nombre' => $trabajador->nombre_completo,
+            'activo' => (bool)$freshTrabajador->activo,
+            'laborando_hoy' => ($estadoTexto === 'Con disponibilidad de horario'),
+            'disponible' => ($estadoTexto === 'Con disponibilidad de horario'),
+            'estado_hoy' => $estadoTexto,
+            'motivo_hoy' => $estadoTexto,
+        ]);
+    }
+
+    /**
+     * Consulta la disponibilidad de horarios de un trabajador para una fecha dada,
+     * aplicando con prioridad 1 las Fechas Especiales (Caso A y Caso B) y prioridad 2 el horario del trabajador.
+     */
+    public function getDisponibilidad(Request $request, Trabajador $trabajador)
+    {
+        $request->validate([
+            'fecha' => ['required', 'date'],
+            'duracion' => ['nullable', 'integer', 'min:5', 'max:480'],
+        ], [
+            'fecha.required' => 'La fecha es obligatoria.',
+            'fecha.date' => 'La fecha no tiene un formato válido.',
+        ]);
+
+        $fecha = $request->input('fecha');
+        $duracion = (int) $request->input('duracion', 30);
+
+        $disponibilidad = app(\App\Services\DisponibilidadService::class)
+            ->obtenerDisponibilidadCompleta($trabajador, $fecha, $duracion);
+
+        return response()->json([
+            'success' => true,
+            'trabajador_id' => $trabajador->id,
+            'trabajador_nombre' => $trabajador->nombre_completo,
+            'data' => $disponibilidad,
+        ]);
+    }
+
+    /**
+     * Alterna el estado activo / inactivo (bloqueo general de disponibilidad) de un trabajador.
+     */
+    public function toggleStatus(Request $request, Trabajador $trabajador)
+    {
+        $trabajador->activo = !$trabajador->activo;
+        $trabajador->save();
+
+        $freshTrabajador = $trabajador->fresh();
+        $estadoTexto = $freshTrabajador->getEstadoDisponibilidadHoy();
+        $estadoTextoGeneral = $freshTrabajador->activo ? 'activado' : 'desactivado (disponibilidad bloqueada)';
+        $mensaje = "Especialista {$freshTrabajador->nombre_completo} {$estadoTextoGeneral} exitosamente.";
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $mensaje,
+                'activo' => (bool)$freshTrabajador->activo,
+                'status' => $freshTrabajador->activo ? 'active' : 'inactive',
+                'estado_hoy' => $estadoTexto,
+                'disponible' => ($estadoTexto === 'Con disponibilidad de horario'),
+                'laborando_hoy' => ($estadoTexto === 'Con disponibilidad de horario'),
+            ]);
+        }
+
+        return redirect()
+            ->route('admin.trabajadores.index')
+            ->with('success', $mensaje);
     }
 }

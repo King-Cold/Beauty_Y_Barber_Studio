@@ -1135,12 +1135,162 @@
             border-color: var(--border-subtle);
         }
 
+        /* Sección: Disponibilidad de Hoy y Alerta en Tarjetas */
+        .worker-availability-section {
+            margin-top: 4px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.08);
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .worker-alert-available {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 6px;
+            padding: 4px 9px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+            width: fit-content;
+        }
+
+        .worker-alert-unavailable {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 4px 9px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+            width: fit-content;
+        }
+
+        .worker-alert-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+            animation: pulse-dot 2s infinite;
+            flex-shrink: 0;
+        }
+
+        .worker-alert-dot-off {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #64748b;
+            flex-shrink: 0;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .alert-flash-animation {
+            animation: alertFlash 1.2s ease-out;
+        }
+
+        @keyframes alertFlash {
+            0% { transform: scale(0.9); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .card-highlight-pulse {
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5), 0 10px 28px rgba(16, 185, 129, 0.2) !important;
+            border-color: rgba(16, 185, 129, 0.6) !important;
+            transition: all 0.4s ease;
+        }
+
+        .today-slots-scroll {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 4px 2px 6px 2px;
+            min-width: 0;
+            width: 100%;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 85, 255, 0.4) rgba(255, 255, 255, 0.02);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .today-slots-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .today-slots-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+        }
+
+        .today-slots-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0, 85, 255, 0.35);
+            border-radius: 4px;
+        }
+
+        .today-slots-scroll::-webkit-scrollbar-thumb:hover {
+            background: var(--barber-blue);
+        }
+
+        .badge-today-slot {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 85, 255, 0.12);
+            color: #93c5fd;
+            border: 1px solid rgba(0, 85, 255, 0.28);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-today-slot:hover {
+            background: rgba(0, 85, 255, 0.24);
+            border-color: rgba(0, 85, 255, 0.5);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .empty-today-slots {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.07);
+            border-radius: 6px;
+            display: inline-block;
+        }
+
 
 
         /* Botones de acción en tarjeta */
         .worker-card-actions {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             padding-top: 14px;
             border-top: 1px solid var(--border-subtle);
@@ -1170,6 +1320,26 @@
         .btn-card-action svg {
             width: 16px;
             height: 16px;
+        }
+
+        .btn-card-action.btn-toggle-active {
+            color: #10b981;
+        }
+
+        .btn-card-action.btn-toggle-active:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--barber-red);
+            border-color: rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-card-action.btn-toggle-inactive {
+            color: #64748b;
+        }
+
+        .btn-card-action.btn-toggle-inactive:hover {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.35);
         }
 
         /* Tabla de Trabajadores */
@@ -1484,6 +1654,412 @@
         .btn-submit-action:hover {
             background: var(--barber-blue-light);
         }
+
+        /* ===================================================
+           ESTILOS DEL MODAL DE CONFIGURACIÓN DE HORARIOS (DARK MODE)
+           =================================================== */
+        .modal-dialog-schedule {
+            max-width: 680px;
+            width: 100%;
+        }
+
+        .schedule-section-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .schedule-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .schedule-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .schedule-badge-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--barber-blue-pale);
+            color: var(--barber-blue-light);
+            border: 1px solid rgba(0, 85, 255, 0.25);
+            flex-shrink: 0;
+        }
+
+        .schedule-badge-icon.icon-amber {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.25);
+        }
+
+        .schedule-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-white);
+            margin-bottom: 2px;
+        }
+
+        .schedule-section-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .schedule-notice-pill {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid var(--border-subtle);
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        /* Filas de Horario Laboral (Lunes a Viernes) */
+        .schedule-days-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .schedule-day-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: rgba(10, 17, 36, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px 14px;
+            transition: all 0.2s ease;
+        }
+
+        .schedule-day-row:hover {
+            border-color: rgba(0, 85, 255, 0.3);
+            background: rgba(14, 23, 48, 0.8);
+        }
+
+        .schedule-day-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 110px;
+        }
+
+        .schedule-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+            flex-shrink: 0;
+        }
+
+        .schedule-day-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        .schedule-inputs-pair {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+            justify-content: flex-end;
+        }
+
+        .schedule-time-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .schedule-time-box label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .schedule-time-box select.time-select,
+        .block-input-group select.time-select {
+            background-color: #090f1d;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 24px 6px 10px;
+            width: 82px;
+            min-width: 82px;
+            max-width: 82px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 7px center;
+            background-size: 12px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .schedule-time-box select.time-select:hover,
+        .block-input-group select.time-select:hover {
+            border-color: rgba(0, 85, 255, 0.4);
+            background-color: #0d162a;
+        }
+
+        .schedule-time-box select.time-select:focus,
+        .block-input-group select.time-select:focus {
+            outline: none;
+            border-color: var(--barber-blue);
+            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+            background-color: #0d162a;
+        }
+
+        .schedule-time-box select.time-select option,
+        .block-input-group select.time-select option {
+            background-color: #0a1124 !important;
+            color: #ffffff !important;
+            font-size: 13px;
+            padding: 8px 12px;
+        }
+
+        .schedule-time-box input[type="time"],
+        .block-input-group input[type="time"] {
+            background: #090f1d;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 10px;
+            color-scheme: dark;
+            width: 96px;
+            text-align: center;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+            appearance: none;
+        }
+
+        /* Ocultar el icono del reloj y deshabilitar el pop-up emergente nativo */
+        .schedule-time-box input[type="time"]::-webkit-calendar-picker-indicator,
+        .block-input-group input[type="time"]::-webkit-calendar-picker-indicator {
+            display: none !important;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .schedule-time-box input[type="time"]::-webkit-inner-spin-button,
+        .schedule-time-box input[type="time"]::-webkit-clear-button,
+        .block-input-group input[type="time"]::-webkit-inner-spin-button,
+        .block-input-group input[type="time"]::-webkit-clear-button {
+            display: none !important;
+            -webkit-appearance: none;
+        }
+
+        .schedule-time-box input[type="time"]:focus,
+        .block-input-group input[type="time"]:focus {
+            outline: none;
+            border-color: var(--barber-blue);
+            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+            background: #0d162a;
+        }
+
+        /* Sección B: Bloqueos de Disponibilidad */
+        .blocks-inputs-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr 1.6fr;
+            gap: 10px;
+            background: rgba(10, 17, 36, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .block-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .block-input-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .block-input-group input {
+            background: #090f1d;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 12px;
+            padding: 7px 10px;
+            color-scheme: dark;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .block-input-group input:focus {
+            outline: none;
+            border-color: var(--barber-blue);
+            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+        }
+
+        .btn-add-block-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(0, 85, 255, 0.12);
+            border: 1px solid rgba(0, 85, 255, 0.35);
+            color: var(--barber-blue-light);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add-block-action:hover {
+            background: var(--barber-blue);
+            color: #ffffff;
+            border-color: var(--barber-blue);
+            box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .blocks-registry-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 160px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .block-row-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            padding: 8px 12px;
+            transition: all 0.2s ease;
+        }
+
+        .block-row-item:hover {
+            background: rgba(20, 31, 56, 0.85);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .block-row-data {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-white);
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+
+        .block-tag-date {
+            font-weight: 700;
+            color: #fbbf24;
+            white-space: nowrap;
+        }
+
+        .block-tag-sep {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .block-tag-time {
+            font-weight: 600;
+            color: #93c5fd;
+            white-space: nowrap;
+        }
+
+        .block-tag-reason {
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 250px;
+        }
+
+        .btn-remove-block {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-remove-block:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            transform: scale(1.1);
+        }
+
+        .btn-remove-block svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        @media (max-width: 640px) {
+            .schedule-day-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .schedule-inputs-pair {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .blocks-inputs-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1703,6 +2279,17 @@
                         <span class="nav-badge badge-hot">Hoy</span>
                     </a>
 
+                    <!-- 7. Configuración General -->
+                    <a href="{{ route('admin.configuracion') }}" class="nav-item" title="Configuración general">
+                        <div class="nav-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                            </svg>
+                        </div>
+                        <span class="nav-label">Configuración general</span>
+                    </a>
+
                 </nav>
             </div>
         </aside>
@@ -1846,7 +2433,7 @@
                 <!-- Contenedor de Tarjetas de Trabajadores (Dinámico desde Base de Datos) -->
                 <div class="workers-cards-grid" id="workersGrid">
                 @forelse($trabajadores as $trabajador)
-                <article class="worker-profile-card" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
+                <article class="worker-profile-card" id="worker-card-{{ $trabajador->id }}" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
                     <div class="card-top-row">
                         <div class="worker-avatar-frame">
                             @if($trabajador->fotografia)
@@ -1911,6 +2498,43 @@
                                 @endforelse
                             </div>
                         </div>
+
+                        <!-- Estado de Disponibilidad Hoy -->
+                        <div class="worker-availability-section" id="worker-availability-{{ $trabajador->id }}">
+                            <div class="addon-heading">
+                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                DISPONIBILIDAD DE HOY
+                            </div>
+
+                            @php
+                                $estadoTexto = $trabajador->getEstadoDisponibilidadHoy();
+                            @endphp
+
+                            <div id="worker-status-today-{{ $trabajador->id }}">
+                                @if($estadoTexto === 'Con disponibilidad de horario')
+                                    <div class="worker-alert-available">
+                                        <span class="worker-alert-dot"></span>
+                                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                        <span>Con disponibilidad de horario</span>
+                                    </div>
+                                @else
+                                    <div class="worker-alert-unavailable">
+                                        <span class="worker-alert-dot-off"></span>
+                                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                                        </svg>
+                                        <span>Sin disponibilidad</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
 
                     <div class="worker-card-actions">
@@ -1927,6 +2551,18 @@
                                 <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
                                 <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
                                 <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn-card-action btn-action-schedule" title="Configurar Horario" onclick="openScheduleModal({{ $trabajador->id }}, '{{ addslashes($trabajador->nombre_completo) }}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn-card-action btn-action-toggle {{ $trabajador->activo ? 'btn-toggle-active' : 'btn-toggle-inactive' }}" title="{{ $trabajador->activo ? 'Desactivar especialista (Bloquear disponibilidad)' : 'Activar especialista (Habilitar disponibilidad)' }}" onclick="toggleWorkerStatus({{ $trabajador->id }}, '{{ addslashes($trabajador->nombre_completo) }}', {{ $trabajador->activo ? 'true' : 'false' }})">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                                <line x1="12" y1="2" x2="12" y2="12"></line>
                             </svg>
                         </button>
                     </div>
@@ -1999,6 +2635,18 @@
                                         <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
                                         <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
                                         <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn-card-action btn-action-schedule" style="display: inline-flex; margin-left: 6px;" title="Configurar Horario" onclick="openScheduleModal({{ $trabajador->id }}, '{{ addslashes($trabajador->nombre_completo) }}')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn-card-action btn-action-toggle {{ $trabajador->activo ? 'btn-toggle-active' : 'btn-toggle-inactive' }}" style="display: inline-flex; margin-left: 6px;" title="{{ $trabajador->activo ? 'Desactivar especialista (Bloquear disponibilidad)' : 'Activar especialista (Habilitar disponibilidad)' }}" onclick="toggleWorkerStatus({{ $trabajador->id }}, '{{ addslashes($trabajador->nombre_completo) }}', {{ $trabajador->activo ? 'true' : 'false' }})">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                                        <line x1="12" y1="2" x2="12" y2="12"></line>
                                     </svg>
                                 </button>
                             </td>
@@ -2322,6 +2970,205 @@
         </div>
     </div>
 
+    <!-- MODAL 4: CONFIGURACIÓN DE HORARIOS (FRONTEND) -->
+    <div class="modal-overlay" id="modalSchedule" role="dialog" aria-modal="true" aria-labelledby="scheduleModalTitle">
+        <div class="modal-dialog modal-dialog-schedule">
+            <div class="modal-header">
+                <h3 class="modal-title" id="scheduleModalTitle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Configuración de Horario - <span id="scheduleWorkerName" style="color: var(--barber-blue-light);">[Nombre del Trabajador]</span></span>
+                </h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal('modalSchedule')" aria-label="Cerrar modal">&times;</button>
+            </div>
+
+            <form id="formWorkerSchedule" onsubmit="saveWorkerSchedule(event)">
+                <input type="hidden" id="scheduleWorkerId" name="worker_id">
+
+                <div class="modal-body" style="gap: 20px;">
+                    <!-- SECCIÓN A: Horario Laboral (Lunes a Viernes) -->
+                    <div class="schedule-section-card">
+                        <div class="schedule-section-header">
+                            <div class="schedule-header-left">
+                                <div class="schedule-badge-icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="schedule-section-title">SECCIÓN A: Horario Laboral</h4>
+                                    <p class="schedule-section-desc">Jornada habitual de atención (Lunes a Viernes)</p>
+                                </div>
+                            </div>
+                            <span class="schedule-notice-pill">Lunes a Viernes</span>
+                        </div>
+
+                        <div class="schedule-days-list">
+                            @php
+                                $workerDays = [
+                                    ['id' => 'lunes', 'name' => 'Lunes', 'in' => '09:00', 'out' => '19:00'],
+                                    ['id' => 'martes', 'name' => 'Martes', 'in' => '09:00', 'out' => '19:00'],
+                                    ['id' => 'miercoles', 'name' => 'Miércoles', 'in' => '09:00', 'out' => '19:00'],
+                                    ['id' => 'jueves', 'name' => 'Jueves', 'in' => '09:00', 'out' => '19:00'],
+                                    ['id' => 'viernes', 'name' => 'Viernes', 'in' => '09:00', 'out' => '19:00'],
+                                ];
+
+                                $workerTimeSlots = [];
+                                // Formato 24 horas continuo: desde 00:00 / 01:00 hasta las 24:00
+                                $workerTimeSlots[] = '00:00';
+                                $workerTimeSlots[] = '00:30';
+                                for ($wh = 1; $wh <= 23; $wh++) {
+                                    $workerTimeSlots[] = sprintf('%02d:00', $wh);
+                                    $workerTimeSlots[] = sprintf('%02d:30', $wh);
+                                }
+                                $workerTimeSlots[] = '24:00';
+                            @endphp
+
+                            @php
+                                $branchLimitsMap = $branchLimits ?? \App\Models\HorarioSucursal::getHorariosMap();
+                            @endphp
+
+                            @foreach($workerDays as $wDay)
+                                @php
+                                    $bDay = $branchLimitsMap[$wDay['id']] ?? null;
+                                    $bOpen = $bDay ? (bool)$bDay['abierto'] : true;
+                                    $bStart = $bDay['apertura'] ?? '09:00';
+                                    $bEnd = $bDay['cierre'] ?? '20:00';
+                                @endphp
+                                <div class="schedule-day-row {{ $bOpen ? '' : 'day-closed' }}" id="sched-row-{{ $wDay['id'] }}">
+                                    <div class="schedule-day-label">
+                                        <span class="schedule-status-dot" id="sched-dot-{{ $wDay['id'] }}" style="{{ $bOpen ? '' : 'background: #64748b; box-shadow: none;' }}"></span>
+                                        <span class="schedule-day-name">{{ $wDay['name'] }}</span>
+                                    </div>
+                                    <div class="schedule-inputs-column" style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                                        <div class="schedule-inputs-pair">
+                                            <div class="schedule-time-box">
+                                                <label for="sched-{{ $wDay['id'] }}-in">Desde</label>
+                                                <select id="sched-{{ $wDay['id'] }}-in" name="horario[{{ $wDay['id'] }}][entrada]" class="time-select" required {{ $bOpen ? '' : 'disabled' }}>
+                                                    @foreach($workerTimeSlots as $wSlot)
+                                                        @if($wSlot >= $bStart && $wSlot < $bEnd)
+                                                            <option value="{{ $wSlot }}" {{ $wSlot === ($wDay['in'] < $bStart ? $bStart : $wDay['in']) ? 'selected' : '' }}>{{ $wSlot }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <span style="color: var(--text-muted); font-size: 13px;">—</span>
+                                            <div class="schedule-time-box">
+                                                <label for="sched-{{ $wDay['id'] }}-out">Hasta</label>
+                                                <select id="sched-{{ $wDay['id'] }}-out" name="horario[{{ $wDay['id'] }}][salida]" class="time-select" required {{ $bOpen ? '' : 'disabled' }}>
+                                                    @foreach($workerTimeSlots as $wSlot)
+                                                        @if($wSlot > $bStart && $wSlot <= $bEnd)
+                                                            <option value="{{ $wSlot }}" {{ $wSlot === ($wDay['out'] > $bEnd ? $bEnd : $wDay['out']) ? 'selected' : '' }}>{{ $wSlot }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- Texto de ayuda visual debajo de los campos de hora que indique los límites -->
+                                        <div class="branch-limit-help-text" id="sched-hint-{{ $wDay['id'] }}" style="font-size: 11px; color: var(--text-muted); font-weight: 500;">
+                                            @if($bOpen)
+                                                (Límite sucursal: {{ $bStart }} a {{ $bEnd }})
+                                            @else
+                                                (Sucursal cerrada este día)
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN B: Bloqueos de Disponibilidad (Pausas y Permisos) -->
+                    <div class="schedule-section-card">
+                        <div class="schedule-section-header">
+                            <div class="schedule-header-left">
+                                <div class="schedule-badge-icon icon-amber">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="schedule-section-title">SECCIÓN B: Bloqueos de Disponibilidad</h4>
+                                    <p class="schedule-section-desc">Pausas programadas y permisos específicos en la agenda</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formulario para registrar nuevo bloqueo -->
+                        <div class="blocks-inputs-grid">
+                            <div class="block-input-group">
+                                <label for="newBlockDate">Fecha</label>
+                                <input type="date" id="newBlockDate">
+                            </div>
+                            <div class="block-input-group">
+                                <label for="newBlockStartTime">Hora inicio</label>
+                                <select id="newBlockStartTime" class="time-select">
+                                    <option value="">Seleccionar...</option>
+                                    @foreach($workerTimeSlots as $wSlot)
+                                        <option value="{{ $wSlot }}">{{ $wSlot }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="block-input-group">
+                                <label for="newBlockEndTime">Hora fin</label>
+                                <select id="newBlockEndTime" class="time-select">
+                                    <option value="">Seleccionar...</option>
+                                    @foreach($workerTimeSlots as $wSlot)
+                                        <option value="{{ $wSlot }}">{{ $wSlot }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="block-input-group">
+                                <label for="newBlockReason">Motivo</label>
+                                <input type="text" id="newBlockReason" placeholder="Ej. Comida, cita médica...">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button type="button" class="btn-add-block-action" onclick="addAvailabilityBlock()">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>+ Agregar Bloqueo</span>
+                            </button>
+                        </div>
+
+                        <!-- Lista de Bloqueos Registrados -->
+                        <div>
+                            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px;">
+                                Bloqueos Registrados
+                            </div>
+                            <div class="blocks-registry-container" id="blocksListContainer"></div>
+                            <div id="blocksEmptyMsg" style="display: block; text-align: center; padding: 16px; font-size: 12px; color: var(--text-muted); background: rgba(255,255,255,0.01); border: 1px dashed var(--border-subtle); border-radius: 8px;">
+                                No hay bloqueos registrados para este especialista.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer del Modal: Botones Cancelar y Guardar Horario -->
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModal('modalSchedule')">Cancelar</button>
+                    <button type="submit" class="btn-submit-action">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        <span>Guardar Horario</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
 
     <!-- SCRIPTS DE INTERACCIÓN (IDÉNTICOS A DASHBOARD + MODALES DE TRABAJADORES) -->
@@ -2494,6 +3341,438 @@
             }
 
             openModal('modalServices');
+        }
+
+        // Almacenamiento frontend de bloqueos por especialista (Inicia completamente vacío para cada trabajador)
+        const workerBlocksStore = {};
+
+        // Límites globales de la sucursal disponibles en el Frontend (PARTE 1)
+        const branchLimits = @json($branchLimits ?? \App\Models\HorarioSucursal::getHorariosMap());
+
+        // Aplica restricciones dinámicas de horas y texto de ayuda visual de la sucursal
+        function applyBranchLimitsToWorkerModal(limits, currentSchedule = null) {
+            const days = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes'];
+
+            days.forEach(day => {
+                const bDay = limits[day] || { abierto: true, apertura: '09:00', cierre: '20:00' };
+                const row = document.getElementById(`sched-row-${day}`);
+                const dot = document.getElementById(`sched-dot-${day}`);
+                const selectIn = document.getElementById(`sched-${day}-in`);
+                const selectOut = document.getElementById(`sched-${day}-out`);
+                const hintEl = document.getElementById(`sched-hint-${day}`);
+
+                const isOpen = bDay.abierto;
+                const bStart = bDay.apertura || '09:00';
+                const bEnd = bDay.cierre || '20:00';
+
+                // Texto de ayuda visual debajo de los campos de hora
+                if (hintEl) {
+                    if (isOpen) {
+                        hintEl.textContent = `(Límite sucursal: ${bStart} a ${bEnd})`;
+                        hintEl.style.color = 'var(--text-muted)';
+                    } else {
+                        hintEl.textContent = '(Sucursal cerrada este día)';
+                        hintEl.style.color = 'var(--barber-red)';
+                    }
+                }
+
+                if (dot) {
+                    dot.style.background = isOpen ? '#10b981' : '#64748b';
+                    dot.style.boxShadow = isOpen ? '0 0 6px rgba(16, 185, 129, 0.5)' : 'none';
+                }
+
+                if (row) {
+                    if (isOpen) {
+                        row.classList.remove('day-closed');
+                    } else {
+                        row.classList.add('day-closed');
+                    }
+                }
+
+                const currentDay = currentSchedule && currentSchedule[day] ? currentSchedule[day] : null;
+                const selectedIn = currentDay && currentDay.entrada ? currentDay.entrada : bStart;
+                const selectedOut = currentDay && currentDay.salida ? currentDay.salida : (bEnd <= '19:00' ? bEnd : '19:00');
+
+                // Lista de intervalos continuos en formato 24 horas
+                const allSlots = [];
+                allSlots.push('00:00');
+                allSlots.push('00:30');
+                for (let h = 1; h <= 23; h++) {
+                    const hh = String(h).padStart(2, '0');
+                    allSlots.push(`${hh}:00`);
+                    allSlots.push(`${hh}:30`);
+                }
+                allSlots.push('24:00');
+
+                // Restricción dinámica en campos "Desde" y "Hasta": no se pueden seleccionar horas fuera del rango de la sucursal
+                if (selectIn) {
+                    selectIn.disabled = !isOpen;
+                    selectIn.innerHTML = '';
+                    const inSlots = allSlots.filter(s => s >= bStart && s < bEnd);
+                    inSlots.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s;
+                        opt.textContent = s;
+                        if (s === selectedIn) opt.selected = true;
+                        selectIn.appendChild(opt);
+                    });
+                    if (selectIn.selectedIndex === -1 && inSlots.length > 0) {
+                        selectIn.selectedIndex = 0;
+                    }
+                }
+
+                if (selectOut) {
+                    selectOut.disabled = !isOpen;
+                    selectOut.innerHTML = '';
+                    const outSlots = allSlots.filter(s => s > bStart && s <= bEnd);
+                    outSlots.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s;
+                        opt.textContent = s;
+                        if (s === selectedOut) opt.selected = true;
+                        selectOut.appendChild(opt);
+                    });
+                    if (selectOut.selectedIndex === -1 && outSlots.length > 0) {
+                        selectOut.selectedIndex = outSlots.length - 1;
+                    }
+                }
+            });
+        }
+
+        // Abrir Modal de Horarios (Frontend y consulta de límites/horario guardado)
+        async function openScheduleModal(id, workerName) {
+            const idInput = document.getElementById('scheduleWorkerId');
+            const nameEl = document.getElementById('scheduleWorkerName');
+            if (idInput) idInput.value = id;
+            if (nameEl) nameEl.textContent = workerName;
+
+            // Limpiar campos del formulario de nuevo bloqueo
+            const dateInput = document.getElementById('newBlockDate');
+            const startInput = document.getElementById('newBlockStartTime');
+            const endInput = document.getElementById('newBlockEndTime');
+            const reasonInput = document.getElementById('newBlockReason');
+            if (dateInput) dateInput.value = '';
+            if (startInput) startInput.value = '';
+            if (endInput) endInput.value = '';
+            if (reasonInput) reasonInput.value = '';
+
+            // Cada especialista inicia sin bloqueos predeterminados
+            if (!workerBlocksStore[id]) {
+                workerBlocksStore[id] = [];
+            }
+            renderWorkerBlocks(id);
+
+            // Aplicar límites base inmediatos
+            applyBranchLimitsToWorkerModal(branchLimits);
+
+            // Obtener el horario guardado del especialista y límites actualizados
+            try {
+                const response = await fetch(`/admin/trabajadores/${id}/horario`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const limits = data.branch_limits || branchLimits;
+                    applyBranchLimitsToWorkerModal(limits, data.horario);
+                }
+            } catch (err) {
+                // Silencioso, mantiene la configuración previa cargada
+            }
+
+            openModal('modalSchedule');
+        }
+
+        // Renderizar lista de bloqueos del especialista
+        function renderWorkerBlocks(workerId) {
+            const container = document.getElementById('blocksListContainer');
+            const emptyMsg = document.getElementById('blocksEmptyMsg');
+            if (!container) return;
+
+            container.innerHTML = '';
+            const blocks = workerBlocksStore[workerId] || [];
+
+            if (blocks.length === 0) {
+                if (emptyMsg) emptyMsg.style.display = 'block';
+                return;
+            }
+
+            if (emptyMsg) emptyMsg.style.display = 'none';
+
+            blocks.forEach((block, index) => {
+                const row = document.createElement('div');
+                row.className = 'block-row-item';
+                row.innerHTML = `
+                    <div class="block-row-data">
+                        <span class="block-tag-date">${escapeHtml(block.formattedDate)}</span>
+                        <span class="block-tag-sep">|</span>
+                        <span class="block-tag-time">${escapeHtml(block.start)} - ${escapeHtml(block.end)}</span>
+                        <span class="block-tag-sep">|</span>
+                        <span class="block-tag-reason">${escapeHtml(block.reason)}</span>
+                    </div>
+                    <button type="button" class="btn-remove-block" title="Eliminar bloqueo" onclick="removeAvailabilityBlock(${workerId}, ${index})">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Agregar Bloqueo de Disponibilidad (Frontend)
+        function addAvailabilityBlock() {
+            const idInput = document.getElementById('scheduleWorkerId');
+            const workerId = idInput ? idInput.value : null;
+            if (!workerId) return;
+
+            const dateInput = document.getElementById('newBlockDate');
+            const startInput = document.getElementById('newBlockStartTime');
+            const endInput = document.getElementById('newBlockEndTime');
+            const reasonInput = document.getElementById('newBlockReason');
+
+            if (!dateInput || !startInput || !endInput || !reasonInput) return;
+
+            const dateVal = dateInput.value;
+            const startVal = startInput.value;
+            const endVal = endInput.value;
+            const reasonVal = reasonInput.value.trim();
+
+            if (!dateVal || !startVal || !endVal || !reasonVal) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos requeridos',
+                    text: 'Completa la fecha, hora de inicio, hora de fin y motivo para registrar el bloqueo.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                return;
+            }
+
+            if (startVal >= endVal) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Horario inválido',
+                    text: 'La hora de inicio debe ser anterior a la hora de fin.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                return;
+            }
+
+            // Formato de fecha corto (ej. 12 Oct)
+            const parts = dateVal.split('-');
+            const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const formattedDate = `${parseInt(parts[2], 10)} ${months[parseInt(parts[1], 10) - 1]}`;
+
+            if (!workerBlocksStore[workerId]) {
+                workerBlocksStore[workerId] = [];
+            }
+
+            workerBlocksStore[workerId].push({
+                date: dateVal,
+                formattedDate: formattedDate,
+                start: startVal,
+                end: endVal,
+                reason: reasonVal
+            });
+
+            renderWorkerBlocks(workerId);
+
+            // Limpiar formulario
+            dateInput.value = '';
+            startInput.value = '';
+            endInput.value = '';
+            reasonInput.value = '';
+        }
+
+        // Eliminar Bloqueo de Disponibilidad (Frontend)
+        function removeAvailabilityBlock(workerId, index) {
+            if (workerBlocksStore[workerId] && workerBlocksStore[workerId][index] !== undefined) {
+                workerBlocksStore[workerId].splice(index, 1);
+                renderWorkerBlocks(workerId);
+            }
+        }
+
+        // Guardar Horario del Trabajador en Backend con Validación Estricta (PARTE 1)
+        async function saveWorkerSchedule(e) {
+            e.preventDefault();
+            const idInput = document.getElementById('scheduleWorkerId');
+            const workerId = idInput ? idInput.value : null;
+            if (!workerId) return;
+
+            const workerName = document.getElementById('scheduleWorkerName').textContent || 'Trabajador';
+            const days = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes'];
+            const horario = {};
+
+            // Validación estricta previa en el cliente
+            for (const day of days) {
+                const selectIn = document.getElementById(`sched-${day}-in`);
+                const selectOut = document.getElementById(`sched-${day}-out`);
+                const bDay = branchLimits[day] || { abierto: true, apertura: '09:00', cierre: '20:00' };
+                const nombreDia = bDay.nombre || (day.charAt(0).toUpperCase() + day.slice(1));
+
+                if (selectIn && selectOut && !selectIn.disabled) {
+                    const entrada = selectIn.value;
+                    const salida = selectOut.value;
+
+                    if (entrada >= salida) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Horario inválido',
+                            text: `La hora de entrada debe ser anterior a la hora de salida para el ${nombreDia}.`,
+                            background: '#1e293b',
+                            color: '#ffffff',
+                            confirmButtonColor: '#0055ff'
+                        });
+                        return;
+                    }
+
+                    // Validación contra el horario global de la sucursal
+                    if (entrada < bDay.apertura || salida > bDay.cierre) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Excede límites de sucursal',
+                            text: `El horario asignado para el ${nombreDia} excede el horario de la sucursal (${bDay.apertura} - ${bDay.cierre})`,
+                            background: '#1e293b',
+                            color: '#ffffff',
+                            confirmButtonColor: '#ef4444'
+                        });
+                        return;
+                    }
+
+                    horario[day] = { entrada, salida };
+                }
+            }
+
+            const submitBtn = document.querySelector('#formWorkerSchedule button[type="submit"]');
+            const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<span>Guardando horario...</span>`;
+            }
+
+            try {
+                const response = await fetch(`/admin/trabajadores/${workerId}/horario`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ horario })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    closeModal('modalSchedule');
+
+                    // 1. Actualizar dinámicamente el apartadito abajo de Servicios Asociados
+                    const statusEl = document.getElementById(`worker-status-today-${workerId}`);
+                    const cardEl = document.getElementById(`worker-card-${workerId}`);
+
+                    const isConDisponibilidad = (result.estado_hoy === 'Con disponibilidad de horario' || (result.laborando_hoy && result.estado_hoy !== 'Sin disponibilidad'));
+
+                    if (statusEl) {
+                        if (isConDisponibilidad) {
+                            statusEl.innerHTML = `
+                                <div class="worker-alert-available alert-flash-animation">
+                                    <span class="worker-alert-dot"></span>
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>Con disponibilidad de horario</span>
+                                </div>
+                            `;
+                        } else {
+                            statusEl.innerHTML = `
+                                <div class="worker-alert-unavailable alert-flash-animation">
+                                    <span class="worker-alert-dot-off"></span>
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                                    </svg>
+                                    <span>Sin disponibilidad</span>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    if (cardEl) {
+                        cardEl.classList.add('card-highlight-pulse');
+                        setTimeout(() => cardEl.classList.remove('card-highlight-pulse'), 3000);
+                    }
+
+                    // 2. Alerta visual inmediata luego de guardar el horario
+                    if (isConDisponibilidad) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Horario guardado!',
+                            html: `El horario de <strong>${workerName}</strong> se guardó correctamente.<br><br><div style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; font-weight: 600; font-size: 13px;">✔ Con disponibilidad de horario</div>`,
+                            background: '#141f38',
+                            color: '#ffffff',
+                            confirmButtonColor: '#0055ff',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: result.message || `Horario de ${workerName} configurado correctamente.`,
+                            showConfirmButton: false,
+                            timer: 3500,
+                            timerProgressBar: true,
+                            background: '#10b981',
+                            color: '#ffffff',
+                            iconColor: '#ffffff'
+                        });
+                    }
+                } else {
+                    let errorMsg = result.message || 'No se pudo guardar el horario.';
+                    if (result.errors) {
+                        errorMsg = Object.values(result.errors).flat().join('<br>');
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de validación',
+                        html: errorMsg,
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo comunicar con el servidor.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ef4444'
+                });
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
 
@@ -2970,6 +4249,91 @@
                 }
             });
         }
+
+        // Alternar Estado / Bloqueo de Disponibilidad de Especialista (AJAX)
+        async function toggleWorkerStatus(id, nombre, currentActive) {
+            const isActivating = !currentActive;
+            const actionTitle = isActivating ? `¿Activar a ${nombre}?` : `¿Desactivar a ${nombre}?`;
+            const actionDesc = isActivating 
+                ? 'El especialista volverá a estar activo y disponible para agendar citas en el sistema.' 
+                : 'Se bloqueará la disponibilidad del especialista y no podrá recibir citas ni agendamientos mientras permanezca inactivo.';
+            const confirmBtnText = isActivating ? 'Sí, activar' : 'Sí, desactivar';
+            const confirmBtnColor = isActivating ? '#10b981' : '#ef4444';
+
+            const result = await Swal.fire({
+                title: actionTitle,
+                text: actionDesc,
+                icon: isActivating ? 'question' : 'warning',
+                showCancelButton: true,
+                confirmButtonColor: confirmBtnColor,
+                cancelButtonColor: '#64748b',
+                confirmButtonText: confirmBtnText,
+                cancelButtonText: 'Cancelar',
+                background: '#1e293b',
+                color: '#ffffff'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const response = await fetch(`/admin/trabajadores/${id}/toggle-status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message || `Estado de ${nombre} actualizado.`,
+                        showConfirmButton: false,
+                        timer: 2500,
+                        timerProgressBar: true,
+                        background: '#10b981',
+                        color: '#ffffff',
+                        iconColor: '#ffffff'
+                    });
+
+                    setTimeout(() => window.location.reload(), 700);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'No se pudo cambiar el estado del especialista.',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo comunicar con el servidor.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ef4444'
+                });
+            }
+        }
+
+        // Desactivar el menú emergente / rueda nativa del navegador en los campos de hora
+        document.querySelectorAll('input[type="time"]').forEach(function (input) {
+            input.showPicker = function () {};
+            input.addEventListener('keydown', function (e) {
+                if (e.altKey && e.key === 'ArrowDown') {
+                    e.preventDefault();
+                }
+            });
+        });
     </script>
 </body>
 </html>

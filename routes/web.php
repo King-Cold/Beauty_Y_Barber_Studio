@@ -30,6 +30,17 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/trabajadores/{trabajador}', [TrabajadorController::class, 'update'])->name('admin.trabajadores.update');
     Route::get('/admin/trabajadores/{trabajador}/servicios', [TrabajadorController::class, 'getServices'])->name('admin.trabajadores.services');
     Route::post('/admin/trabajadores/{trabajador}/servicios', [TrabajadorController::class, 'syncServices'])->name('admin.trabajadores.sync_services');
+    Route::get('/admin/trabajadores/{trabajador}/horario', [TrabajadorController::class, 'getSchedule'])->name('admin.trabajadores.horario.get');
+    Route::post('/admin/trabajadores/{trabajador}/horario', [TrabajadorController::class, 'saveSchedule'])->name('admin.trabajadores.horario.save');
+    Route::get('/admin/trabajadores/{trabajador}/disponibilidad', [TrabajadorController::class, 'getDisponibilidad'])->name('admin.trabajadores.disponibilidad');
+    Route::patch('/admin/trabajadores/{trabajador}/toggle-status', [TrabajadorController::class, 'toggleStatus'])->name('admin.trabajadores.toggle_status');
+
+    // Configuración general y fechas especiales
+    Route::get('/admin/configuracion', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'index'])->name('admin.configuracion');
+    Route::post('/admin/configuracion/horarios', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'saveBranchSchedule'])->name('admin.configuracion.horarios.save');
+    Route::get('/admin/configuracion/fechas-especiales', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'getFechasEspeciales'])->name('admin.configuracion.fechas_especiales.index');
+    Route::post('/admin/configuracion/fechas-especiales', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'storeFechaEspecial'])->name('admin.configuracion.fechas_especiales.store');
+    Route::delete('/admin/configuracion/fechas-especiales/{fechaEspecial}', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'destroyFechaEspecial'])->name('admin.configuracion.fechas_especiales.destroy');
 
     Route::get('/recepcion', function () {
         $swal = session('success') ? "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>document.addEventListener('DOMContentLoaded', ()=>Swal.fire({toast:true,position:'top-end',icon:'success',title:'".session('success')."',showConfirmButton:false,timer:3500,timerProgressBar:true,background:'#10b981',color:'#fff',iconColor:'#fff'}));</script>" : "";
