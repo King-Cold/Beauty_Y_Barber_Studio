@@ -1108,6 +1108,14 @@
                                 </svg>
                             </button>
                         </div>
+                        <!-- Validaciones visuales -->
+                        <ul id="password-requirements" style="list-style: none; padding: 0; margin-top: 5px; font-size: 10.5px; color: rgba(255,255,255,0.5);">
+                            <li id="req-length" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Entre 8 y 12 caracteres</li>
+                            <li id="req-upper" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Una mayúscula</li>
+                            <li id="req-lower" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Una minúscula</li>
+                            <li id="req-number" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Un número</li>
+                            <li id="req-special" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Carácter especial</li>
+                        </ul>
                     </div>
 
                     <!-- Fila 3: Fecha de Nacimiento (Opcional) -->
@@ -1128,6 +1136,8 @@
                                 name="fecha_nacimiento" 
                                 aria-label="Fecha de nacimiento" 
                                 class="form-input"
+                                min="1920-01-01"
+                                max="{{ date('Y-m-d', strtotime('-5 years')) }}"
                             >
                         </div>
                     </div>
@@ -1304,6 +1314,54 @@
                 passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
                 eyeIcon.classList.toggle('hidden', isPassword);
                 eyeOffIcon.classList.toggle('hidden', !isPassword);
+            });
+        }
+
+        // Validación de contraseña en tiempo real
+        if (passwordInput) {
+            const reqLength = document.getElementById('req-length');
+            const reqUpper = document.getElementById('req-upper');
+            const reqLower = document.getElementById('req-lower');
+            const reqNumber = document.getElementById('req-number');
+            const reqSpecial = document.getElementById('req-special');
+
+            passwordInput.addEventListener('input', function() {
+                const val = passwordInput.value;
+                
+                // Longitud 8 a 12
+                if (val.length >= 8 && val.length <= 12) {
+                    reqLength.style.color = '#10b981';
+                } else {
+                    reqLength.style.color = 'rgba(255,255,255,0.5)';
+                }
+
+                // Mayúscula
+                if (/[A-Z]/.test(val)) {
+                    reqUpper.style.color = '#10b981';
+                } else {
+                    reqUpper.style.color = 'rgba(255,255,255,0.5)';
+                }
+
+                // Minúscula
+                if (/[a-z]/.test(val)) {
+                    reqLower.style.color = '#10b981';
+                } else {
+                    reqLower.style.color = 'rgba(255,255,255,0.5)';
+                }
+
+                // Número
+                if (/[0-9]/.test(val)) {
+                    reqNumber.style.color = '#10b981';
+                } else {
+                    reqNumber.style.color = 'rgba(255,255,255,0.5)';
+                }
+
+                // Carácter especial
+                if (/[\W_]/.test(val)) {
+                    reqSpecial.style.color = '#10b981';
+                } else {
+                    reqSpecial.style.color = 'rgba(255,255,255,0.5)';
+                }
             });
         }
 

@@ -833,27 +833,9 @@
         <!-- Tarjeta del formulario (Glassmorphism oscuro) -->
         <main class="login-card">
             <div class="card-heading">
-                <h2 class="card-title">¡Bienvenido de nuevo!</h2>
-                <p class="card-subtitle">Inicia sesión para continuar...</p>
+                <h2 class="card-title">Restablecer Contraseña</h2>
+                <p class="card-subtitle">Ingresa tu nueva contraseña a continuación.</p>
             </div>
-
-            @if(session('success'))
-                <div class="alert-box" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{{ session('success') }}</span>
-                </div>
-            @endif
-
-            @if(session('status'))
-                <div class="alert-box" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{{ session('status') }}</span>
-                </div>
-            @endif
 
             @if($errors->any())
                 <div class="alert-box alert-error">
@@ -864,10 +846,11 @@
                 </div>
             @endif
 
-            <form action="{{ route('login.post') }}" method="POST">
+            <form action="{{ route('password.update') }}" method="POST">
                 @csrf
+                <input type="hidden" name="token" value="{{ $token }}">
                 
-                <!-- Campo de Correo Electrónico o Usuario -->
+                <!-- Campo de Correo Electrónico -->
                 <div class="input-group">
                     <span class="field-icon" aria-hidden="true">
                         <svg viewBox="0 0 20 20" fill="currentColor">
@@ -877,18 +860,17 @@
                     <input 
                         type="email" 
                         name="email" 
+                        value="{{ old('email', request()->email) }}"
                         placeholder="Correo electrónico" 
                         aria-label="Correo electrónico" 
                         class="form-input" 
-                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" 
-                        title="Introduce un correo electrónico válido (ej. usuario@dominio.com)" 
                         required 
-                        autofocus
+                        readonly
                     >
                 </div>
 
-                <!-- Campo de Contraseña con límite de 8 caracteres y botón de mostrar/ocultar con ojo -->
-                <div class="input-group password-group">
+                <!-- Campo de Contraseña -->
+                <div class="input-group password-group" style="margin-top: 15px;">
                     <span class="field-icon" aria-hidden="true">
                         <svg viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
@@ -898,8 +880,8 @@
                         type="password" 
                         id="password" 
                         name="password" 
-                        placeholder="Contraseña" 
-                        aria-label="Contraseña" 
+                        placeholder="Nueva Contraseña" 
+                        aria-label="Nueva Contraseña" 
                         class="form-input" 
                         minlength="8"
                         maxlength="12" 
@@ -911,51 +893,72 @@
                         class="toggle-password-btn" 
                         aria-label="Mostrar u ocultar contraseña"
                     >
-                        <!-- Ícono de ojo abierto (predeterminado) -->
                         <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                             <circle cx="12" cy="12" r="3"></circle>
                         </svg>
-                        <!-- Ícono de ojo cerrado (al mostrar texto) -->
                         <svg id="eyeOffIcon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                             <line x1="1" y1="1" x2="23" y2="23"></line>
                         </svg>
                     </button>
                 </div>
+                <!-- Validaciones visuales -->
+                <ul id="password-requirements" style="list-style: none; padding: 0; margin-top: 5px; font-size: 10.5px; color: rgba(255,255,255,0.5);">
+                    <li id="req-length" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Entre 8 y 12 caracteres</li>
+                    <li id="req-upper" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Una mayúscula</li>
+                    <li id="req-lower" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Una minúscula</li>
+                    <li id="req-number" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Un número</li>
+                    <li id="req-special" style="display: flex; align-items: center; gap: 4px; transition: color 0.2s;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Carácter especial</li>
+                </ul>
 
-                <!-- Checkbox Recordarme y Enlace Olvidé mi contraseña -->
-                <div class="remember-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 5px;">
-                    <label class="remember-container" for="remember">
-                        <input type="checkbox" name="remember" id="remember" class="real-checkbox" checked>
-                        <span class="custom-checkbox-box">
-                            <svg class="check-svg" viewBox="0 0 12 10" fill="none">
-                                <path d="M1.5 5L4.5 8L10.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </span>
-                        <span class="remember-label-text">Recordarme</span>
-                    </label>
-                    <a href="{{ route('password.request') }}" class="forgot-password-link" style="font-size: 12px; color: rgba(255, 255, 255, 0.75); text-decoration: none; transition: color 0.2s ease;">
-                        ¿Olvidaste tu contraseña?
-                    </a>
+                <!-- Confirmar Contraseña -->
+                <div class="input-group password-group" style="margin-top: 15px;">
+                    <span class="field-icon" aria-hidden="true">
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    <input 
+                        type="password" 
+                        id="password_confirmation" 
+                        name="password_confirmation" 
+                        placeholder="Confirmar Contraseña" 
+                        aria-label="Confirmar Contraseña" 
+                        class="form-input" 
+                        minlength="8"
+                        maxlength="12" 
+                        required
+                    >
+                    <button 
+                        type="button" 
+                        id="toggleConfirmPassword" 
+                        class="toggle-password-btn" 
+                        aria-label="Mostrar u ocultar contraseña"
+                    >
+                        <svg id="eyeIconConfirm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <svg id="eyeOffIconConfirm" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    </button>
                 </div>
-                <style>
-                    .forgot-password-link:hover { color: #ffffff !important; text-decoration: underline !important; }
-                </style>
+
+
 
                 <!-- Botón de Iniciar sesión con fondo rojo y flecha -->
                 <button type="submit" class="submit-btn">
-                    <span>Iniciar sesión</span>
+                    <span>Restablecer contraseña</span>
                     <svg class="btn-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </button>
             </form>
 
-            <!-- Enlace de registro inferior -->
-            <p class="signup-prompt">
-                ¿No tienes una cuenta? <a href="{{ route('register') }}" class="signup-link">Regístrate</a>
-            </p>
+
         </main>
 
     </div>
@@ -997,6 +1000,38 @@
                 passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
                 eyeIcon.classList.toggle('hidden', isPassword);
                 eyeOffIcon.classList.toggle('hidden', !isPassword);
+            });
+        }
+
+        const toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPassword');
+        const confirmPasswordInput = document.getElementById('password_confirmation');
+        const eyeIconConfirm = document.getElementById('eyeIconConfirm');
+        const eyeOffIconConfirm = document.getElementById('eyeOffIconConfirm');
+
+        if (toggleConfirmPasswordBtn && confirmPasswordInput) {
+            toggleConfirmPasswordBtn.addEventListener('click', function () {
+                const isPassword = confirmPasswordInput.getAttribute('type') === 'password';
+                confirmPasswordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                eyeIconConfirm.classList.toggle('hidden', isPassword);
+                eyeOffIconConfirm.classList.toggle('hidden', !isPassword);
+            });
+        }
+
+        // Validación visual en tiempo real
+        if (passwordInput) {
+            const reqLength = document.getElementById('req-length');
+            const reqUpper = document.getElementById('req-upper');
+            const reqLower = document.getElementById('req-lower');
+            const reqNumber = document.getElementById('req-number');
+            const reqSpecial = document.getElementById('req-special');
+
+            passwordInput.addEventListener('input', function() {
+                const val = passwordInput.value;
+                if (val.length >= 8 && val.length <= 12) reqLength.style.color = '#10b981'; else reqLength.style.color = 'rgba(255,255,255,0.5)';
+                if (/[A-Z]/.test(val)) reqUpper.style.color = '#10b981'; else reqUpper.style.color = 'rgba(255,255,255,0.5)';
+                if (/[a-z]/.test(val)) reqLower.style.color = '#10b981'; else reqLower.style.color = 'rgba(255,255,255,0.5)';
+                if (/[0-9]/.test(val)) reqNumber.style.color = '#10b981'; else reqNumber.style.color = 'rgba(255,255,255,0.5)';
+                if (/[\W_]/.test(val)) reqSpecial.style.color = '#10b981'; else reqSpecial.style.color = 'rgba(255,255,255,0.5)';
             });
         }
     </script>

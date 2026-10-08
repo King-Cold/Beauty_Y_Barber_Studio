@@ -21,7 +21,9 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $remember = $request->boolean('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
             /** @var \App\Models\User $user */
@@ -63,12 +65,12 @@ class AuthController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'apellidos' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
+            'apellidos' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
             'telefono' => ['required', 'string', 'max:20', 'unique:users,telefono'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'max:12', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[\x20-\x7E]+$/'],
-            'fecha_nacimiento' => ['nullable', 'date'],
+            'fecha_nacimiento' => ['nullable', 'date', 'after:1920-01-01', 'before:-5 years'],
             'terms' => ['accepted'],
             'privacy' => ['accepted'],
         ], [
@@ -77,6 +79,10 @@ class AuthController extends Controller
             'telefono.unique' => 'El número de teléfono ya está registrado.',
             'email.unique' => 'El correo electrónico ya está registrado.',
             'password.regex' => 'La contraseña no es válida. Debe incluir una mayúscula, una minúscula, un número, un carácter especial y no contener emojis ni caracteres de otros idiomas.',
+            'fecha_nacimiento.before' => 'Debes tener al menos 5 años para poder registrarte.',
+            'fecha_nacimiento.after' => 'Por favor ingresa un año de nacimiento válido.',
+            'name.regex' => 'El nombre solo puede contener letras y espacios.',
+            'apellidos.regex' => 'Los apellidos solo pueden contener letras y espacios.',
         ]);
 
         $user = User::create([
