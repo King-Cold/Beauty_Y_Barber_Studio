@@ -16,15 +16,30 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:services,name',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:services,name',
+                'regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
+                'not_regex:/^[0-9\s]+$/u',
+            ],
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'duration_minutes' => 'required|integer|min:1',
+            'price' => 'required|numeric|gt:0',
+            'duration_minutes' => 'required|integer|min:20',
             'category' => 'required|in:barberia,estetica',
             'image' => 'required|image|max:2048',
         ], [
+            'name.required' => 'El nombre del servicio es obligatorio.',
             'name.unique' => 'Ya existe un servicio registrado con este nombre.',
-            'price.min' => 'El precio no puede ser un valor negativo.',
+            'name.regex' => 'El nombre del servicio solo puede contener caracteres alfanuméricos (letras y números). No se permiten signos ni caracteres especiales.',
+            'name.not_regex' => 'El nombre del servicio no puede estar compuesto exclusivamente por números.',
+            'price.required' => 'El precio del servicio es obligatorio.',
+            'price.numeric' => 'El precio debe ser un número válido.',
+            'price.gt' => 'El precio debe ser mayor a cero (no se permite 0 ni valores negativos).',
+            'duration_minutes.min' => 'La duración mínima permitida es de 20 minutos.',
+            'duration_minutes.required' => 'La duración del servicio es obligatoria.',
+            'duration_minutes.integer' => 'La duración debe ser un número entero de minutos.',
         ]);
 
         if ($request->hasFile('image')) {
@@ -42,15 +57,30 @@ class ServiceController extends Controller
     public function update(Request $request, \App\Models\Service $service)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:services,name,' . $service->id,
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:services,name,' . $service->id,
+                'regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
+                'not_regex:/^[0-9\s]+$/u',
+            ],
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'duration_minutes' => 'required|integer|min:1',
+            'price' => 'required|numeric|gt:0',
+            'duration_minutes' => 'required|integer|min:20',
             'category' => 'required|in:barberia,estetica',
             'image' => 'nullable|image|max:2048',
         ], [
+            'name.required' => 'El nombre del servicio es obligatorio.',
             'name.unique' => 'Ya existe un servicio registrado con este nombre.',
-            'price.min' => 'El precio no puede ser un valor negativo.',
+            'name.regex' => 'El nombre del servicio solo puede contener caracteres alfanuméricos (letras y números). No se permiten signos ni caracteres especiales.',
+            'name.not_regex' => 'El nombre del servicio no puede estar compuesto exclusivamente por números.',
+            'price.required' => 'El precio del servicio es obligatorio.',
+            'price.numeric' => 'El precio debe ser un número válido.',
+            'price.gt' => 'El precio debe ser mayor a cero (no se permite 0 ni valores negativos).',
+            'duration_minutes.min' => 'La duración mínima permitida es de 20 minutos.',
+            'duration_minutes.required' => 'La duración del servicio es obligatoria.',
+            'duration_minutes.integer' => 'La duración debe ser un número entero de minutos.',
         ]);
 
         if ($request->hasFile('image')) {
@@ -70,5 +100,25 @@ class ServiceController extends Controller
 
         $statusName = $service->is_active ? 'activado' : 'desactivado';
         return redirect()->route('admin.services')->with('success', "Servicio $statusName correctamente.");
+    }
+
+    public function destroy(\App\Models\Service $service)
+    {
+        if ($service->image_path) {
+            $relativePath = str_replace('/storage/', '', $service->image_path);
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($relativePath);
+        }
+
+        $serviceName = $service->name;
+        $service->delete();
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "El servicio \"{$serviceName}\" ha sido eliminado exitosamente."
+            ]);
+        }
+
+        return redirect()->route('admin.services')->with('success', "Servicio \"{$serviceName}\" eliminado correctamente.");
     }
 }

@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/servicios', [\App\Http\Controllers\Admin\ServiceController::class, 'store'])->name('admin.services.store');
     Route::put('/admin/servicios/{service}', [\App\Http\Controllers\Admin\ServiceController::class, 'update'])->name('admin.services.update');
     Route::patch('/admin/servicios/{service}/toggle-status', [\App\Http\Controllers\Admin\ServiceController::class, 'toggleStatus'])->name('admin.services.toggle_status');
+    Route::delete('/admin/servicios/{service}', [\App\Http\Controllers\Admin\ServiceController::class, 'destroy'])->name('admin.services.destroy');
 
     // Rutas de administración de trabajadores
     Route::get('/admin/trabajadores', [TrabajadorController::class, 'index'])->name('admin.trabajadores.index');
