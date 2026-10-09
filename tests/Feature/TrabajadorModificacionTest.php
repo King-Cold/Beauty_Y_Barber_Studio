@@ -411,4 +411,103 @@ class TrabajadorModificacionTest extends TestCase
 
         $response->assertStatus(401);
     }
+
+    /**
+     * Comprueba que no permite actualizar con un nombre que ya pertenece a otro trabajador.
+     */
+    public function test_no_permite_actualizar_con_un_nombre_que_pertenece_a_otro_trabajador(): void
+    {
+        $trabajador1 = Trabajador::create([
+            'nombre' => 'Roberto',
+            'apellidos' => 'Hernández',
+            'telefono' => '5551114455',
+            'email' => 'roberto.uno@bbs.com',
+            'direccion' => 'Calle 1',
+            'experiencia' => 3,
+            'activo' => true,
+        ]);
+
+        $trabajador2 = Trabajador::create([
+            'nombre' => 'Mauricio',
+            'apellidos' => 'Peña',
+            'telefono' => '5552224455',
+            'email' => 'mauricio.dos@bbs.com',
+            'direccion' => 'Calle 2',
+            'experiencia' => 4,
+            'activo' => true,
+        ]);
+
+        // Intento de actualizar el trabajador 2 con el nombre del trabajador 1
+        $response = $this->actingAs($this->adminUser)
+            ->putJson(route('admin.trabajadores.update', $trabajador2), [
+                'nombre' => 'Roberto',
+                'apellidos' => 'Peña Modificado',
+                'telefono' => '5552224455',
+                'email' => 'mauricio.dos@bbs.com',
+                'direccion' => 'Calle 2',
+                'experiencia' => 4,
+                'status' => 'active',
+            ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['nombre']);
+
+        // Mantener su propio nombre "Mauricio" debe ser permitido sin error
+        $responsePropio = $this->actingAs($this->adminUser)
+            ->putJson(route('admin.trabajadores.update', $trabajador2), [
+                'nombre' => 'Mauricio',
+                'apellidos' => 'Peña Modificado',
+                'telefono' => '5552224455',
+                'email' => 'mauricio.dos@bbs.com',
+                'direccion' => 'Calle 2',
+                'experiencia' => 4,
+                'status' => 'active',
+            ]);
+
+        $responsePropio->assertStatus(200);
+    }
+
+    /**
+     * Comprueba que nombre y apellidos solo permiten letras al modificar.
+     */
+    public function test_nombre_y_apellidos_deben_contener_solo_letras_al_modificar(): void
+    {
+        $trabajador = Trabajador::create([
+            'nombre' => 'Gabriel',
+            'apellidos' => 'Navarro',
+            'telefono' => '5553337788',
+            'email' => 'gabriel.test@bbs.com',
+            'direccion' => 'Calle 10',
+            'experiencia' => 2,
+            'activo' => true,
+        ]);
+
+        // Números en nombre
+        $responseNum = $this->actingAs($this->adminUser)
+            ->putJson(route('admin.trabajadores.update', $trabajador), [
+                'nombre' => 'Gabriel123',
+                'apellidos' => 'Navarro',
+                'telefono' => '5553337788',
+                'email' => 'gabriel.test@bbs.com',
+                'direccion' => 'Calle 10',
+                'experiencia' => 2,
+                'status' => 'active',
+            ]);
+        $responseNum->assertStatus(422);
+        $responseNum->assertJsonValidationErrors(['nombre']);
+
+        // Símbolos en apellidos
+        $responseSimb = $this->actingAs($this->adminUser)
+            ->putJson(route('admin.trabajadores.update', $trabajador), [
+                'nombre' => 'Gabriel',
+                'apellidos' => 'Navarro$#@!',
+                'telefono' => '5553337788',
+                'email' => 'gabriel.test@bbs.com',
+                'direccion' => 'Calle 10',
+                'experiencia' => 2,
+                'status' => 'active',
+            ]);
+        $responseSimb->assertStatus(422);
+        $responseSimb->assertJsonValidationErrors(['apellidos']);
+    }
 }

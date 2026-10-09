@@ -809,6 +809,55 @@
             letter-spacing: 0.05em;
         }
 
+        /* Subtarea 7: Botón interactivo para ver trabajadores asignados */
+        .btn-toggle-workers {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            background: rgba(0, 85, 255, 0.08);
+            border: 1px solid rgba(0, 85, 255, 0.25);
+            color: #bfdbfe;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .btn-toggle-workers:hover {
+            background: rgba(0, 85, 255, 0.16);
+            border-color: rgba(0, 85, 255, 0.45);
+            color: #ffffff;
+        }
+
+        .btn-toggle-workers:focus-visible {
+            outline: 2px solid var(--barber-blue);
+            outline-offset: 1px;
+        }
+
+        .service-workers-arrow {
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-toggle-workers[aria-expanded="true"] .service-workers-arrow,
+        .service-workers-arrow.expanded {
+            transform: rotate(180deg);
+        }
+
+        .service-workers-collapse {
+            margin-top: 8px;
+            animation: fadeInWorkers 0.2s ease-in-out;
+        }
+
+        @keyframes fadeInWorkers {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .status-pending {
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-white);
@@ -1204,7 +1253,37 @@
                                 <td><span style="font-weight: 700; color: white;">${{ number_format($service->price, 2) }}</span></td>
                                 <td><span style="color: var(--text-muted); font-size: 13.5px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>{{ $service->duration_minutes }} min</span></td>
                                 <td>
-                                    <span style="font-size: 12.5px; color: var(--barber-red);">Nadie asignado</span>
+                                    @php
+                                        $workersCount = $service->trabajadores ? $service->trabajadores->count() : 0;
+                                    @endphp
+                                    @if($workersCount > 0)
+                                        <div class="service-workers-dropdown" id="dropdown-workers-{{ $service->id }}">
+                                            <button type="button" 
+                                                    class="btn-toggle-workers" 
+                                                    onclick="toggleServiceWorkers({{ $service->id }})" 
+                                                    id="btn-toggle-workers-{{ $service->id }}"
+                                                    aria-expanded="false" 
+                                                    aria-controls="service-workers-list-{{ $service->id }}"
+                                                    title="Ver trabajadores asignados">
+                                                <span>Ver trabajadores ({{ $workersCount }})</span>
+                                                <svg class="service-workers-arrow" id="arrow-service-workers-{{ $service->id }}" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </button>
+                                            <div class="service-workers-collapse" id="service-workers-list-{{ $service->id }}" style="display: none;">
+                                                <div style="display: flex; flex-wrap: wrap; gap: 6px; max-width: 260px; margin-top: 6px;">
+                                                    @foreach($service->trabajadores as $trabajador)
+                                                        <span class="status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: rgba(0, 85, 255, 0.08); border: 1px solid rgba(0, 85, 255, 0.25); color: #bfdbfe; font-size: 12px; font-weight: 500;" title="{{ $trabajador->nombre_completo }}{{ $trabajador->activo ? '' : ' (Inactivo)' }}">
+                                                            <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ $trabajador->activo ? '#10b981' : '#f59e0b' }}; display: inline-block;"></span>
+                                                            <span>{{ $trabajador->nombre }}</span>
+                                                        </span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <span style="font-size: 12.5px; color: var(--text-muted); font-style: italic;">Sin trabajadores asignados (0)</span>
+                                    @endif
                                 </td>
                                 <td>
                                     @if($service->is_active)
@@ -1215,7 +1294,7 @@
                                 </td>
                                 <td>
                                     <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                                        <button type="button" onclick="openViewServiceModal({{ $service->id }}, {{ json_encode($service->name) }}, {{ json_encode($service->description) }}, {{ $service->price }}, {{ $service->duration_minutes }}, '{{ $service->category }}', {{ json_encode($service->image_path) }})" class="btn-outline" style="padding: 6px; border-radius: 6px; color: var(--text-muted); border-color: var(--border-subtle);" title="Ver detalle">
+                                        <button type="button" onclick="openViewServiceModal({{ $service->id }}, {{ json_encode($service->name) }}, {{ json_encode($service->description) }}, {{ $service->price }}, {{ $service->duration_minutes }}, '{{ $service->category }}', {{ json_encode($service->image_path) }}, {{ json_encode($service->trabajadores->map(fn($t) => ['id' => $t->id, 'nombre' => $t->nombre, 'nombre_completo' => $t->nombre_completo, 'activo' => $t->activo])) }})" class="btn-outline" style="padding: 6px; border-radius: 6px; color: var(--text-muted); border-color: var(--border-subtle);" title="Ver detalle">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                         </button>
                                         <button type="button" onclick="openEditServiceModal({{ $service->id }}, {{ json_encode($service->name) }}, {{ json_encode($service->description) }}, {{ $service->price }}, {{ $service->duration_minutes }}, '{{ $service->category }}', {{ json_encode($service->image_path) }})" class="btn-outline" style="padding: 6px; border-radius: 6px;" title="Modificar servicio">
@@ -1353,6 +1432,11 @@
                     </div>
                 </div>
 
+                <div style="margin-top: 16px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                    <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">Trabajadores Asignados</span>
+                    <div id="view_workers" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                </div>
+
                 <div style="margin-top: 24px; text-align: right;">
                     <button type="button" onclick="document.getElementById('viewServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: var(--barber-blue); color: white; padding: 8px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">Cerrar</button>
                 </div>
@@ -1472,7 +1556,7 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function openViewServiceModal(id, name, description, price, duration, category, imagePath) {
+        function openViewServiceModal(id, name, description, price, duration, category, imagePath, workers) {
             const modal = document.getElementById('viewServiceModal');
             
             document.getElementById('view_name').textContent = name;
@@ -1489,8 +1573,40 @@
                 imgContainer.style.display = 'none';
             }
 
+            const workersContainer = document.getElementById('view_workers');
+            if (workersContainer) {
+                if (workers && workers.length > 0) {
+                    workersContainer.innerHTML = workers.map(w => `
+                        <span class="status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: rgba(0, 85, 255, 0.08); border: 1px solid rgba(0, 85, 255, 0.25); color: #bfdbfe; font-size: 12px; font-weight: 500;">
+                            <span style="width: 7px; height: 7px; border-radius: 50%; background: ${w.activo ? '#10b981' : '#f59e0b'}; display: inline-block;"></span>
+                            ${w.nombre_completo || w.nombre}
+                        </span>
+                    `).join('');
+                } else {
+                    workersContainer.innerHTML = `<span style="font-size: 12.5px; color: var(--text-muted); font-style: italic;">Sin trabajadores asignados</span>`;
+                }
+            }
+
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
+        }
+
+        function toggleServiceWorkers(serviceId) {
+            const list = document.getElementById(`service-workers-list-${serviceId}`);
+            const arrow = document.getElementById(`arrow-service-workers-${serviceId}`);
+            const btn = document.getElementById(`btn-toggle-workers-${serviceId}`);
+            if (!list) return;
+
+            const isHidden = list.style.display === 'none' || getComputedStyle(list).display === 'none';
+            if (isHidden) {
+                list.style.display = 'block';
+                if (arrow) arrow.classList.add('expanded');
+                if (btn) btn.setAttribute('aria-expanded', 'true');
+            } else {
+                list.style.display = 'none';
+                if (arrow) arrow.classList.remove('expanded');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function () {

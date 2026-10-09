@@ -373,4 +373,165 @@ class TrabajadorServiciosTest extends TestCase
             ],
         ]);
     }
+
+    /**
+     * Subtarea 3: Comprueba que la tabla de servicios muestra los trabajadores asignados
+     * y el texto 'Sin trabajadores asignados' cuando no tiene ninguno.
+     */
+    public function test_la_tabla_de_servicios_muestra_los_trabajadores_asignados(): void
+    {
+        $trabajador1 = Trabajador::create([
+            'nombre' => 'Mateo',
+            'apellidos' => 'Ramírez',
+            'telefono' => '5551234501',
+            'email' => 'mateo.serv@bbs.com',
+            'direccion' => 'Calle 1',
+            'experiencia' => 4,
+            'activo' => true,
+        ]);
+
+        $trabajador2 = Trabajador::create([
+            'nombre' => 'Laura',
+            'apellidos' => 'Castillo',
+            'telefono' => '5551234502',
+            'email' => 'laura.serv@bbs.com',
+            'direccion' => 'Calle 2',
+            'experiencia' => 5,
+            'activo' => true,
+        ]);
+
+        // Asociar ambos trabajadores al servicio 1
+        $this->servicio1->trabajadores()->attach([$trabajador1->id, $trabajador2->id]);
+
+        // El servicio 2 no tiene trabajadores asignados
+        $response = $this->actingAs($this->adminUser)
+            ->get(route('admin.services'));
+
+        $response->assertStatus(200);
+
+        // Debe mostrar a Mateo y a Laura en la tabla de servicios
+        $response->assertSee('Mateo');
+        $response->assertSee('Laura');
+
+        // Debe mostrar el estado apropiado para el servicio sin trabajadores
+        $response->assertSee('Sin trabajadores asignados');
+    }
+
+    /**
+     * Subtarea 6: Comprueba que la tarjeta del barbero muestra el contador y la estructura desplegable con sus servicios.
+     */
+    public function test_la_tarjeta_del_trabajador_muestra_contador_y_estructura_desplegable_con_servicios(): void
+    {
+        $trabajador = Trabajador::create([
+            'nombre' => 'Fernando',
+            'apellidos' => 'Herrera',
+            'telefono' => '5559876543',
+            'email' => 'fernando.test@bbs.com',
+            'direccion' => 'Calle 33',
+            'experiencia' => 6,
+            'activo' => true,
+        ]);
+
+        $trabajador->servicios()->attach([$this->servicio1->id, $this->servicio2->id]);
+
+        $response = $this->actingAs($this->adminUser)
+            ->get(route('admin.trabajadores.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Servicios asignados (2)');
+        $response->assertSee("toggleWorkerServices({$trabajador->id})");
+        $response->assertSee("worker-services-list-{$trabajador->id}");
+        $response->assertSee("services-arrow-{$trabajador->id}");
+        $response->assertSee('Corte Clásico');
+        $response->assertSee('Corte Fade');
+    }
+
+    /**
+     * Subtarea 6: Comprueba que la tarjeta de un barbero sin servicios muestra contador (0) y mensaje apropiado.
+     */
+    public function test_la_tarjeta_del_trabajador_sin_servicios_muestra_contador_cero_y_mensaje_correspondiente(): void
+    {
+        $trabajador = Trabajador::create([
+            'nombre' => 'Rodrigo',
+            'apellidos' => 'Montalvo',
+            'telefono' => '5557654321',
+            'email' => 'rodrigo.test@bbs.com',
+            'direccion' => 'Calle 44',
+            'experiencia' => 2,
+            'activo' => true,
+        ]);
+
+        $response = $this->actingAs($this->adminUser)
+            ->get(route('admin.trabajadores.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Servicios asignados (0)');
+        $response->assertSee("worker-services-list-{$trabajador->id}");
+        $response->assertSee('Sin servicios asignados');
+    }
+
+    /**
+     * Subtarea 7: Comprueba que la tabla de servicios muestra el botón desplegable con contador y lista colapsable de trabajadores.
+     */
+    public function test_la_tabla_de_servicios_muestra_desplegable_de_trabajadores_con_contador_y_flecha(): void
+    {
+        $trabajador1 = Trabajador::create([
+            'nombre' => 'Hugo',
+            'apellidos' => 'Sánchez',
+            'telefono' => '5551122334',
+            'email' => 'hugo@bbs.com',
+            'direccion' => 'Calle 11',
+            'experiencia' => 5,
+            'activo' => true,
+        ]);
+
+        $trabajador2 = Trabajador::create([
+            'nombre' => 'Paco',
+            'apellidos' => 'Ramírez',
+            'telefono' => '5552233445',
+            'email' => 'paco@bbs.com',
+            'direccion' => 'Calle 12',
+            'experiencia' => 3,
+            'activo' => true,
+        ]);
+
+        // Servicio 1 con 2 trabajadores asignados
+        $this->servicio1->trabajadores()->attach([$trabajador1->id, $trabajador2->id]);
+
+        // Servicio 2 con 1 trabajador asignado
+        $this->servicio2->trabajadores()->attach([$trabajador1->id]);
+
+        $response = $this->actingAs($this->adminUser)
+            ->get(route('admin.services'));
+
+        $response->assertStatus(200);
+
+        // Servicio 1: Ver trabajadores (2)
+        $response->assertSee('Ver trabajadores (2)');
+        $response->assertSee("toggleServiceWorkers({$this->servicio1->id})");
+        $response->assertSee("service-workers-list-{$this->servicio1->id}");
+        $response->assertSee("arrow-service-workers-{$this->servicio1->id}");
+        $response->assertSee('Hugo');
+        $response->assertSee('Paco');
+
+        // Servicio 2: Ver trabajadores (1)
+        $response->assertSee('Ver trabajadores (1)');
+        $response->assertSee("toggleServiceWorkers({$this->servicio2->id})");
+        $response->assertSee("service-workers-list-{$this->servicio2->id}");
+    }
+
+    /**
+     * Subtarea 7: Comprueba que un servicio sin trabajadores muestra el texto con contador cero.
+     */
+    public function test_la_tabla_de_servicios_muestra_sin_trabajadores_asignados_cero_cuando_no_hay_relaciones(): void
+    {
+        // Ningún trabajador asociado al servicio 1 ni al servicio 2
+        $response = $this->actingAs($this->adminUser)
+            ->get(route('admin.services'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Sin trabajadores asignados (0)');
+    }
 }
+
+

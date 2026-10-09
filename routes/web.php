@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/trabajadores/{trabajador}/horario', [TrabajadorController::class, 'saveSchedule'])->name('admin.trabajadores.horario.save');
     Route::get('/admin/trabajadores/{trabajador}/disponibilidad', [TrabajadorController::class, 'getDisponibilidad'])->name('admin.trabajadores.disponibilidad');
     Route::patch('/admin/trabajadores/{trabajador}/toggle-status', [TrabajadorController::class, 'toggleStatus'])->name('admin.trabajadores.toggle_status');
+    Route::delete('/admin/trabajadores/{trabajador}', [TrabajadorController::class, 'destroy'])->name('admin.trabajadores.destroy');
 
     // Configuración general y fechas especiales
     Route::get('/admin/configuracion', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'index'])->name('admin.configuracion');

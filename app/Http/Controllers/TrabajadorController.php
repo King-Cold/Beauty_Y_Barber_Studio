@@ -115,14 +115,38 @@ class TrabajadorController extends Controller
      */
     public function store(Request $request)
     {
+        // Normalizar nombre y apellidos
+        if ($request->has('nombre')) {
+            $request->merge(['nombre' => trim(preg_replace('/\s+/', ' ', $request->nombre))]);
+        }
+        if ($request->has('apellidos')) {
+            $request->merge(['apellidos' => trim(preg_replace('/\s+/', ' ', $request->apellidos))]);
+        }
+
         // Normalizar correo electrónico
         if ($request->has('email')) {
             $request->merge(['email' => strtolower(trim($request->email))]);
         }
 
+        // Normalizar teléfono
+        if ($request->has('telefono')) {
+            $request->merge(['telefono' => trim($request->telefono)]);
+        }
+
         $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:100'],
-            'apellidos' => ['required', 'string', 'max:100'],
+            'nombre' => [
+                'required',
+                'string',
+                'max:100',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
+                'unique:trabajadores,nombre',
+            ],
+            'apellidos' => [
+                'required',
+                'string',
+                'max:100',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
+            ],
             'telefono' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/', 'unique:trabajadores,telefono'],
             'email' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', 'unique:trabajadores,email'],
             'direccion' => ['required', 'string', 'max:255'],
@@ -131,7 +155,10 @@ class TrabajadorController extends Controller
             'activo' => ['nullable', 'boolean'],
         ], [
             'nombre.required' => 'El nombre del trabajador es obligatorio.',
+            'nombre.regex' => 'El campo Nombre únicamente debe permitir letras del abecedario.',
+            'nombre.unique' => 'Ya existe un trabajador registrado con este nombre.',
             'apellidos.required' => 'Los apellidos son obligatorios.',
+            'apellidos.regex' => 'El campo Apellidos únicamente debe permitir letras del abecedario.',
             'telefono.required' => 'El teléfono de contacto es obligatorio.',
             'telefono.size' => 'El número de teléfono debe contener exactamente 10 dígitos numéricos.',
             'telefono.regex' => 'El número de teléfono debe contener únicamente 10 dígitos numéricos (sin letras ni caracteres especiales).',
@@ -177,14 +204,38 @@ class TrabajadorController extends Controller
      */
     public function update(Request $request, Trabajador $trabajador)
     {
+        // Normalizar nombre y apellidos si vienen
+        if ($request->has('nombre')) {
+            $request->merge(['nombre' => trim(preg_replace('/\s+/', ' ', $request->nombre))]);
+        }
+        if ($request->has('apellidos')) {
+            $request->merge(['apellidos' => trim(preg_replace('/\s+/', ' ', $request->apellidos))]);
+        }
+
         // Normalizar correo electrónico si viene
         if ($request->has('email')) {
             $request->merge(['email' => strtolower(trim($request->email))]);
         }
 
+        // Normalizar teléfono si viene
+        if ($request->has('telefono')) {
+            $request->merge(['telefono' => trim($request->telefono)]);
+        }
+
         $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:100'],
-            'apellidos' => ['required', 'string', 'max:100'],
+            'nombre' => [
+                'required',
+                'string',
+                'max:100',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
+                Rule::unique('trabajadores', 'nombre')->ignore($trabajador->id),
+            ],
+            'apellidos' => [
+                'required',
+                'string',
+                'max:100',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
+            ],
             'telefono' => [
                 'required',
                 'string',
@@ -206,7 +257,10 @@ class TrabajadorController extends Controller
             'status' => ['nullable'],
         ], [
             'nombre.required' => 'El nombre del trabajador es obligatorio.',
+            'nombre.regex' => 'El campo Nombre únicamente debe permitir letras del abecedario.',
+            'nombre.unique' => 'Ya existe otro trabajador registrado con este nombre.',
             'apellidos.required' => 'Los apellidos son obligatorios.',
+            'apellidos.regex' => 'El campo Apellidos únicamente debe permitir letras del abecedario.',
             'telefono.required' => 'El teléfono de contacto es obligatorio.',
             'telefono.size' => 'El número de teléfono debe contener exactamente 10 dígitos numéricos.',
             'telefono.regex' => 'El número de teléfono debe contener únicamente 10 dígitos numéricos (sin letras ni caracteres especiales).',
@@ -491,4 +545,38 @@ class TrabajadorController extends Controller
             ->route('admin.trabajadores.index')
             ->with('success', $mensaje);
     }
+
+    /**
+     * Elimina a un trabajador del sistema (Subtarea 4).
+     */
+    public function destroy(Request $request, Trabajador $trabajador)
+    {
+        $nombre = $trabajador->nombre_completo;
+
+        // 1. Eliminar fotografía del almacenamiento si existe
+        if ($trabajador->fotografia) {
+            Storage::disk('public')->delete($trabajador->fotografia);
+        }
+
+        // 2. Desasociar servicios de la tabla pivote de manera segura
+        $trabajador->servicios()->detach();
+
+        // 3. Eliminar el registro del trabajador
+        $trabajador->delete();
+
+        $mensaje = "El especialista \"{$nombre}\" ha sido eliminado exitosamente.";
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $mensaje,
+                'id' => $trabajador->id,
+            ]);
+        }
+
+        return redirect()
+            ->route('admin.trabajadores.index')
+            ->with('success', $mensaje);
+    }
 }
+

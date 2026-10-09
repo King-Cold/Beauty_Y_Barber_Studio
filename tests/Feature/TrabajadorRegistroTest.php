@@ -229,6 +229,20 @@ class TrabajadorRegistroTest extends TestCase
             ]);
 
         $response->assertSessionHasErrors(['telefono']);
+
+        // Comprueba también rechazo vía API / JSON
+        $responseJson = $this->actingAs($this->adminUser)
+            ->postJson(route('admin.trabajadores.store'), [
+                'nombre' => 'Nuevo Json',
+                'apellidos' => 'Duplicado',
+                'telefono' => '5551112233',
+                'email' => 'unico3@bbs.com',
+                'direccion' => 'Calle 456',
+                'experiencia' => 3,
+            ]);
+
+        $responseJson->assertStatus(422);
+        $responseJson->assertJsonValidationErrors(['telefono']);
     }
 
     /**
@@ -282,5 +296,159 @@ class TrabajadorRegistroTest extends TestCase
         ]);
 
         $response->assertRedirect(route('login'));
+    }
+
+    /**
+     * Subtarea 1: Comprueba que el nombre del barbero debe ser único dentro del sistema.
+     */
+    public function test_nombre_debe_ser_unico_en_el_sistema(): void
+    {
+        Trabajador::create([
+            'nombre' => 'Carlos',
+            'apellidos' => 'Ramírez',
+            'telefono' => '5551112233',
+            'email' => 'carlos1@bbs.com',
+            'direccion' => 'Calle 10 #12',
+            'experiencia' => 3,
+            'activo' => true,
+        ]);
+
+        // Intento de registrar otro barbero con el mismo nombre 'Carlos' vía formulario web
+        $response = $this->actingAs($this->adminUser)
+            ->post(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos',
+                'apellidos' => 'Gómez',
+                'telefono' => '5559998877',
+                'email' => 'carlos2@bbs.com',
+                'direccion' => 'Calle 20 #34',
+                'experiencia' => 4,
+            ]);
+
+        $response->assertSessionHasErrors(['nombre']);
+
+        // Intento vía API / JSON
+        $responseJson = $this->actingAs($this->adminUser)
+            ->postJson(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos',
+                'apellidos' => 'Gómez',
+                'telefono' => '5559998877',
+                'email' => 'carlos2@bbs.com',
+                'direccion' => 'Calle 20 #34',
+                'experiencia' => 4,
+            ]);
+
+        $responseJson->assertStatus(422);
+        $responseJson->assertJsonValidationErrors(['nombre']);
+    }
+
+    /**
+     * Subtarea 1: Comprueba que el nombre únicamente permite letras del abecedario y rechaza números y caracteres especiales.
+     */
+    public function test_nombre_solo_debe_permitir_letras_del_abecedario(): void
+    {
+        // Intento con números
+        $responseConNumeros = $this->actingAs($this->adminUser)
+            ->post(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos123',
+                'apellidos' => 'Pérez',
+                'telefono' => '5551113344',
+                'email' => 'num@bbs.com',
+                'direccion' => 'Calle 1',
+                'experiencia' => 2,
+            ]);
+        $responseConNumeros->assertSessionHasErrors(['nombre']);
+
+        // Intento con caracteres especiales y símbolos
+        $responseConSimbolos = $this->actingAs($this->adminUser)
+            ->post(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos$#@!',
+                'apellidos' => 'Pérez',
+                'telefono' => '5551113344',
+                'email' => 'simb@bbs.com',
+                'direccion' => 'Calle 1',
+                'experiencia' => 2,
+            ]);
+        $responseConSimbolos->assertSessionHasErrors(['nombre']);
+
+        // Intento con guiones bajos o caracteres no permitidos
+        $responseConGuiones = $this->actingAs($this->adminUser)
+            ->post(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos_Barber',
+                'apellidos' => 'Pérez',
+                'telefono' => '5551113344',
+                'email' => 'guion@bbs.com',
+                'direccion' => 'Calle 1',
+                'experiencia' => 2,
+            ]);
+        $responseConGuiones->assertSessionHasErrors(['nombre']);
+    }
+
+    /**
+     * Subtarea 1: Comprueba que el nombre permite letras con acentos y espacios.
+     */
+    public function test_nombre_permite_letras_acentuadas_y_espacios(): void
+    {
+        $response = $this->actingAs($this->adminUser)
+            ->post(route('admin.trabajadores.store'), [
+                'nombre' => 'José María',
+                'apellidos' => 'Hernández',
+                'telefono' => '5557778899',
+                'email' => 'jose.maria@bbs.com',
+                'direccion' => 'Calle Central 5',
+                'experiencia' => 5,
+            ]);
+
+        $response->assertRedirect(route('admin.trabajadores.index'));
+        $this->assertDatabaseHas('trabajadores', [
+            'nombre' => 'José María',
+            'email' => 'jose.maria@bbs.com',
+        ]);
+    }
+
+    /**
+     * Subtarea 1: Comprueba que los apellidos únicamente permiten letras del abecedario y rechazan números y caracteres especiales.
+     */
+    public function test_apellidos_solo_debe_permitir_letras_del_abecedario(): void
+    {
+        // Intento con números en apellidos
+        $responseConNumeros = $this->actingAs($this->adminUser)
+            ->post(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos',
+                'apellidos' => 'Pérez123',
+                'telefono' => '5551113344',
+                'email' => 'ape.num@bbs.com',
+                'direccion' => 'Calle 1',
+                'experiencia' => 2,
+            ]);
+        $responseConNumeros->assertSessionHasErrors(['apellidos']);
+
+        // Intento con símbolos en apellidos
+        $responseConSimbolos = $this->actingAs($this->adminUser)
+            ->post(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos',
+                'apellidos' => 'Pérez$#@!',
+                'telefono' => '5551113344',
+                'email' => 'ape.simb@bbs.com',
+                'direccion' => 'Calle 1',
+                'experiencia' => 2,
+            ]);
+        $responseConSimbolos->assertSessionHasErrors(['apellidos']);
+
+        // Acepta apellidos con acentos y espacios
+        $responseValido = $this->actingAs($this->adminUser)
+            ->post(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos',
+                'apellidos' => 'Gómez Ruiz',
+                'telefono' => '5551113344',
+                'email' => 'ape.valido@bbs.com',
+                'direccion' => 'Calle 1',
+                'experiencia' => 2,
+            ]);
+        $responseValido->assertRedirect(route('admin.trabajadores.index'));
+        $this->assertDatabaseHas('trabajadores', [
+            'nombre' => 'Carlos',
+            'apellidos' => 'Gómez Ruiz',
+            'email' => 'ape.valido@bbs.com',
+        ]);
     }
 }

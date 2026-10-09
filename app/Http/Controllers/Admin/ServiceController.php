@@ -9,7 +9,9 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        $services = \App\Models\Service::orderBy('is_active', 'desc')->get();
+        $services = \App\Models\Service::with(['trabajadores' => function ($q) {
+            $q->orderBy('nombre');
+        }])->orderBy('is_active', 'desc')->get();
         return view('admin.services', compact('services'));
     }
 

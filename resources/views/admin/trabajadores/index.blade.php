@@ -1113,6 +1113,63 @@
             margin-bottom: 4px;
         }
 
+        .addon-heading-toggle {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 3px 6px;
+            margin: -3px -6px 4px -6px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            font-family: inherit;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: color 0.2s ease, background 0.2s ease;
+            user-select: none;
+        }
+
+        .addon-heading-toggle:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .addon-heading-toggle:focus-visible {
+            outline: 2px solid var(--barber-blue);
+            outline-offset: 1px;
+        }
+
+        .addon-heading-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .services-toggle-arrow {
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+            color: var(--text-muted);
+        }
+
+        .addon-heading-toggle:hover .services-toggle-arrow {
+            color: #ffffff;
+        }
+
+        .services-toggle-arrow.expanded,
+        .addon-heading-toggle[aria-expanded="true"] .services-toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        .worker-services-collapse {
+            margin-bottom: 6px;
+        }
+
         .chips-container {
             display: flex;
             flex-wrap: wrap;
@@ -1290,7 +1347,7 @@
         /* Botones de acción en tarjeta */
         .worker-card-actions {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 8px;
             padding-top: 14px;
             border-top: 1px solid var(--border-subtle);
@@ -1340,6 +1397,12 @@
             background: rgba(16, 185, 129, 0.15);
             color: #10b981;
             border-color: rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-card-action.btn-action-delete:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--barber-red);
+            border-color: rgba(239, 68, 68, 0.35);
         }
 
         /* Tabla de Trabajadores */
@@ -2433,7 +2496,7 @@
                 <!-- Contenedor de Tarjetas de Trabajadores (Dinámico desde Base de Datos) -->
                 <div class="workers-cards-grid" id="workersGrid">
                 @forelse($trabajadores as $trabajador)
-                <article class="worker-profile-card" id="worker-card-{{ $trabajador->id }}" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
+                <article class="worker-profile-card" id="worker-card-{{ $trabajador->id }}" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-first-name="{{ mb_strtolower(trim($trabajador->nombre)) }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
                     <div class="card-top-row">
                         <div class="worker-avatar-frame">
                             @if($trabajador->fotografia)
@@ -2481,16 +2544,26 @@
                     </div>
 
                     <div class="worker-addons">
-                        <div>
-                            <div class="addon-heading">
-                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="6" cy="6" r="3"></circle>
-                                    <circle cx="6" cy="18" r="3"></circle>
-                                    <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                        <div class="worker-services-accordion" id="accordion-services-{{ $trabajador->id }}">
+                            <button type="button" 
+                                    class="addon-heading-toggle" 
+                                    onclick="toggleWorkerServices({{ $trabajador->id }})" 
+                                    aria-expanded="false" 
+                                    aria-controls="worker-services-list-{{ $trabajador->id }}"
+                                    title="Desplegar u ocultar servicios asignados">
+                                <span class="addon-heading-title">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="6" cy="6" r="3"></circle>
+                                        <circle cx="6" cy="18" r="3"></circle>
+                                        <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                                    </svg>
+                                    <span>Servicios asignados ({{ $trabajador->servicios->count() }})</span>
+                                </span>
+                                <svg class="services-toggle-arrow" id="services-arrow-{{ $trabajador->id }}" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
-                                Servicios Asociados ({{ $trabajador->servicios->count() }})
-                            </div>
-                            <div class="chips-container">
+                            </button>
+                            <div class="chips-container worker-services-collapse" id="worker-services-list-{{ $trabajador->id }}" style="display: none;">
                                 @forelse($trabajador->servicios as $servicio)
                                     <span class="chip-service">{{ $servicio->name }}</span>
                                 @empty
@@ -2565,6 +2638,14 @@
                                 <line x1="12" y1="2" x2="12" y2="12"></line>
                             </svg>
                         </button>
+                        <button type="button" class="btn-card-action btn-action-delete" title="Eliminar Especialista" onclick="confirmDeleteWorker({{ $trabajador->id }}, '{{ addslashes($trabajador->nombre_completo) }}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
                     </div>
                 </article>
                 @empty
@@ -2591,7 +2672,7 @@
                     </thead>
                     <tbody>
                         @forelse($trabajadores as $trabajador)
-                        <tr class="worker-table-row" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
+                        <tr class="worker-table-row" id="worker-row-{{ $trabajador->id }}" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-first-name="{{ mb_strtolower(trim($trabajador->nombre)) }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
                             <td>
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     @if($trabajador->fotografia)
@@ -2647,6 +2728,14 @@
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
                                         <line x1="12" y1="2" x2="12" y2="12"></line>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn-card-action btn-action-delete" style="display: inline-flex; margin-left: 6px;" title="Eliminar Especialista" onclick="confirmDeleteWorker({{ $trabajador->id }}, '{{ addslashes($trabajador->nombre_completo) }}')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
                                     </svg>
                                 </button>
                             </td>
@@ -2716,11 +2805,33 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="workerName">Nombre(s) <span class="required">*</span></label>
-                            <input type="text" id="workerName" name="nombre" class="form-control" placeholder="Ej. Carlos" required>
+                            <input 
+                                type="text" 
+                                id="workerName" 
+                                name="nombre" 
+                                class="form-control" 
+                                placeholder="Ej. Carlos" 
+                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+" 
+                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]$/.test(event.key)" 
+                                oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');" 
+                                title="El campo Nombre únicamente debe contener letras del abecedario" 
+                                required
+                            >
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="workerLastName">Apellidos <span class="required">*</span></label>
-                            <input type="text" id="workerLastName" name="apellidos" class="form-control" placeholder="Ej. Gómez Ruiz" required>
+                            <input 
+                                type="text" 
+                                id="workerLastName" 
+                                name="apellidos" 
+                                class="form-control" 
+                                placeholder="Ej. Gómez Ruiz" 
+                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+" 
+                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]$/.test(event.key)" 
+                                oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');" 
+                                title="El campo Apellidos únicamente debe contener letras del abecedario" 
+                                required
+                            >
                         </div>
                     </div>
 
@@ -2835,11 +2946,33 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="editWorkerName">Nombre(s) <span class="required">*</span></label>
-                            <input type="text" id="editWorkerName" name="nombre" class="form-control" placeholder="Ej. Carlos" required>
+                            <input 
+                                type="text" 
+                                id="editWorkerName" 
+                                name="nombre" 
+                                class="form-control" 
+                                placeholder="Ej. Carlos" 
+                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+" 
+                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]$/.test(event.key)" 
+                                oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');" 
+                                title="El campo Nombre únicamente debe contener letras del abecedario" 
+                                required
+                            >
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="editWorkerLastName">Apellidos <span class="required">*</span></label>
-                            <input type="text" id="editWorkerLastName" name="apellidos" class="form-control" placeholder="Ej. Gómez Ruiz" required>
+                            <input 
+                                type="text" 
+                                id="editWorkerLastName" 
+                                name="apellidos" 
+                                class="form-control" 
+                                placeholder="Ej. Gómez Ruiz" 
+                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+" 
+                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]$/.test(event.key)" 
+                                oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');" 
+                                title="El campo Apellidos únicamente debe contener letras del abecedario" 
+                                required
+                            >
                         </div>
                     </div>
 
@@ -3320,6 +3453,24 @@
             }
 
             openModal('modalEditWorker');
+        }
+
+        function toggleWorkerServices(workerId) {
+            const list = document.getElementById(`worker-services-list-${workerId}`);
+            const arrow = document.getElementById(`services-arrow-${workerId}`);
+            const btn = document.querySelector(`#accordion-services-${workerId} .addon-heading-toggle`);
+            if (!list) return;
+
+            const isCurrentlyHidden = list.style.display === 'none' || getComputedStyle(list).display === 'none';
+            if (isCurrentlyHidden) {
+                list.style.display = 'flex';
+                if (arrow) arrow.classList.add('expanded');
+                if (btn) btn.setAttribute('aria-expanded', 'true');
+            } else {
+                list.style.display = 'none';
+                if (arrow) arrow.classList.remove('expanded');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
         }
 
         function openServicesModal(id, workerName, assignedServiceIds = []) {
@@ -3885,16 +4036,37 @@
         function validatePhoneInput(input) {
             input.value = input.value.replace(/[^0-9]/g, '').slice(0, 10);
             const helpEl = document.getElementById(input.id + 'Help');
-            if (input.value.length === 10) {
-                input.style.borderColor = '#10b981';
-                if (helpEl) {
-                    helpEl.textContent = '✓ 10 dígitos numéricos correctos';
-                    helpEl.style.color = '#10b981';
+            const currentPhone = input.value.trim();
+            const isEdit = input.id === 'editWorkerPhone';
+            const currentEditId = isEdit ? (document.getElementById('editWorkerId')?.value || '') : '';
+
+            // Verificar si el teléfono ya está registrado por otro trabajador (Subtarea 2)
+            const isDuplicate = Array.from(document.querySelectorAll('.worker-profile-card'))
+                .some(card => {
+                    if (isEdit && card.id === `worker-card-${currentEditId}`) {
+                        return false;
+                    }
+                    return (card.getAttribute('data-phone') || '').trim() === currentPhone;
+                });
+
+            if (currentPhone.length === 10) {
+                if (isDuplicate) {
+                    input.style.borderColor = '#ef4444';
+                    if (helpEl) {
+                        helpEl.textContent = '✗ Este número de teléfono ya está registrado por otro trabajador';
+                        helpEl.style.color = '#ef4444';
+                    }
+                } else {
+                    input.style.borderColor = '#10b981';
+                    if (helpEl) {
+                        helpEl.textContent = '✓ 10 dígitos numéricos correctos (disponible)';
+                        helpEl.style.color = '#10b981';
+                    }
                 }
-            } else if (input.value.length > 0) {
+            } else if (currentPhone.length > 0) {
                 input.style.borderColor = '#f59e0b';
                 if (helpEl) {
-                    helpEl.textContent = `Faltan ${10 - input.value.length} dígitos (debe tener 10 exactos)`;
+                    helpEl.textContent = `Faltan ${10 - currentPhone.length} dígitos (debe tener 10 exactos)`;
                     helpEl.style.color = '#f59e0b';
                 }
             } else {
@@ -3939,8 +4111,57 @@
                 const originalText = submitBtn.textContent;
 
                 const formData = new FormData(formCreate);
+                const name = (formData.get('nombre') || '').toString().trim();
+                const lastName = (formData.get('apellidos') || '').toString().trim();
                 const phone = (formData.get('telefono') || '').toString().trim();
                 const email = (formData.get('email') || '').toString().trim();
+
+                // Validación estricta previa: Nombre únicamente letras del abecedario (Subtarea 1)
+                const nameLettersRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+                if (!name || !nameLettersRegex.test(name)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Nombre inválido',
+                        text: 'El campo Nombre únicamente debe permitir letras del abecedario (sin números, caracteres especiales ni símbolos).',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('workerName').focus();
+                    return;
+                }
+
+                // Validación estricta previa: Apellidos únicamente letras del abecedario (Subtarea 1)
+                if (!lastName || !nameLettersRegex.test(lastName)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Apellidos inválidos',
+                        text: 'El campo Apellidos únicamente debe permitir letras del abecedario (sin números, caracteres especiales ni símbolos).',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('workerLastName').focus();
+                    return;
+                }
+
+                // Validación estricta previa: Nombre único dentro del sistema (Subtarea 1)
+                const nameLower = name.toLowerCase();
+                const duplicateWorkerCard = Array.from(document.querySelectorAll('.worker-profile-card'))
+                    .some(card => (card.getAttribute('data-first-name') || '').toLowerCase() === nameLower);
+
+                if (duplicateWorkerCard) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Nombre de barbero duplicado',
+                        text: `Ya existe un barbero registrado con el nombre "${name}". El nombre debe ser único dentro del sistema.`,
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('workerName').focus();
+                    return;
+                }
 
                 // Validación estricta previa: Teléfono exactamente 10 dígitos numéricos
                 if (!/^[0-9]{10}$/.test(phone)) {
@@ -3948,6 +4169,23 @@
                         icon: 'warning',
                         title: 'Teléfono inválido',
                         text: 'El número de teléfono debe contener exactamente 10 dígitos numéricos (sin letras ni caracteres especiales).',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('workerPhone').focus();
+                    return;
+                }
+
+                // Validación estricta previa: Teléfono único dentro del sistema (Subtarea 2)
+                const duplicatePhoneCard = Array.from(document.querySelectorAll('.worker-profile-card'))
+                    .some(card => (card.getAttribute('data-phone') || '').trim() === phone);
+
+                if (duplicatePhoneCard) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Teléfono ya registrado',
+                        text: `El número de teléfono "${phone}" ya se encuentra registrado por otro trabajador. Debe ser único en el sistema.`,
                         background: '#1e293b',
                         color: '#ffffff',
                         confirmButtonColor: '#0055ff'
@@ -4065,8 +4303,62 @@
                 const originalText = submitBtn.textContent;
 
                 const formData = new FormData(formEdit);
+                const name = (formData.get('nombre') || '').toString().trim();
+                const lastName = (formData.get('apellidos') || '').toString().trim();
                 const phone = (formData.get('telefono') || '').toString().trim();
                 const email = (formData.get('email') || '').toString().trim();
+
+                const nameLettersRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+
+                // Validación estricta previa: Nombre únicamente letras del abecedario (Subtarea 1)
+                if (!name || !nameLettersRegex.test(name)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Nombre inválido',
+                        text: 'El campo Nombre únicamente debe permitir letras del abecedario (sin números, caracteres especiales ni símbolos).',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('editWorkerName').focus();
+                    return;
+                }
+
+                // Validación estricta previa: Apellidos únicamente letras del abecedario (Subtarea 1)
+                if (!lastName || !nameLettersRegex.test(lastName)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Apellidos inválidos',
+                        text: 'El campo Apellidos únicamente debe permitir letras del abecedario (sin números, caracteres especiales ni símbolos).',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('editWorkerLastName').focus();
+                    return;
+                }
+
+                // Validación estricta previa: Nombre único dentro del sistema (excluyendo el trabajador actual)
+                const nameLower = name.toLowerCase();
+                const duplicateWorkerCard = Array.from(document.querySelectorAll('.worker-profile-card'))
+                    .some(card => {
+                        const cardId = card.id.replace('worker-card-', '');
+                        if (cardId === workerId.toString()) return false;
+                        return (card.getAttribute('data-first-name') || '').toLowerCase() === nameLower;
+                    });
+
+                if (duplicateWorkerCard) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Nombre de barbero duplicado',
+                        text: `Ya existe otro barbero registrado con el nombre "${name}". El nombre debe ser único dentro del sistema.`,
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('editWorkerName').focus();
+                    return;
+                }
 
                 // Validación estricta previa: Teléfono exactamente 10 dígitos numéricos
                 if (!/^[0-9]{10}$/.test(phone)) {
@@ -4074,6 +4366,27 @@
                         icon: 'warning',
                         title: 'Teléfono inválido',
                         text: 'El número de teléfono debe contener exactamente 10 dígitos numéricos (sin letras ni caracteres especiales).',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('editWorkerPhone').focus();
+                    return;
+                }
+
+                // Validación estricta previa: Teléfono único (excluyendo el trabajador actual)
+                const duplicatePhoneCard = Array.from(document.querySelectorAll('.worker-profile-card'))
+                    .some(card => {
+                        const cardId = card.id.replace('worker-card-', '');
+                        if (cardId === workerId.toString()) return false;
+                        return (card.getAttribute('data-phone') || '').trim() === phone;
+                    });
+
+                if (duplicatePhoneCard) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Teléfono ya registrado',
+                        text: `El número de teléfono "${phone}" ya se encuentra registrado por otro trabajador. Debe ser único en el sistema.`,
                         background: '#1e293b',
                         color: '#ffffff',
                         confirmButtonColor: '#0055ff'
@@ -4308,6 +4621,90 @@
                         icon: 'error',
                         title: 'Error',
                         text: data.message || 'No se pudo cambiar el estado del especialista.',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo comunicar con el servidor.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ef4444'
+                });
+            }
+        }
+
+        // Eliminar Trabajador con Confirmación y Limpieza UI (Subtarea 4)
+        async function confirmDeleteWorker(id, nombre) {
+            const result = await Swal.fire({
+                title: '¿Eliminar especialista?',
+                html: `¿Estás seguro de que deseas eliminar permanentemente a <strong>"${nombre}"</strong>?<br><span style="font-size: 13px; color: #ef4444; margin-top: 6px; display: inline-block;">Esta acción no se puede deshacer y desvinculará sus servicios asociados.</span>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Sí, eliminar definitivamente',
+                cancelButtonText: 'Cancelar',
+                background: '#1e293b',
+                color: '#ffffff',
+                reverseButtons: true,
+                focusCancel: true
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const response = await fetch(`/admin/trabajadores/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    const card = document.getElementById(`worker-card-${id}`);
+                    const row = document.getElementById(`worker-row-${id}`);
+
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.9)';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                    if (row) {
+                        row.style.transition = 'all 0.3s ease';
+                        row.style.opacity = '0';
+                        setTimeout(() => row.remove(), 300);
+                    }
+
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message || `Especialista "${nombre}" eliminado exitosamente.`,
+                        showConfirmButton: false,
+                        timer: 2500,
+                        timerProgressBar: true,
+                        background: '#10b981',
+                        color: '#ffffff',
+                        iconColor: '#ffffff'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al eliminar',
+                        text: data.message || 'No se pudo eliminar al especialista seleccionado.',
                         background: '#1e293b',
                         color: '#ffffff',
                         confirmButtonColor: '#ef4444'
