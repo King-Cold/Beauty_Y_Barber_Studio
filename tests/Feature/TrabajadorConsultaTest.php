@@ -136,7 +136,7 @@ class TrabajadorConsultaTest extends TestCase
     }
 
     /**
-     * Comprueba la búsqueda de trabajadores por término.
+     * Comprueba la búsqueda de trabajadores exclusivamente por nombre y correo electrónico.
      */
     public function test_se_pueden_buscar_trabajadores_por_termino_de_busqueda(): void
     {
@@ -160,13 +160,33 @@ class TrabajadorConsultaTest extends TestCase
             'activo' => true,
         ]);
 
-        $response = $this->actingAs($this->adminUser)
+        // Búsqueda por nombre
+        $responseNombre = $this->actingAs($this->adminUser)
             ->getJson(route('admin.trabajadores.index', ['buscar' => 'Rodrigo']));
+        $responseNombre->assertStatus(200);
+        $responseNombre->assertJsonCount(1, 'data');
+        $responseNombre->assertJsonFragment(['email' => 'rodrigo.fade@bbs.com']);
+        $responseNombre->assertJsonMissing(['email' => 'carla.estilo@bbs.com']);
 
-        $response->assertStatus(200);
-        $response->assertJsonCount(1, 'data');
-        $response->assertJsonFragment(['email' => 'rodrigo.fade@bbs.com']);
-        $response->assertJsonMissing(['email' => 'carla.estilo@bbs.com']);
+        // Búsqueda por email
+        $responseEmail = $this->actingAs($this->adminUser)
+            ->getJson(route('admin.trabajadores.index', ['buscar' => 'carla.estilo@bbs.com']));
+        $responseEmail->assertStatus(200);
+        $responseEmail->assertJsonCount(1, 'data');
+        $responseEmail->assertJsonFragment(['email' => 'carla.estilo@bbs.com']);
+        $responseEmail->assertJsonMissing(['email' => 'rodrigo.fade@bbs.com']);
+
+        // Búsqueda por teléfono no debe filtrar coincidencias
+        $responseTelefono = $this->actingAs($this->adminUser)
+            ->getJson(route('admin.trabajadores.index', ['buscar' => '5559998877']));
+        $responseTelefono->assertStatus(200);
+        $responseTelefono->assertJsonCount(0, 'data');
+
+        // Búsqueda por dirección no debe filtrar coincidencias
+        $responseDireccion = $this->actingAs($this->adminUser)
+            ->getJson(route('admin.trabajadores.index', ['buscar' => 'Coyoacán']));
+        $responseDireccion->assertStatus(200);
+        $responseDireccion->assertJsonCount(0, 'data');
     }
 
     /**

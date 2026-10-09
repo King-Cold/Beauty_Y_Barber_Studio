@@ -7,13 +7,21 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
+    
     public function index()
     {
-        $services = \App\Models\Service::with(['trabajadores' => function ($q) {
-            $q->orderBy('nombre');
-        }])->orderBy('is_active', 'desc')->get();
+        $services = \App\Models\Service::with([
+            'trabajadores' => function ($q) {
+                $q->orderBy(
+                    \App\Models\User::select('name')
+                        ->whereColumn('users.id', 'trabajadores.user_id')
+                );
+            }
+        ])->orderBy('is_active', 'desc')->get();
+
         return view('admin.services', compact('services'));
     }
+
 
     public function store(Request $request)
     {

@@ -2455,7 +2455,7 @@
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input type="text" class="workers-search-input" id="searchWorkerInput" placeholder="Buscar por nombre, teléfono o email..." onkeyup="filterWorkers()">
+                    <input type="text" class="workers-search-input" id="searchWorkerInput" placeholder="Buscar por nombre o email" onkeyup="filterWorkers()">
                 </div>
 
                 <div class="workers-filters-group">
@@ -3959,15 +3959,13 @@
             const totalCount = cards.length;
             let visibleCount = 0;
 
-            // Filtrar tarjetas
+            // Filtrar tarjetas (únicamente por nombre y correo electrónico)
             cards.forEach(card => {
                 const name = (card.getAttribute('data-name') || '').toLowerCase();
                 const email = (card.getAttribute('data-email') || '').toLowerCase();
-                const phone = (card.getAttribute('data-phone') || '').toLowerCase();
-                const address = (card.getAttribute('data-address') || '').toLowerCase();
                 const status = card.getAttribute('data-status');
 
-                const matchesQuery = !query || name.includes(query) || email.includes(query) || phone.includes(query) || address.includes(query);
+                const matchesQuery = !query || name.includes(query) || email.includes(query);
                 const matchesStatus = currentStatusFilter === 'all' || status === currentStatusFilter;
 
                 if (matchesQuery && matchesStatus) {
@@ -3978,15 +3976,13 @@
                 }
             });
 
-            // Filtrar filas de tabla
+            // Filtrar filas de tabla (únicamente por nombre y correo electrónico)
             rows.forEach(row => {
                 const name = (row.getAttribute('data-name') || '').toLowerCase();
                 const email = (row.getAttribute('data-email') || '').toLowerCase();
-                const phone = (row.getAttribute('data-phone') || '').toLowerCase();
-                const address = (row.getAttribute('data-address') || '').toLowerCase();
                 const status = row.getAttribute('data-status');
 
-                const matchesQuery = !query || name.includes(query) || email.includes(query) || phone.includes(query) || address.includes(query);
+                const matchesQuery = !query || name.includes(query) || email.includes(query);
                 const matchesStatus = currentStatusFilter === 'all' || status === currentStatusFilter;
 
                 row.style.display = (matchesQuery && matchesStatus) ? '' : 'none';

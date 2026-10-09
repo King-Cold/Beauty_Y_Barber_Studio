@@ -31,15 +31,13 @@ class TrabajadorController extends Controller
             }
         }
 
-        // Búsqueda por término (nombre, apellidos, teléfono, correo o dirección)
+        // Búsqueda por término (únicamente nombre, apellidos o correo electrónico)
         if ($request->filled('buscar')) {
             $buscar = trim($request->buscar);
             $query->where(function ($q) use ($buscar) {
                 $q->where('nombre', 'like', "%{$buscar}%")
                   ->orWhere('apellidos', 'like', "%{$buscar}%")
-                  ->orWhere('telefono', 'like', "%{$buscar}%")
-                  ->orWhere('email', 'like', "%{$buscar}%")
-                  ->orWhere('direccion', 'like', "%{$buscar}%");
+                  ->orWhere('email', 'like', "%{$buscar}%");
             });
         }
 
