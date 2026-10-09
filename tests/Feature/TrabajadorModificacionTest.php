@@ -415,7 +415,7 @@ class TrabajadorModificacionTest extends TestCase
     /**
      * Comprueba que no permite actualizar con un nombre que ya pertenece a otro trabajador.
      */
-    public function test_no_permite_actualizar_con_un_nombre_que_pertenece_a_otro_trabajador(): void
+    public function test_no_permite_actualizar_con_un_nombre_completo_que_pertenece_a_otro_trabajador(): void
     {
         $trabajador1 = Trabajador::create([
             'nombre' => 'Roberto',
@@ -437,8 +437,23 @@ class TrabajadorModificacionTest extends TestCase
             'activo' => true,
         ]);
 
-        // Intento de actualizar el trabajador 2 con el nombre del trabajador 1
+        // Intento de actualizar el trabajador 2 con el nombre completo idéntico del trabajador 1 (Roberto Hernández)
         $response = $this->actingAs($this->adminUser)
+            ->putJson(route('admin.trabajadores.update', $trabajador2), [
+                'nombre' => 'Roberto',
+                'apellidos' => 'Hernández',
+                'telefono' => '5552224455',
+                'email' => 'mauricio.dos@bbs.com',
+                'direccion' => 'Calle 2',
+                'experiencia' => 4,
+                'status' => 'active',
+            ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['nombre']);
+
+        // Actualizar compartiendo únicamente el primer nombre 'Roberto' pero conservando apellidos distintos debe ser permitido
+        $responseMismoNombrePila = $this->actingAs($this->adminUser)
             ->putJson(route('admin.trabajadores.update', $trabajador2), [
                 'nombre' => 'Roberto',
                 'apellidos' => 'Peña Modificado',
@@ -449,8 +464,7 @@ class TrabajadorModificacionTest extends TestCase
                 'status' => 'active',
             ]);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['nombre']);
+        $responseMismoNombrePila->assertStatus(200);
 
         // Mantener su propio nombre "Mauricio" debe ser permitido sin error
         $responsePropio = $this->actingAs($this->adminUser)

@@ -35,13 +35,20 @@ class TrabajadorController extends Controller
         if ($request->filled('buscar')) {
             $buscar = trim($request->buscar);
             $query->where(function ($q) use ($buscar) {
-                $q->where('nombre', 'like', "%{$buscar}%")
-                  ->orWhere('apellidos', 'like', "%{$buscar}%")
-                  ->orWhere('email', 'like', "%{$buscar}%");
+                $q->whereHas('user', function ($uq) use ($buscar) {
+                    $uq->where('name', 'like', "%{$buscar}%")
+                       ->orWhere('apellidos', 'like', "%{$buscar}%")
+                       ->orWhere('email', 'like', "%{$buscar}%");
+                });
+                if (Schema::hasColumn('trabajadores', 'nombre')) {
+                    $q->orWhere('nombre', 'like', "%{$buscar}%")
+                      ->orWhere('apellidos', 'like', "%{$buscar}%")
+                      ->orWhere('email', 'like', "%{$buscar}%");
+                }
             });
         }
 
-        $trabajadores = $query->with(['servicios' => function ($q) {
+        $trabajadores = $query->with(['user', 'servicios' => function ($q) {
             $q->where('services.is_active', true);
         }])->orderBy('id', 'desc')->get();
 
@@ -157,7 +164,7 @@ class TrabajadorController extends Controller
         ], [
             'nombre.required' => 'El nombre del trabajador es obligatorio.',
             'nombre.regex' => 'El campo Nombre únicamente debe permitir letras del abecedario.',
-            'nombre.unique' => 'Ya existe un trabajador registrado con este nombre.',
+            'nombre.unique' => 'Ya existe un trabajador registrado con este nombre completo (nombre y apellidos coincidentes).',
             'apellidos.required' => 'Los apellidos son obligatorios.',
             'apellidos.regex' => 'El campo Apellidos únicamente debe permitir letras del abecedario.',
             'telefono.required' => 'El teléfono de contacto es obligatorio.',
@@ -179,6 +186,29 @@ class TrabajadorController extends Controller
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
             'password.regex' => 'La contraseña debe contener al menos una mayúscula y un número.',
         ]);
+
+        // Validar que no exista duplicidad en el nombre completo (tanto nombre como apellidos)
+        $nombreNorm = mb_strtolower(trim($validated['nombre']));
+        $apellidosNorm = mb_strtolower(trim($validated['apellidos']));
+
+        $existeDuplicado = Trabajador::where(function ($query) use ($nombreNorm, $apellidosNorm) {
+            $query->whereHas('user', function ($q) use ($nombreNorm, $apellidosNorm) {
+                $q->whereRaw('LOWER(TRIM(name)) = ?', [$nombreNorm])
+                  ->whereRaw('LOWER(TRIM(apellidos)) = ?', [$apellidosNorm]);
+            });
+            if (Schema::hasColumn('trabajadores', 'nombre') && Schema::hasColumn('trabajadores', 'apellidos')) {
+                $query->orWhere(function ($q) use ($nombreNorm, $apellidosNorm) {
+                    $q->whereRaw('LOWER(TRIM(nombre)) = ?', [$nombreNorm])
+                      ->whereRaw('LOWER(TRIM(apellidos)) = ?', [$apellidosNorm]);
+                });
+            }
+        })->exists();
+
+        if ($existeDuplicado) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'nombre' => 'Ya existe un trabajador registrado con este nombre completo (nombre y apellidos coincidentes).',
+            ]);
+        }
 
         // Manejo de la subida de fotografía
         if ($request->hasFile('fotografia')) {
@@ -310,7 +340,7 @@ class TrabajadorController extends Controller
         ], [
             'nombre.required' => 'El nombre del trabajador es obligatorio.',
             'nombre.regex' => 'El campo Nombre únicamente debe permitir letras del abecedario.',
-            'nombre.unique' => 'Ya existe otro trabajador registrado con este nombre.',
+            'nombre.unique' => 'Ya existe otro trabajador registrado con este nombre completo (nombre y apellidos coincidentes).',
             'apellidos.required' => 'Los apellidos son obligatorios.',
             'apellidos.regex' => 'El campo Apellidos únicamente debe permitir letras del abecedario.',
             'telefono.required' => 'El teléfono de contacto es obligatorio.',
@@ -330,6 +360,30 @@ class TrabajadorController extends Controller
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.regex' => 'La contraseña debe contener al menos una mayúscula y un número.',
         ]);
+
+        // Validar duplicidad en el nombre completo (nombre y apellidos) excluyendo al trabajador actual
+        $nombreNorm = mb_strtolower(trim($validated['nombre']));
+        $apellidosNorm = mb_strtolower(trim($validated['apellidos']));
+
+        $existeDuplicado = Trabajador::where('id', '!=', $trabajador->id)
+            ->where(function ($query) use ($nombreNorm, $apellidosNorm) {
+                $query->whereHas('user', function ($q) use ($nombreNorm, $apellidosNorm) {
+                    $q->whereRaw('LOWER(TRIM(name)) = ?', [$nombreNorm])
+                      ->whereRaw('LOWER(TRIM(apellidos)) = ?', [$apellidosNorm]);
+                });
+                if (Schema::hasColumn('trabajadores', 'nombre') && Schema::hasColumn('trabajadores', 'apellidos')) {
+                    $query->orWhere(function ($q) use ($nombreNorm, $apellidosNorm) {
+                        $q->whereRaw('LOWER(TRIM(nombre)) = ?', [$nombreNorm])
+                          ->whereRaw('LOWER(TRIM(apellidos)) = ?', [$apellidosNorm]);
+                    });
+                }
+            })->exists();
+
+        if ($existeDuplicado) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'nombre' => 'Ya existe otro trabajador registrado con este nombre completo (nombre y apellidos coincidentes).',
+            ]);
+        }
 
         // Manejo de reemplazo de fotografía
         if ($request->hasFile('fotografia')) {

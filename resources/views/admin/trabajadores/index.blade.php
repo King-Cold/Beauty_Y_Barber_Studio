@@ -2775,7 +2775,7 @@
                 <!-- Contenedor de Tarjetas de Trabajadores (Dinámico desde Base de Datos) -->
                 <div class="workers-cards-grid" id="workersGrid">
                 @forelse($trabajadores as $trabajador)
-                <article class="worker-profile-card" id="worker-card-{{ $trabajador->id }}" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-first-name="{{ mb_strtolower(trim($trabajador->nombre)) }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
+                <article class="worker-profile-card" id="worker-card-{{ $trabajador->id }}" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-first-name="{{ mb_strtolower(trim($trabajador->nombre)) }}" data-last-name="{{ mb_strtolower(trim($trabajador->apellidos)) }}" data-full-name="{{ mb_strtolower(trim($trabajador->nombre . ' ' . $trabajador->apellidos)) }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
                     <div class="card-top-row">
                         <div class="worker-avatar-frame">
                             @if($trabajador->fotografia)
@@ -2960,7 +2960,7 @@
                     </thead>
                     <tbody>
                         @forelse($trabajadores as $trabajador)
-                        <tr class="worker-table-row" id="worker-row-{{ $trabajador->id }}" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-first-name="{{ mb_strtolower(trim($trabajador->nombre)) }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
+                        <tr class="worker-table-row" id="worker-row-{{ $trabajador->id }}" data-status="{{ $trabajador->activo ? 'active' : 'inactive' }}" data-name="{{ $trabajador->nombre_completo }}" data-first-name="{{ mb_strtolower(trim($trabajador->nombre)) }}" data-last-name="{{ mb_strtolower(trim($trabajador->apellidos)) }}" data-full-name="{{ mb_strtolower(trim($trabajador->nombre . ' ' . $trabajador->apellidos)) }}" data-email="{{ $trabajador->email }}" data-phone="{{ $trabajador->telefono }}" data-address="{{ $trabajador->direccion }}">
                             <td>
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     @if($trabajador->fotografia)
@@ -3120,6 +3120,7 @@
                                 title="El campo Apellidos únicamente debe contener letras del abecedario" 
                                 required
                             >
+                            <span id="workerFullNameHelp" style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">El nombre completo (nombre y apellidos) debe ser único en el sistema.</span>
                         </div>
                     </div>
 
@@ -3297,6 +3298,7 @@
                                 title="El campo Apellidos únicamente debe contener letras del abecedario" 
                                 required
                             >
+                            <span id="editWorkerFullNameHelp" style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">El nombre completo (nombre y apellidos) debe ser único en el sistema.</span>
                         </div>
                     </div>
 
@@ -5028,6 +5030,85 @@
             }
         }
 
+        // Función centralizada para detectar duplicidad en nombre completo (nombre y apellidos)
+        function checkWorkerFullNameDuplicate(nameVal, lastNameVal, excludeWorkerId = null) {
+            const clean = (s) => (s || '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
+            const n = clean(nameVal);
+            const ln = clean(lastNameVal);
+            if (!n || !ln) return false;
+            const targetFull = `${n} ${ln}`;
+
+            return Array.from(document.querySelectorAll('.worker-profile-card, .worker-table-row'))
+                .some(card => {
+                    const cardId = (card.id || '').replace('worker-card-', '').replace('worker-row-', '');
+                    if (excludeWorkerId && cardId === excludeWorkerId.toString()) return false;
+                    const cardFirst = clean(card.getAttribute('data-first-name'));
+                    const cardLast = clean(card.getAttribute('data-last-name'));
+                    const cardFull = clean(card.getAttribute('data-full-name') || card.getAttribute('data-name'));
+
+                    if (cardFirst && cardLast) {
+                        return cardFirst === n && cardLast === ln;
+                    }
+                    return cardFull === targetFull;
+                });
+        }
+
+        // Monitoreo en tiempo real de duplicidad de nombre completo en formulario de creación
+        const createNameInput = document.getElementById('workerName');
+        const createLastNameInput = document.getElementById('workerLastName');
+        const createFullNameHelp = document.getElementById('workerFullNameHelp');
+
+        function updateCreateFullNameStatus() {
+            if (!createNameInput || !createLastNameInput || !createFullNameHelp) return;
+            const nameVal = createNameInput.value.trim();
+            const lastNameVal = createLastNameInput.value.trim();
+            if (nameVal && lastNameVal && checkWorkerFullNameDuplicate(nameVal, lastNameVal)) {
+                createNameInput.style.borderColor = '#ef4444';
+                createLastNameInput.style.borderColor = '#ef4444';
+                createFullNameHelp.textContent = '⚠️ Ya existe un trabajador registrado con este nombre y apellidos.';
+                createFullNameHelp.style.color = '#ef4444';
+            } else {
+                createNameInput.style.borderColor = '';
+                createLastNameInput.style.borderColor = '';
+                createFullNameHelp.textContent = 'El nombre completo (nombre y apellidos) debe ser único en el sistema.';
+                createFullNameHelp.style.color = 'var(--text-muted)';
+            }
+        }
+
+        if (createNameInput && createLastNameInput) {
+            createNameInput.addEventListener('input', updateCreateFullNameStatus);
+            createLastNameInput.addEventListener('input', updateCreateFullNameStatus);
+        }
+
+        // Monitoreo en tiempo real de duplicidad de nombre completo en formulario de edición
+        const editNameInput = document.getElementById('editWorkerName');
+        const editLastNameInput = document.getElementById('editWorkerLastName');
+        const editWorkerIdInput = document.getElementById('editWorkerId');
+        const editFullNameHelp = document.getElementById('editWorkerFullNameHelp');
+
+        function updateEditFullNameStatus() {
+            if (!editNameInput || !editLastNameInput || !editFullNameHelp) return;
+            const nameVal = editNameInput.value.trim();
+            const lastNameVal = editLastNameInput.value.trim();
+            const workerId = editWorkerIdInput ? editWorkerIdInput.value : null;
+            if (nameVal && lastNameVal && checkWorkerFullNameDuplicate(nameVal, lastNameVal, workerId)) {
+                editNameInput.style.borderColor = '#ef4444';
+                editLastNameInput.style.borderColor = '#ef4444';
+                editFullNameHelp.textContent = '⚠️ Ya existe otro trabajador registrado con este nombre y apellidos.';
+                editFullNameHelp.style.color = '#ef4444';
+            } else {
+                editNameInput.style.borderColor = '';
+                editLastNameInput.style.borderColor = '';
+                editFullNameHelp.textContent = 'El nombre completo (nombre y apellidos) debe ser único en el sistema.';
+                editFullNameHelp.style.color = 'var(--text-muted)';
+            }
+        }
+
+        if (editNameInput && editLastNameInput) {
+            editNameInput.addEventListener('input', updateEditFullNameStatus);
+            editLastNameInput.addEventListener('input', updateEditFullNameStatus);
+        }
+
         // Envío AJAX funcional para el registro de trabajador (Subtarea 3)
         const formCreate = document.getElementById('formCreateWorker');
         if (formCreate) {
@@ -5071,16 +5152,13 @@
                     return;
                 }
 
-                // Validación estricta previa: Nombre único dentro del sistema (Subtarea 1)
-                const nameLower = name.toLowerCase();
-                const duplicateWorkerCard = Array.from(document.querySelectorAll('.worker-profile-card'))
-                    .some(card => (card.getAttribute('data-first-name') || '').toLowerCase() === nameLower);
-
-                if (duplicateWorkerCard) {
+                // Validación estricta previa: Bloqueo de duplicidad en nombre completo (tanto en el campo nombre como en el de apellidos)
+                const duplicateWorker = checkWorkerFullNameDuplicate(name, lastName);
+                if (duplicateWorker) {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Nombre de barbero duplicado',
-                        text: `Ya existe un barbero registrado con el nombre "${name}". El nombre debe ser único dentro del sistema.`,
+                        title: 'Nombre completo duplicado',
+                        text: `Ya existe un trabajador registrado con el nombre completo "${name} ${lastName}". Debe ser único dentro del sistema (duplicidad en nombre y apellidos).`,
                         background: '#1e293b',
                         color: '#ffffff',
                         confirmButtonColor: '#0055ff'
@@ -5291,20 +5369,13 @@
                     return;
                 }
 
-                // Validación estricta previa: Nombre único dentro del sistema (excluyendo el trabajador actual)
-                const nameLower = name.toLowerCase();
-                const duplicateWorkerCard = Array.from(document.querySelectorAll('.worker-profile-card'))
-                    .some(card => {
-                        const cardId = card.id.replace('worker-card-', '');
-                        if (cardId === workerId.toString()) return false;
-                        return (card.getAttribute('data-first-name') || '').toLowerCase() === nameLower;
-                    });
-
-                if (duplicateWorkerCard) {
+                // Validación estricta previa: Bloqueo de duplicidad en nombre completo (nombre y apellidos) excluyendo al trabajador actual
+                const duplicateWorker = checkWorkerFullNameDuplicate(name, lastName, workerId);
+                if (duplicateWorker) {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Nombre de barbero duplicado',
-                        text: `Ya existe otro barbero registrado con el nombre "${name}". El nombre debe ser único dentro del sistema.`,
+                        title: 'Nombre completo duplicado',
+                        text: `Ya existe otro trabajador registrado con el nombre completo "${name} ${lastName}". Debe ser único dentro del sistema (duplicidad en nombre y apellidos).`,
                         background: '#1e293b',
                         color: '#ffffff',
                         confirmButtonColor: '#0055ff'

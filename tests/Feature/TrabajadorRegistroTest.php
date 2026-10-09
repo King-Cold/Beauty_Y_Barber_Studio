@@ -301,7 +301,7 @@ class TrabajadorRegistroTest extends TestCase
     /**
      * Subtarea 1: Comprueba que el nombre del barbero debe ser único dentro del sistema.
      */
-    public function test_nombre_debe_ser_unico_en_el_sistema(): void
+    public function test_nombre_completo_debe_ser_unico_en_el_sistema(): void
     {
         Trabajador::create([
             'nombre' => 'Carlos',
@@ -313,11 +313,11 @@ class TrabajadorRegistroTest extends TestCase
             'activo' => true,
         ]);
 
-        // Intento de registrar otro barbero con el mismo nombre 'Carlos' vía formulario web
+        // Intento de registrar otro barbero con el mismo nombre completo (Carlos Ramírez) vía formulario web
         $response = $this->actingAs($this->adminUser)
             ->post(route('admin.trabajadores.store'), [
                 'nombre' => 'Carlos',
-                'apellidos' => 'Gómez',
+                'apellidos' => 'Ramírez',
                 'telefono' => '5559998877',
                 'email' => 'carlos2@bbs.com',
                 'direccion' => 'Calle 20 #34',
@@ -326,11 +326,11 @@ class TrabajadorRegistroTest extends TestCase
 
         $response->assertSessionHasErrors(['nombre']);
 
-        // Intento vía API / JSON
+        // Intento vía API / JSON con mismo nombre y apellidos
         $responseJson = $this->actingAs($this->adminUser)
             ->postJson(route('admin.trabajadores.store'), [
                 'nombre' => 'Carlos',
-                'apellidos' => 'Gómez',
+                'apellidos' => 'Ramírez',
                 'telefono' => '5559998877',
                 'email' => 'carlos2@bbs.com',
                 'direccion' => 'Calle 20 #34',
@@ -339,6 +339,20 @@ class TrabajadorRegistroTest extends TestCase
 
         $responseJson->assertStatus(422);
         $responseJson->assertJsonValidationErrors(['nombre']);
+
+        // Registrar otro barbero con el mismo nombre de pila 'Carlos' pero diferentes apellidos 'Gómez' debe ser permitido
+        $responseDiferenteApellido = $this->actingAs($this->adminUser)
+            ->postJson(route('admin.trabajadores.store'), [
+                'nombre' => 'Carlos',
+                'apellidos' => 'Gómez',
+                'telefono' => '5558887766',
+                'email' => 'carlos.gomez@bbs.com',
+                'direccion' => 'Calle 30 #56',
+                'experiencia' => 5,
+            ]);
+
+        $responseDiferenteApellido->assertStatus(201);
+        $responseDiferenteApellido->assertJson(['success' => true]);
     }
 
     /**

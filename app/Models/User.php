@@ -61,4 +61,11 @@ class User extends Authenticatable
         $this->notify(new \App\Notifications\CustomResetPassword($token));
     }
 
+    /**
+     * Relación con el perfil de trabajador asociado.
+     */
+    public function trabajador()
+    {
+        return $this->hasOne(Trabajador::class, 'user_id');
+    }
 }
