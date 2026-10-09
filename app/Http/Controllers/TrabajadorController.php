@@ -276,6 +276,7 @@ class TrabajadorController extends Controller
             'direccion' => ['required', 'string', 'max:255'],
             'experiencia' => ['required', 'integer', 'min:0', 'max:50'],
             'fotografia' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'password' => ['nullable', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/'],
             'activo' => ['nullable'],
             'status' => ['nullable'],
         ], [
@@ -298,6 +299,8 @@ class TrabajadorController extends Controller
             'fotografia.image' => 'El archivo seleccionado debe ser una imagen válida.',
             'fotografia.mimes' => 'La fotografía debe ser en formato JPG, JPEG, PNG o WEBP.',
             'fotografia.max' => 'La fotografía no debe superar 2 MB.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.regex' => 'La contraseña debe contener al menos una mayúscula y un número.',
         ]);
 
         // Manejo de reemplazo de fotografía
@@ -318,14 +321,21 @@ class TrabajadorController extends Controller
 
         unset($validated['status']);
 
-        DB::transaction(function () use ($trabajador, $validated) {
+        $passwordToUpdate = !empty($validated['password']) ? $validated['password'] : null;
+        unset($validated['password']);
+
+        DB::transaction(function () use ($trabajador, $validated, $passwordToUpdate) {
             if ($trabajador->user) {
-                $trabajador->user->update([
+                $userData = [
                     'name' => $validated['nombre'],
                     'apellidos' => $validated['apellidos'],
                     'telefono' => $validated['telefono'],
                     'email' => $validated['email'],
-                ]);
+                ];
+                if ($passwordToUpdate) {
+                    $userData['password'] = Hash::make($passwordToUpdate);
+                }
+                $trabajador->user->update($userData);
             }
             $trabajador->update($validated);
         });

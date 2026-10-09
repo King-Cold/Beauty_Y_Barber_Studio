@@ -1620,6 +1620,55 @@
             box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.15);
         }
 
+        /* Campo de contraseña con botón de ojo (Diseño y funcionalidad idénticos a Login) */
+        .password-input-group {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-input-group .form-control {
+            padding-right: 46px;
+        }
+
+        .password-input-group .toggle-password-btn {
+            position: absolute;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.65);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: color 0.2s ease, background-color 0.2s ease;
+            z-index: 3;
+            outline: none;
+        }
+
+        .password-input-group .toggle-password-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .password-input-group .toggle-password-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
+        }
+
         /* Selectores y Opciones de Formularios (Alta Visibilidad) */
         select.form-control {
             background-color: #0f172a;
@@ -2875,16 +2924,37 @@
 
                     <!-- Contraseña -->
                     <div class="form-row">
-                        <div class="form-group">
+                        <div class="form-group" style="grid-column: 1 / -1;">
                             <label class="form-label" for="workerPassword">Contraseña <span class="required">*</span></label>
-                            <input 
-                                type="password" 
-                                id="workerPassword" 
-                                name="password" 
-                                class="form-control" 
-                                placeholder="Al menos 8 caracteres, 1 mayúscula, 1 número" 
-                                required
-                            >
+                            <div class="password-input-group">
+                                <input 
+                                    type="password" 
+                                    id="workerPassword" 
+                                    name="password" 
+                                    class="form-control" 
+                                    placeholder="Al menos 8 caracteres, 1 mayúscula, 1 número" 
+                                    minlength="8"
+                                    maxlength="50"
+                                    required
+                                >
+                                <button 
+                                    type="button" 
+                                    id="toggleCreatePassword" 
+                                    class="toggle-password-btn" 
+                                    aria-label="Mostrar u ocultar contraseña"
+                                    title="Mostrar u ocultar contraseña"
+                                >
+                                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-off-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <span style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">Mínimo 8 caracteres, al menos 1 letra mayúscula y 1 número</span>
                         </div>
                     </div>
 
@@ -3025,6 +3095,44 @@
                                 required
                             >
                             <span id="editWorkerEmailHelp" style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">Formato válido: usuario@dominio.com</span>
+                        </div>
+                    </div>
+
+                    <!-- Contraseña (Edición Opcional) -->
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="form-label" for="editWorkerPassword">
+                                Contraseña
+                            </label>
+                            <div class="password-input-group">
+                                <input 
+                                    type="password" 
+                                    id="editWorkerPassword" 
+                                    name="password" 
+                                    class="form-control" 
+                                    placeholder="Nueva contraseña (dejar vacío si no deseas modificarla)" 
+                                    minlength="8"
+                                    maxlength="50"
+                                    autocomplete="new-password"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="toggleEditPassword" 
+                                    class="toggle-password-btn" 
+                                    aria-label="Mostrar u ocultar contraseña"
+                                    title="Mostrar u ocultar contraseña"
+                                >
+                                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-off-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <span id="editWorkerPasswordHelp" style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">Solo llenar si deseas cambiar la contraseña (mínimo 8 caracteres, 1 mayúscula y 1 número)</span>
                         </div>
                     </div>
 
@@ -3378,7 +3486,45 @@
                     mobileToggleBtn.setAttribute('aria-expanded', 'false');
                 });
             }
+
+            // Inicializar visibilidad de contraseñas con ojito (Crear y Editar)
+            initPasswordToggle('toggleCreatePassword', 'workerPassword');
+            initPasswordToggle('toggleEditPassword', 'editWorkerPassword');
         });
+
+        // Alternador de visibilidad de contraseña (Diseño y comportamiento idéntico a Login)
+        function initPasswordToggle(btnId, inputId) {
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            if (!btn || !input) return;
+
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const isPassword = input.getAttribute('type') === 'password';
+                input.setAttribute('type', isPassword ? 'text' : 'password');
+                const eye = btn.querySelector('.eye-icon');
+                const eyeOff = btn.querySelector('.eye-off-icon');
+                if (eye && eyeOff) {
+                    eye.classList.toggle('hidden', isPassword);
+                    eyeOff.classList.toggle('hidden', !isPassword);
+                }
+            });
+        }
+
+        function resetPasswordToggleState(btnId, inputId) {
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.setAttribute('type', 'password');
+                input.value = '';
+            }
+            if (btn) {
+                const eye = btn.querySelector('.eye-icon');
+                const eyeOff = btn.querySelector('.eye-off-icon');
+                if (eye) eye.classList.remove('hidden');
+                if (eyeOff) eyeOff.classList.add('hidden');
+            }
+        }
 
         // Funciones de Modales para Trabajadores
         function openModal(id) {
@@ -3387,6 +3533,9 @@
                 modal.classList.add('open');
                 document.body.style.overflow = 'hidden';
             }
+            if (id === 'modalCreateWorker') {
+                resetPasswordToggleState('toggleCreatePassword', 'workerPassword');
+            }
         }
 
         function closeModal(id) {
@@ -3394,6 +3543,12 @@
             if (modal) {
                 modal.classList.remove('open');
                 document.body.style.overflow = '';
+            }
+            if (id === 'modalEditWorker') {
+                resetPasswordToggleState('toggleEditPassword', 'editWorkerPassword');
+            }
+            if (id === 'modalCreateWorker') {
+                resetPasswordToggleState('toggleCreatePassword', 'workerPassword');
             }
         }
 
@@ -3443,6 +3598,13 @@
             const emailInput = document.getElementById('editWorkerEmail');
             emailInput.value = email;
             validateEmailInput(emailInput);
+
+            // Resetear campo de contraseña y visibilidad en edición
+            const editPassInput = document.getElementById('editWorkerPassword');
+            if (editPassInput) {
+                editPassInput.value = '';
+            }
+            resetPasswordToggleState('toggleEditPassword', 'editWorkerPassword');
 
             document.getElementById('editWorkerAddress').value = address;
             document.getElementById('editWorkerExperience').value = exp;
@@ -4235,6 +4397,33 @@
                     return;
                 }
 
+                // Validación estricta previa: Contraseña obligatoria (al menos 8 caracteres, 1 mayúscula y 1 número)
+                const createPass = (formData.get('password') || '').toString().trim();
+                if (!createPass || createPass.length < 8) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Contraseña requerida',
+                        text: 'La contraseña debe tener al menos 8 caracteres.',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('workerPassword').focus();
+                    return;
+                }
+                if (!/[A-Z]/.test(createPass) || !/[0-9]/.test(createPass)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Requisitos de contraseña',
+                        text: 'La contraseña debe contener al menos una letra mayúscula y un número.',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    document.getElementById('workerPassword').focus();
+                    return;
+                }
+
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Guardando en BD...';
 
@@ -4434,6 +4623,38 @@
                     });
                     document.getElementById('editWorkerExperience').focus();
                     return;
+                }
+
+                // Validación estricta previa: Contraseña en edición (opcional, pero si se escribe debe cumplir reglas)
+                const editPassword = (formData.get('password') || '').toString().trim();
+                if (editPassword.length > 0) {
+                    if (editPassword.length < 8) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Contraseña muy corta',
+                            text: 'La nueva contraseña debe tener al menos 8 caracteres.',
+                            background: '#1e293b',
+                            color: '#ffffff',
+                            confirmButtonColor: '#0055ff'
+                        });
+                        document.getElementById('editWorkerPassword').focus();
+                        return;
+                    }
+                    if (!/[A-Z]/.test(editPassword) || !/[0-9]/.test(editPassword)) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Requisitos de contraseña',
+                            text: 'La nueva contraseña debe contener al menos una letra mayúscula y un número.',
+                            background: '#1e293b',
+                            color: '#ffffff',
+                            confirmButtonColor: '#0055ff'
+                        });
+                        document.getElementById('editWorkerPassword').focus();
+                        return;
+                    }
+                } else {
+                    // Si se deja vacía, remover del formData para conservar la contraseña actual
+                    formData.delete('password');
                 }
 
                 submitBtn.disabled = true;
