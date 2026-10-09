@@ -3603,7 +3603,7 @@
                                 <label for="newBlockDate">Fecha</label>
                                 <div class="special-date-input-wrap">
                                     <input type="text" id="newBlockDate" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off" oninput="handleBlockDateInput(this)" onblur="validateAndFormatBlockDate(this)">
-                                    <input type="date" id="newBlockDateNativePicker" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" min="{{ date('Y-m-d') }}" onchange="syncBlockNativeDate(this)" tabindex="-1">
+                                    <input type="date" id="newBlockDateNativePicker" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" min="{{ date('Y-m-d') }}" max="{{ date('Y') }}-12-31" onchange="syncBlockNativeDate(this)" tabindex="-1">
                                     <button type="button" class="btn-calendar-trigger" onclick="openWorkerBlockDatePicker('newBlockDateNativePicker')" title="Abrir calendario" aria-label="Abrir calendario">
                                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -3613,6 +3613,7 @@
                                         </svg>
                                     </button>
                                 </div>
+                                <span class="special-date-help-text" style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">Orden de captura manual: día, mes y año</span>
                             </div>
                             <div class="block-input-group">
                                 <label for="newBlockStartTime">Hora inicio</label>
@@ -4129,7 +4130,12 @@
 
             if (dateInput) {
                 dateInput.value = '';
-                dateInput.min = todayStr;
+            }
+            const nativePicker = document.getElementById('newBlockDateNativePicker');
+            if (nativePicker) {
+                nativePicker.value = '';
+                nativePicker.min = todayStr;
+                nativePicker.max = `${year}-12-31`;
             }
             if (startInput) startInput.value = '';
             if (endInput) endInput.value = '';
@@ -4310,7 +4316,12 @@
             };
         }
 
-        // Funciones para selector de fecha con icono blanco y formato DD/MM/AAAA en Bloqueos
+        // ===================================================
+        // MANEJO Y VALIDACIÓN DE INPUTS DE BLOQUEOS DE DISPONIBILIDAD
+        // Formato DD/MM/AAAA, máscara estricta, validación diferida (onBlur / 8 dígitos)
+        // y restricción estricta al año actual del sistema (igual que en Fechas Especiales).
+        // ===================================================
+
         function openWorkerBlockDatePicker(pickerId) {
             const picker = document.getElementById(pickerId);
             if (!picker) return;
@@ -4321,37 +4332,177 @@
             }
         }
 
-        function handleBlockDateInput(input) {
-            let val = input.value.replace(/\D/g, '');
-            if (val.length > 8) val = val.substring(0, 8);
+        // Convierte fecha YYYY-MM-DD a DD/MM/AAAA
+        function formatBlockYmdToDmy(ymd) {
+            if (!ymd || !ymd.includes('-')) return '';
+            const parts = ymd.split('-');
+            if (parts.length !== 3) return '';
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
 
+        // Convierte fecha DD/MM/AAAA a YYYY-MM-DD
+        function formatBlockDmyToYmd(dmy) {
+            if (!dmy || !dmy.includes('/')) return '';
+            const parts = dmy.split('/');
+            if (parts.length !== 3) return '';
+            return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+
+        // Validación estricta diferida (al perder foco o al completar los 8 dígitos)
+        function validateWorkerBlockDateField(input) {
+            const val = input.value.trim();
+            if (!val) {
+                const nativePicker = document.getElementById('newBlockDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
+                onBlockDateChanged();
+                return true;
+            }
+
+            // Si el usuario no ha completado los 10 caracteres (DD/MM/AAAA), avisar y limpiar
+            if (val.length < 10) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha incompleta',
+                    text: 'Por favor ingresa la fecha completa en formato DD/MM/AAAA.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                const nativePicker = document.getElementById('newBlockDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
+                onBlockDateChanged();
+                return false;
+            }
+
+            const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+            const match = val.match(regex);
+            if (!match) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Formato incorrecto',
+                    text: 'El formato de fecha debe ser DD/MM/AAAA (día, mes y año).',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                const nativePicker = document.getElementById('newBlockDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
+                onBlockDateChanged();
+                return false;
+            }
+
+            const day = parseInt(match[1], 10);
+            const month = parseInt(match[2], 10);
+            const year = parseInt(match[3], 10);
+
+            const now = new Date();
+            const currentYear = now.getFullYear();
+
+            // Regla estricta: Únicamente fechas del año actual
+            if (year !== currentYear) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Año no permitido',
+                    text: `Únicamente se admiten fechas correspondientes al año en curso (${currentYear}).`,
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                const nativePicker = document.getElementById('newBlockDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
+                onBlockDateChanged();
+                return false;
+            }
+
+            // Validar existencia de fecha real (días válidos por mes y año bisiesto)
+            if (month < 1 || month > 12) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Mes inválido',
+                    text: 'El mes ingresado no es válido (debe estar entre 01 y 12).',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                const nativePicker = document.getElementById('newBlockDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
+                onBlockDateChanged();
+                return false;
+            }
+
+            const testDate = new Date(year, month - 1, day);
+            if (testDate.getFullYear() !== year || (testDate.getMonth() + 1) !== month || testDate.getDate() !== day) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha inválida',
+                    text: 'La fecha ingresada no existe en el calendario.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                const nativePicker = document.getElementById('newBlockDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
+                onBlockDateChanged();
+                return false;
+            }
+
+            // Validar que no sea fecha pasada dentro del mismo año
+            const todayStart = new Date(currentYear, now.getMonth(), now.getDate()).getTime();
+            if (testDate.getTime() < todayStart) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha no permitida',
+                    text: 'No puedes seleccionar fechas de días anteriores en los bloqueos de disponibilidad.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                const nativePicker = document.getElementById('newBlockDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
+                onBlockDateChanged();
+                return false;
+            }
+
+            const nativePicker = document.getElementById('newBlockDateNativePicker');
+            if (nativePicker) {
+                nativePicker.value = formatBlockDmyToYmd(val);
+            }
+            onBlockDateChanged();
+            return true;
+        }
+
+        // Manejador de evento input: formateo dinámico con máscara DD/MM/AAAA sin disparar alertas prematuras
+        function handleBlockDateInput(input) {
+            let rawDigits = input.value.replace(/\D/g, '').slice(0, 8);
             let formatted = '';
-            if (val.length > 0) formatted += val.substring(0, 2);
-            if (val.length >= 3) formatted += '/' + val.substring(2, 4);
-            if (val.length >= 5) formatted += '/' + val.substring(4, 8);
+
+            if (rawDigits.length > 0) {
+                formatted += rawDigits.slice(0, 2);
+            }
+            if (rawDigits.length > 2) {
+                formatted += '/' + rawDigits.slice(2, 4);
+            }
+            if (rawDigits.length > 4) {
+                formatted += '/' + rawDigits.slice(4, 8);
+            }
 
             input.value = formatted;
 
-            if (val.length === 8) {
-                validateAndFormatBlockDate(input);
+            // Si ha completado exactamente los 8 dígitos (10 caracteres "DD/MM/AAAA"), validar
+            if (formatted.length === 10) {
+                validateWorkerBlockDateField(input);
             }
         }
 
         function validateAndFormatBlockDate(input) {
-            const val = input.value.trim();
-            if (!val) {
-                onBlockDateChanged();
-                return;
-            }
-
-            const parts = val.split('/');
-            if (parts.length === 3 && parts[0].length === 2 && parts[1].length === 2 && parts[2].length === 4) {
-                const ymd = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                const nativePicker = document.getElementById('newBlockDateNativePicker');
-                if (nativePicker) nativePicker.value = ymd;
-                onBlockDateChanged();
-            } else {
-                onBlockDateChanged();
+            if (input.value.trim().length > 0) {
+                validateWorkerBlockDateField(input);
             }
         }
 
@@ -4359,12 +4510,9 @@
             const ymd = picker.value;
             const textInput = document.getElementById('newBlockDate');
             if (textInput && ymd) {
-                const parts = ymd.split('-');
-                if (parts.length === 3) {
-                    textInput.value = `${parts[2]}/${parts[1]}/${parts[0]}`;
-                }
+                textInput.value = formatBlockYmdToDmy(ymd);
+                validateWorkerBlockDateField(textInput);
             }
-            onBlockDateChanged();
         }
 
         function getBlockDateYmd() {
@@ -4372,10 +4520,7 @@
             if (!dateInput || !dateInput.value) return '';
             const val = dateInput.value.trim();
             if (val.includes('/')) {
-                const parts = val.split('/');
-                if (parts.length === 3) {
-                    return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                }
+                return formatBlockDmyToYmd(val);
             }
             return val;
         }
@@ -4484,24 +4629,7 @@
                 return;
             }
 
-            // 1. Validación estricta: Bloquear fechas de días anteriores
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
-
-            if (dateVal < todayStr) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Fecha no permitida',
-                    text: 'No puedes registrar bloqueos de disponibilidad en fechas pasadas.',
-                    background: '#1e293b',
-                    color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
-                });
-                dateInput.value = '';
-                dateInput.focus();
+            if (!validateWorkerBlockDateField(dateInput)) {
                 return;
             }
 
@@ -5787,31 +5915,6 @@
                 }
             });
         });
-
-        // Restricción en tiempo real en los bloqueos de disponibilidad para no permitir días anteriores
-        const blockDateInput = document.getElementById('newBlockDate');
-        if (blockDateInput) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
-            blockDateInput.min = todayStr;
-
-            blockDateInput.addEventListener('change', function () {
-                if (this.value && this.value < todayStr) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Fecha no permitida',
-                        text: 'No puedes seleccionar fechas de días anteriores en los bloqueos de disponibilidad.',
-                        background: '#1e293b',
-                        color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
-                    });
-                    this.value = '';
-                }
-            });
-        }
     </script>
 </body>
 </html>
