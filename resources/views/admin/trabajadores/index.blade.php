@@ -3172,7 +3172,7 @@
                                     id="workerPassword" 
                                     name="password" 
                                     class="form-control" 
-                                    placeholder="Al menos 8 caracteres, 1 mayúscula, 1 número" 
+                                    placeholder="Al menos 8 caracteres, 1 mayúscula, 1 número y un carácter especial" 
                                     minlength="8"
                                     maxlength="50"
                                     required
@@ -3194,7 +3194,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <span style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">Mínimo 8 caracteres, al menos 1 letra mayúscula y 1 número</span>
+                            <span style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">Mínimo 8 caracteres, al menos 1 letra mayúscula, 1 número y un carácter especial</span>
                         </div>
                     </div>
 
@@ -3373,7 +3373,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <span id="editWorkerPasswordHelp" style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">Solo llenar si deseas cambiar la contraseña (mínimo 8 caracteres, 1 mayúscula y 1 número)</span>
+                            <span id="editWorkerPasswordHelp" style="font-size: 11px; color: var(--text-muted); margin-top: 3px; display: block;">Solo llenar si deseas cambiar la contraseña (mínimo 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial)</span>
                         </div>
                     </div>
 
@@ -5356,7 +5356,7 @@
                     return;
                 }
 
-                // Validación estricta previa: Contraseña obligatoria (al menos 8 caracteres, 1 mayúscula y 1 número)
+                // Validación estricta previa: Contraseña obligatoria (al menos 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial)
                 const createPass = (formData.get('password') || '').toString().trim();
                 if (!createPass || createPass.length < 8) {
                     Swal.fire({
@@ -5370,11 +5370,11 @@
                     document.getElementById('workerPassword').focus();
                     return;
                 }
-                if (!/[A-Z]/.test(createPass) || !/[0-9]/.test(createPass)) {
+                if (!/[A-Z]/.test(createPass) || !/[0-9]/.test(createPass) || !/[\W_]/.test(createPass)) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Requisitos de contraseña',
-                        text: 'La contraseña debe contener al menos una letra mayúscula y un número.',
+                        text: 'La contraseña debe contener al menos una letra mayúscula, un número y un carácter especial.',
                         background: '#1e293b',
                         color: '#ffffff',
                         confirmButtonColor: '#0055ff'
@@ -5592,11 +5592,11 @@
                         document.getElementById('editWorkerPassword').focus();
                         return;
                     }
-                    if (!/[A-Z]/.test(editPassword) || !/[0-9]/.test(editPassword)) {
+                    if (!/[A-Z]/.test(editPassword) || !/[0-9]/.test(editPassword) || !/[\W_]/.test(editPassword)) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Requisitos de contraseña',
-                            text: 'La nueva contraseña debe contener al menos una letra mayúscula y un número.',
+                            text: 'La nueva contraseña debe contener al menos una letra mayúscula, un número y un carácter especial.',
                             background: '#1e293b',
                             color: '#ffffff',
                             confirmButtonColor: '#0055ff'

@@ -159,7 +159,7 @@ class TrabajadorController extends Controller
             'direccion' => ['required', 'string', 'max:255'],
             'experiencia' => ['required', 'integer', 'min:0', 'max:50'],
             'fotografia' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
-            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/'],
+            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[\W_]/'],
             'activo' => ['nullable', 'boolean'],
         ], [
             'nombre.required' => 'El nombre del trabajador es obligatorio.',
@@ -184,7 +184,7 @@ class TrabajadorController extends Controller
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
-            'password.regex' => 'La contraseña debe contener al menos una mayúscula y un número.',
+            'password.regex' => 'La contraseña debe contener al menos una mayúscula, un número y un carácter especial.',
         ]);
 
         // Validar que no exista duplicidad en el nombre completo (tanto nombre como apellidos)
@@ -334,7 +334,7 @@ class TrabajadorController extends Controller
             'direccion' => ['required', 'string', 'max:255'],
             'experiencia' => ['required', 'integer', 'min:0', 'max:50'],
             'fotografia' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
-            'password' => ['nullable', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/'],
+            'password' => ['nullable', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[\W_]/'],
             'activo' => ['nullable'],
             'status' => ['nullable'],
         ], [
@@ -358,7 +358,7 @@ class TrabajadorController extends Controller
             'fotografia.mimes' => 'La fotografía debe ser en formato JPG, JPEG, PNG o WEBP.',
             'fotografia.max' => 'La fotografía no debe superar 2 MB.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.regex' => 'La contraseña debe contener al menos una mayúscula y un número.',
+            'password.regex' => 'La contraseña debe contener al menos una mayúscula, un número y un carácter especial.',
         ]);
 
         // Validar duplicidad en el nombre completo (nombre y apellidos) excluyendo al trabajador actual
