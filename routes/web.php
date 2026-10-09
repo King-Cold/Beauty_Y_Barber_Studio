@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/configuracion/horarios', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'saveBranchSchedule'])->name('admin.configuracion.horarios.save');
     Route::get('/admin/configuracion/fechas-especiales', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'getFechasEspeciales'])->name('admin.configuracion.fechas_especiales.index');
     Route::post('/admin/configuracion/fechas-especiales', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'storeFechaEspecial'])->name('admin.configuracion.fechas_especiales.store');
+    Route::put('/admin/configuracion/fechas-especiales/{fechaEspecial}', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'updateFechaEspecial'])->name('admin.configuracion.fechas_especiales.update');
     Route::delete('/admin/configuracion/fechas-especiales/{fechaEspecial}', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'destroyFechaEspecial'])->name('admin.configuracion.fechas_especiales.destroy');
 
     Route::get('/recepcion', function () {

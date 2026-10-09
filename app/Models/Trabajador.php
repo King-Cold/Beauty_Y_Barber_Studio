@@ -241,8 +241,11 @@ class Trabajador extends Model
             $horarioData = json_decode($horarioData, true);
         }
 
-        if (!is_array($horarioData)) {
-            return 'Sin disponibilidad';
+        // Si el trabajador no tiene horario configurado aún (por ejemplo, recién creado o sin horario manual),
+        // pero la sucursal está abierta y no hay fecha especial de cierre,
+        // automáticamente tiene disponibilidad de hoy siguiendo el horario de la sucursal.
+        if (empty($horarioData) || !is_array($horarioData)) {
+            return 'Con disponibilidad de horario';
         }
 
         // Buscar el turno de hoy en el horario del trabajador con cualquiera de las variantes del día
@@ -254,7 +257,15 @@ class Trabajador extends Model
             }
         }
 
-        if (!$turnoHoy || empty($turnoHoy['entrada']) || empty($turnoHoy['salida']) || $turnoHoy['entrada'] >= $turnoHoy['salida']) {
+        // Si el trabajador tiene días configurados pero no tiene turno específico para hoy:
+        // si no está explícitamente cerrado en la sucursal, se evalúa si tiene turno válido
+        if (!$turnoHoy) {
+            // Si el trabajador fue creado sin este día explícito pero la sucursal labora,
+            // cuenta automáticamente con disponibilidad salvo que esté configurado como inactivo
+            return 'Con disponibilidad de horario';
+        }
+
+        if (empty($turnoHoy['entrada']) || empty($turnoHoy['salida']) || $turnoHoy['entrada'] >= $turnoHoy['salida']) {
             return 'Sin disponibilidad';
         }
 

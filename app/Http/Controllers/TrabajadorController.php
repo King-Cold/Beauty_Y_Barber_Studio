@@ -206,6 +206,34 @@ class TrabajadorController extends Controller
             // Quitar password del array para no intentar insertarlo en trabajadores
             unset($validated['password'], $validated['password_confirmation']);
 
+            // =========================================================================
+            // REQUERIMIENTO: Si la sucursal marca laborando y en las fechas especiales no
+            // hay una que indique que no laboren o sea horario especial cerrado, asignar
+            // automáticamente al nuevo trabajador los turnos correspondientes para que
+            // cuente inmediatamente con disponibilidad de hoy.
+            // =========================================================================
+            \App\Models\HorarioSucursal::ensureTableExists();
+            \App\Models\FechaEspecial::ensureTableExists();
+
+            $mapaSucursal = \App\Models\HorarioSucursal::getHorariosMap();
+            $diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+            $horarioInicial = [];
+
+            foreach ($diasSemana as $diaKey) {
+                $branchDay = $mapaSucursal[$diaKey] ?? null;
+                if ($branchDay && !empty($branchDay['abierto'])) {
+                    $horarioInicial[$diaKey] = [
+                        'entrada' => $branchDay['apertura'] ?? '09:00',
+                        'salida' => $branchDay['cierre'] ?? '20:00',
+                    ];
+                }
+            }
+
+            // Asignar el horario determinado al trabajador si aún no venía especificado
+            if (empty($validated['horario'])) {
+                $validated['horario'] = $horarioInicial;
+            }
+
             // Crear el registro de trabajador
             return Trabajador::create($validated);
         });

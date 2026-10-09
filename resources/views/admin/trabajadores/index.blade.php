@@ -1342,6 +1342,177 @@
             display: inline-block;
         }
 
+        /* Botón de consultar bloqueos debajo del apartado de disponibilidad */
+        .btn-view-blocks {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: #fbbf24;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            margin-top: 4px;
+        }
+
+        .btn-view-blocks:hover {
+            background: rgba(245, 158, 11, 0.18);
+            border-color: rgba(245, 158, 11, 0.45);
+            color: #fef3c7;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+        }
+
+        .btn-view-blocks:active {
+            transform: translateY(0);
+        }
+
+        .btn-view-blocks svg {
+            flex-shrink: 0;
+            color: #fbbf24;
+        }
+
+        /* Estilos de la vista detallada de bloqueos (Modal) */
+        .blocks-detail-summary-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+        }
+
+        .blocks-detail-worker-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .blocks-detail-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .blocks-detail-worker-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .blocks-detail-worker-role {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .blocks-detail-badge-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .blocks-detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 340px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .blocks-detail-card-item {
+            background: rgba(10, 17, 36, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-left: 3px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .blocks-detail-card-item:hover {
+            background: rgba(20, 31, 56, 0.85);
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+
+        .blocks-detail-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+
+        .blocks-detail-item-date-badge {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .blocks-detail-item-time {
+            font-size: 12px;
+            font-weight: 600;
+            color: #93c5fd;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .blocks-detail-item-reason {
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 260px;
+        }
+
+        .blocks-detail-empty-state {
+            text-align: center;
+            padding: 36px 20px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px dashed var(--border-subtle);
+            border-radius: 10px;
+            color: var(--text-muted);
+        }
+
+        .blocks-detail-empty-state svg {
+            margin-bottom: 10px;
+            color: rgba(245, 158, 11, 0.6);
+        }
+
 
 
         /* Botones de acción en tarjeta */
@@ -2042,6 +2213,65 @@
             transition: all 0.2s ease;
         }
 
+        .special-date-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .special-date-input-wrap input[type="text"] {
+            padding-right: 32px;
+            width: 100%;
+        }
+
+        .btn-calendar-trigger {
+            position: absolute;
+            right: 6px;
+            background: transparent;
+            border: none;
+            color: #ffffff !important;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1 !important;
+            transition: all 0.2s ease;
+        }
+
+        .btn-calendar-trigger svg {
+            color: #ffffff !important;
+            stroke: #ffffff !important;
+            opacity: 1 !important;
+        }
+
+        .btn-calendar-trigger:hover {
+            opacity: 1 !important;
+            transform: scale(1.15);
+            color: #ffffff !important;
+        }
+
+        .btn-calendar-trigger:hover svg {
+            stroke: #ffffff !important;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+        }
+
+        .block-input-group input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(100%) contrast(100%) !important;
+            cursor: pointer;
+            opacity: 1 !important;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            font-size: 15px;
+            padding: 2px;
+        }
+
+        .block-input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1 !important;
+            transform: scale(1.15);
+            filter: invert(1) brightness(120%) contrast(100%) drop-shadow(0 0 3px rgba(255, 255, 255, 0.8)) !important;
+        }
+
         .block-input-group input:focus {
             outline: none;
             border-color: var(--barber-blue);
@@ -2656,6 +2886,15 @@
                                     </div>
                                 @endif
                             </div>
+
+                            <!-- Botón para abrir vista detallada de bloqueos configurados -->
+                            <button type="button" class="btn-view-blocks" onclick="openWorkerBlocksDetailModal({{ $trabajador->id }}, '{{ addslashes($trabajador->nombre_completo) }}')">
+                                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                </svg>
+                                <span>Consultar Bloqueos</span>
+                            </button>
                         </div>
                     </div>
 
@@ -3360,7 +3599,18 @@
                         <div class="blocks-inputs-grid">
                             <div class="block-input-group">
                                 <label for="newBlockDate">Fecha</label>
-                                <input type="date" id="newBlockDate">
+                                <div class="special-date-input-wrap">
+                                    <input type="text" id="newBlockDate" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off" oninput="handleBlockDateInput(this)" onblur="validateAndFormatBlockDate(this)">
+                                    <input type="date" id="newBlockDateNativePicker" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" min="{{ date('Y-m-d') }}" onchange="syncBlockNativeDate(this)" tabindex="-1">
+                                    <button type="button" class="btn-calendar-trigger" onclick="openWorkerBlockDatePicker('newBlockDateNativePicker')" title="Abrir calendario" aria-label="Abrir calendario">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                             <div class="block-input-group">
                                 <label for="newBlockStartTime">Hora inicio</label>
@@ -3386,7 +3636,12 @@
                             </div>
                         </div>
 
-                        <div style="display: flex; justify-content: flex-end;">
+                        <!-- Texto informativo sobre los límites laborales y operativos -->
+                        <div id="newBlockRangeHint" style="font-size: 11px; color: var(--text-muted); margin-top: 6px; margin-bottom: 4px; display: none; font-weight: 500;">
+                            <span id="newBlockRangeHintText"></span>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
                             <button type="button" class="btn-add-block-action" onclick="addAvailabilityBlock()">
                                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -3422,6 +3677,77 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         MODAL: VISTA DETALLADA DE BLOQUEOS CONFIGURADOS DEL TRABAJADOR
+         ========================================================================= -->
+    <div class="modal-overlay" id="modalWorkerBlocksDetail">
+        <div class="modal-container" style="max-width: 620px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                    </svg>
+                    <span>Bloqueos de Disponibilidad</span>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeModal('modalWorkerBlocksDetail')" title="Cerrar modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Tarjeta resumen del especialista -->
+                <div class="blocks-detail-summary-card">
+                    <div class="blocks-detail-worker-info">
+                        <div class="blocks-detail-avatar" id="detailModalAvatar">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="blocks-detail-worker-name" id="detailModalWorkerName">Nombre del Especialista</div>
+                            <div class="blocks-detail-worker-role">Especialista de Barbería / Estética</div>
+                        </div>
+                    </div>
+                    <div class="blocks-detail-badge-count" id="detailModalBadgeCount">
+                        <span id="detailModalCountNumber">0</span> Bloqueos
+                    </div>
+                </div>
+
+                <!-- Lista detallada de bloqueos configurados -->
+                <div>
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>Historial de Bloqueos Programados</span>
+                        <span style="font-size: 11px; color: var(--text-muted); font-weight: 500;" id="detailModalDateHint">Pausas y permisos de agenda</span>
+                    </div>
+
+                    <div class="blocks-detail-list" id="detailModalBlocksList">
+                        <!-- Render dinámico vía JS -->
+                    </div>
+
+                    <div class="blocks-detail-empty-state" id="detailModalEmptyState" style="display: none;">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 14 14"></polyline>
+                        </svg>
+                        <p style="font-size: 13px; font-weight: 600; color: var(--text-white); margin-bottom: 4px;">Sin bloqueos registrados</p>
+                        <p style="font-size: 12px; margin: 0;">Este especialista cuenta con disponibilidad completa sin pausas ni permisos configurados.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeModal('modalWorkerBlocksDetail')">Cerrar</button>
+                <button type="button" class="btn-submit-action" id="btnDetailManageSchedule" onclick="handleDetailManageSchedule()">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Configurar / Editar Horario</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -3747,6 +4073,13 @@
                     if (selectIn.selectedIndex === -1 && inSlots.length > 0) {
                         selectIn.selectedIndex = 0;
                     }
+                    // Al modificar el horario laboral del trabajador en tiempo real, actualizar el bloqueo
+                    selectIn.onchange = function () {
+                        if (!currentModalWorkerSchedule) currentModalWorkerSchedule = {};
+                        if (!currentModalWorkerSchedule[day]) currentModalWorkerSchedule[day] = {};
+                        currentModalWorkerSchedule[day].entrada = this.value;
+                        onBlockDateChanged();
+                    };
                 }
 
                 if (selectOut) {
@@ -3763,6 +4096,13 @@
                     if (selectOut.selectedIndex === -1 && outSlots.length > 0) {
                         selectOut.selectedIndex = outSlots.length - 1;
                     }
+                    // Al modificar el horario laboral del trabajador en tiempo real, actualizar el bloqueo
+                    selectOut.onchange = function () {
+                        if (!currentModalWorkerSchedule) currentModalWorkerSchedule = {};
+                        if (!currentModalWorkerSchedule[day]) currentModalWorkerSchedule[day] = {};
+                        currentModalWorkerSchedule[day].salida = this.value;
+                        onBlockDateChanged();
+                    };
                 }
             });
         }
@@ -3774,15 +4114,30 @@
             if (idInput) idInput.value = id;
             if (nameEl) nameEl.textContent = workerName;
 
-            // Limpiar campos del formulario de nuevo bloqueo
+            // Limpiar campos del formulario de nuevo bloqueo y restringir a fechas actuales o futuras
             const dateInput = document.getElementById('newBlockDate');
             const startInput = document.getElementById('newBlockStartTime');
             const endInput = document.getElementById('newBlockEndTime');
             const reasonInput = document.getElementById('newBlockReason');
-            if (dateInput) dateInput.value = '';
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+
+            if (dateInput) {
+                dateInput.value = '';
+                dateInput.min = todayStr;
+            }
             if (startInput) startInput.value = '';
             if (endInput) endInput.value = '';
             if (reasonInput) reasonInput.value = '';
+
+            // Restablecer variables de horario del modal
+            currentModalWorkerSchedule = null;
+            currentModalBranchLimits = branchLimits;
+            const hintBox = document.getElementById('newBlockRangeHint');
+            if (hintBox) hintBox.style.display = 'none';
 
             // Cada especialista inicia sin bloqueos predeterminados
             if (!workerBlocksStore[id]) {
@@ -3804,6 +4159,8 @@
                 if (response.ok) {
                     const data = await response.json();
                     const limits = data.branch_limits || branchLimits;
+                    currentModalBranchLimits = limits;
+                    currentModalWorkerSchedule = data.horario || null;
                     applyBranchLimitsToWorkerModal(limits, data.horario);
                 }
             } catch (err) {
@@ -3853,6 +4210,248 @@
             });
         }
 
+        // Cache del horario del trabajador y límites actuales del modal
+        let currentModalWorkerSchedule = null;
+        let currentModalBranchLimits = branchLimits;
+
+        // Mapea fecha YYYY-MM-DD al día de la semana correspondiente
+        function getDayKeyFromDateString(dateStr) {
+            if (!dateStr || !dateStr.includes('-')) return null;
+            const parts = dateStr.split('-');
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+            const dt = new Date(year, month, day);
+            const daysOfWeek = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+            return daysOfWeek[dt.getDay()] || null;
+        }
+
+        // Obtiene el rango de horario laboral efectivo del trabajador y la sucursal para un día específico
+        function getEffectiveWorkingHoursForDate(dateStr) {
+            const dayKey = getDayKeyFromDateString(dateStr);
+            if (!dayKey) return { valid: false, message: 'Fecha no válida.' };
+
+            const dayNames = {
+                lunes: 'Lunes',
+                martes: 'Martes',
+                miercoles: 'Miércoles',
+                jueves: 'Jueves',
+                viernes: 'Viernes',
+                sabado: 'Sábado',
+                domingo: 'Domingo'
+            };
+            const nombreDia = dayNames[dayKey] || dayKey;
+
+            // 1. Validar horario operativo de la sucursal
+            const bDay = currentModalBranchLimits[dayKey] || branchLimits[dayKey] || null;
+            if (!bDay || !bDay.abierto) {
+                return {
+                    valid: false,
+                    dayKey,
+                    nombreDia,
+                    message: `La sucursal permanece cerrada los días ${nombreDia}. No se pueden registrar bloqueos en este día.`
+                };
+            }
+
+            const branchOpen = bDay.apertura || '09:00';
+            const branchClose = bDay.cierre || '20:00';
+
+            // 2. Validar horario laboral asignado al trabajador en Sección A
+            // Si hay inputs en el DOM para ese día, leerlos directamente; sino, revisar currentModalWorkerSchedule
+            let workerIn = null;
+            let workerOut = null;
+
+            const selectIn = document.getElementById(`sched-${dayKey}-in`);
+            const selectOut = document.getElementById(`sched-${dayKey}-out`);
+
+            if (selectIn && selectOut && !selectIn.disabled && selectIn.value && selectOut.value) {
+                workerIn = selectIn.value;
+                workerOut = selectOut.value;
+            } else if (currentModalWorkerSchedule && currentModalWorkerSchedule[dayKey]) {
+                workerIn = currentModalWorkerSchedule[dayKey].entrada;
+                workerOut = currentModalWorkerSchedule[dayKey].salida;
+            }
+
+            // Los trabajadores laboran de lunes a viernes en Sección A
+            if (!workerIn || !workerOut || ['sabado', 'domingo'].includes(dayKey)) {
+                return {
+                    valid: false,
+                    dayKey,
+                    nombreDia,
+                    message: `El especialista no tiene jornada laboral asignada para el día ${nombreDia}. Los bloqueos solo pueden programarse dentro de su horario de trabajo.`
+                };
+            }
+
+            // Rango permitido: intersección entre el horario laboral del trabajador y el horario de la sucursal
+            const allowedStart = workerIn > branchOpen ? workerIn : branchOpen;
+            const allowedEnd = workerOut < branchClose ? workerOut : branchClose;
+
+            if (allowedStart >= allowedEnd) {
+                return {
+                    valid: false,
+                    dayKey,
+                    nombreDia,
+                    message: `No existe un rango de trabajo válido disponible para el día ${nombreDia}.`
+                };
+            }
+
+            return {
+                valid: true,
+                dayKey,
+                nombreDia,
+                branchOpen,
+                branchClose,
+                workerIn,
+                workerOut,
+                allowedStart,
+                allowedEnd
+            };
+        }
+
+        // Funciones para selector de fecha con icono blanco y formato DD/MM/AAAA en Bloqueos
+        function openWorkerBlockDatePicker(pickerId) {
+            const picker = document.getElementById(pickerId);
+            if (!picker) return;
+            if (typeof picker.showPicker === 'function') {
+                picker.showPicker();
+            } else {
+                picker.click();
+            }
+        }
+
+        function handleBlockDateInput(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val.length > 8) val = val.substring(0, 8);
+
+            let formatted = '';
+            if (val.length > 0) formatted += val.substring(0, 2);
+            if (val.length >= 3) formatted += '/' + val.substring(2, 4);
+            if (val.length >= 5) formatted += '/' + val.substring(4, 8);
+
+            input.value = formatted;
+
+            if (val.length === 8) {
+                validateAndFormatBlockDate(input);
+            }
+        }
+
+        function validateAndFormatBlockDate(input) {
+            const val = input.value.trim();
+            if (!val) {
+                onBlockDateChanged();
+                return;
+            }
+
+            const parts = val.split('/');
+            if (parts.length === 3 && parts[0].length === 2 && parts[1].length === 2 && parts[2].length === 4) {
+                const ymd = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                const nativePicker = document.getElementById('newBlockDateNativePicker');
+                if (nativePicker) nativePicker.value = ymd;
+                onBlockDateChanged();
+            } else {
+                onBlockDateChanged();
+            }
+        }
+
+        function syncBlockNativeDate(picker) {
+            const ymd = picker.value;
+            const textInput = document.getElementById('newBlockDate');
+            if (textInput && ymd) {
+                const parts = ymd.split('-');
+                if (parts.length === 3) {
+                    textInput.value = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+            }
+            onBlockDateChanged();
+        }
+
+        function getBlockDateYmd() {
+            const dateInput = document.getElementById('newBlockDate');
+            if (!dateInput || !dateInput.value) return '';
+            const val = dateInput.value.trim();
+            if (val.includes('/')) {
+                const parts = val.split('/');
+                if (parts.length === 3) {
+                    return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                }
+            }
+            return val;
+        }
+
+        // Evento cuando cambia la fecha del nuevo bloqueo para actualizar selectores y mostrar límites visuales
+        function onBlockDateChanged() {
+            const dateVal = getBlockDateYmd();
+            const startInput = document.getElementById('newBlockStartTime');
+            const endInput = document.getElementById('newBlockEndTime');
+            const hintBox = document.getElementById('newBlockRangeHint');
+            const hintText = document.getElementById('newBlockRangeHintText');
+
+            if (!startInput || !endInput) return;
+
+            if (!dateVal || dateVal.length < 10) {
+                if (hintBox) hintBox.style.display = 'none';
+                return;
+            }
+
+            const info = getEffectiveWorkingHoursForDate(dateVal);
+
+            // Generar todos los slots estándar
+            const allSlots = [];
+            allSlots.push('00:00');
+            allSlots.push('00:30');
+            for (let wh = 1; wh <= 23; wh++) {
+                const hh = String(wh).padStart(2, '0');
+                allSlots.push(`${hh}:00`);
+                allSlots.push(`${hh}:30`);
+            }
+            allSlots.push('24:00');
+
+            if (!info.valid) {
+                if (hintBox && hintText) {
+                    hintBox.style.display = 'block';
+                    hintText.style.color = 'var(--barber-red)';
+                    hintText.textContent = `⚠️ ${info.message}`;
+                }
+                startInput.innerHTML = '<option value="">No disponible</option>';
+                endInput.innerHTML = '<option value="">No disponible</option>';
+                startInput.disabled = true;
+                endInput.disabled = true;
+                return;
+            }
+
+            startInput.disabled = false;
+            endInput.disabled = false;
+
+            if (hintBox && hintText) {
+                hintBox.style.display = 'block';
+                hintText.style.color = 'var(--barber-blue-light)';
+                hintText.textContent = `ℹ️ Rango laboral disponible para ${info.nombreDia}: ${info.allowedStart} a ${info.allowedEnd} (Horario especialista: ${info.workerIn}–${info.workerOut} | Sucursal: ${info.branchOpen}–${info.branchClose})`;
+            }
+
+            const prevStart = startInput.value;
+            const prevEnd = endInput.value;
+
+            // Filtrar slots de inicio (desde allowedStart hasta antes de allowedEnd)
+            startInput.innerHTML = '<option value="">Seleccionar...</option>';
+            allSlots.filter(s => s >= info.allowedStart && s < info.allowedEnd).forEach(slot => {
+                const opt = document.createElement('option');
+                opt.value = slot;
+                opt.textContent = slot;
+                if (slot === prevStart) opt.selected = true;
+                startInput.appendChild(opt);
+            });
+
+            // Filtrar slots de fin (después de allowedStart hasta allowedEnd)
+            endInput.innerHTML = '<option value="">Seleccionar...</option>';
+            allSlots.filter(s => s > info.allowedStart && s <= info.allowedEnd).forEach(slot => {
+                const opt = document.createElement('option');
+                opt.value = slot;
+                opt.textContent = slot;
+                if (slot === prevEnd) opt.selected = true;
+                endInput.appendChild(opt);
+            });
+        }
+
         // Agregar Bloqueo de Disponibilidad (Frontend)
         function addAvailabilityBlock() {
             const idInput = document.getElementById('scheduleWorkerId');
@@ -3866,16 +4465,16 @@
 
             if (!dateInput || !startInput || !endInput || !reasonInput) return;
 
-            const dateVal = dateInput.value;
+            const dateVal = getBlockDateYmd();
             const startVal = startInput.value;
             const endVal = endInput.value;
             const reasonVal = reasonInput.value.trim();
 
-            if (!dateVal || !startVal || !endVal || !reasonVal) {
+            if (!dateVal || dateVal.length < 10 || !startVal || !endVal || !reasonVal) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Campos requeridos',
-                    text: 'Completa la fecha, hora de inicio, hora de fin y motivo para registrar el bloqueo.',
+                    text: 'Completa la fecha (DD/MM/AAAA), hora de inicio, hora de fin y motivo para registrar el bloqueo.',
                     background: '#1e293b',
                     color: '#ffffff',
                     confirmButtonColor: '#0055ff'
@@ -3883,6 +4482,28 @@
                 return;
             }
 
+            // 1. Validación estricta: Bloquear fechas de días anteriores
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+
+            if (dateVal < todayStr) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha no permitida',
+                    text: 'No puedes registrar bloqueos de disponibilidad en fechas pasadas.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                dateInput.value = '';
+                dateInput.focus();
+                return;
+            }
+
+            // 2. Validación de coherencia de horas
             if (startVal >= endVal) {
                 Swal.fire({
                     icon: 'warning',
@@ -3891,6 +4512,46 @@
                     background: '#1e293b',
                     color: '#ffffff',
                     confirmButtonColor: '#0055ff'
+                });
+                return;
+            }
+
+            // 3. VALIDACIÓN ESTRICTA: Restringir dentro del horario laboral del trabajador y operativo de la sucursal
+            const workingInfo = getEffectiveWorkingHoursForDate(dateVal);
+            if (!workingInfo.valid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Día no disponible',
+                    text: workingInfo.message,
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ef4444'
+                });
+                return;
+            }
+
+            // Validar que el inicio no sea antes de la hora permitida
+            if (startVal < workingInfo.allowedStart) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hora fuera de rango',
+                    html: `La hora de inicio (<b>${startVal}</b>) no puede ser anterior al inicio del horario laboral para el ${workingInfo.nombreDia} (<b>${workingInfo.allowedStart}</b>).<br><small style="color: #94a3b8;">Horario del trabajador: ${workingInfo.workerIn}–${workingInfo.workerOut} | Sucursal: ${workingInfo.branchOpen}–${workingInfo.branchClose}</small>`,
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ef4444'
+                });
+                return;
+            }
+
+            // Validar que el fin no exceda el límite permitido
+            if (endVal > workingInfo.allowedEnd) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hora fuera de rango',
+                    html: `La hora de fin (<b>${endVal}</b>) no puede exceder el fin del horario laboral para el ${workingInfo.nombreDia} (<b>${workingInfo.allowedEnd}</b>).<br><small style="color: #94a3b8;">Horario del trabajador: ${workingInfo.workerIn}–${workingInfo.workerOut} | Sucursal: ${workingInfo.branchOpen}–${workingInfo.branchClose}</small>`,
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ef4444'
                 });
                 return;
             }
@@ -3916,9 +4577,13 @@
 
             // Limpiar formulario
             dateInput.value = '';
+            const nativePicker = document.getElementById('newBlockDateNativePicker');
+            if (nativePicker) nativePicker.value = '';
             startInput.value = '';
             endInput.value = '';
             reasonInput.value = '';
+            const hintBox = document.getElementById('newBlockRangeHint');
+            if (hintBox) hintBox.style.display = 'none';
         }
 
         // Eliminar Bloqueo de Disponibilidad (Frontend)
@@ -3926,6 +4591,94 @@
             if (workerBlocksStore[workerId] && workerBlocksStore[workerId][index] !== undefined) {
                 workerBlocksStore[workerId].splice(index, 1);
                 renderWorkerBlocks(workerId);
+            }
+        }
+
+        // Variable global para rastrear el especialista seleccionado en el modal de detalle
+        let currentDetailWorkerId = null;
+        let currentDetailWorkerName = '';
+
+        // Abrir Modal de Vista Detallada de Bloqueos de Disponibilidad del Especialista
+        function openWorkerBlocksDetailModal(workerId, workerName) {
+            currentDetailWorkerId = workerId;
+            currentDetailWorkerName = workerName;
+
+            const nameEl = document.getElementById('detailModalWorkerName');
+            const avatarEl = document.getElementById('detailModalAvatar');
+            if (nameEl) nameEl.textContent = workerName;
+
+            // Generar iniciales en el avatar
+            if (avatarEl) {
+                const words = (workerName || '').trim().split(' ');
+                const initials = (words[0] ? words[0][0] : '') + (words[1] ? words[1][0] : '');
+                avatarEl.textContent = initials.toUpperCase() || 'E';
+            }
+
+            renderDetailModalBlocks(workerId);
+            openModal('modalWorkerBlocksDetail');
+        }
+
+        // Renderizar el listado en la vista detallada de bloqueos
+        function renderDetailModalBlocks(workerId) {
+            const listEl = document.getElementById('detailModalBlocksList');
+            const emptyEl = document.getElementById('detailModalEmptyState');
+            const countNumEl = document.getElementById('detailModalCountNumber');
+            const blocks = workerBlocksStore[workerId] || [];
+
+            if (countNumEl) countNumEl.textContent = blocks.length;
+
+            if (!listEl) return;
+            listEl.innerHTML = '';
+
+            if (blocks.length === 0) {
+                if (emptyEl) emptyEl.style.display = 'block';
+                return;
+            }
+
+            if (emptyEl) emptyEl.style.display = 'none';
+
+            blocks.forEach((block, index) => {
+                const item = document.createElement('div');
+                item.className = 'blocks-detail-card-item';
+                item.innerHTML = `
+                    <div class="blocks-detail-item-left">
+                        <span class="blocks-detail-item-date-badge">${escapeHtml(block.formattedDate || block.date)}</span>
+                        <span class="blocks-detail-item-time">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            ${escapeHtml(block.start)} - ${escapeHtml(block.end)}
+                        </span>
+                        <span style="color: rgba(255,255,255,0.2);">|</span>
+                        <span class="blocks-detail-item-reason" title="${escapeHtml(block.reason)}">
+                            ${escapeHtml(block.reason || 'Sin motivo especificado')}
+                        </span>
+                    </div>
+                    <button type="button" class="btn-remove-block" title="Eliminar bloqueo" onclick="removeDetailModalBlock(${workerId}, ${index})">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        // Eliminar un bloqueo directamente desde la vista detallada
+        function removeDetailModalBlock(workerId, index) {
+            removeAvailabilityBlock(workerId, index);
+            renderDetailModalBlocks(workerId);
+        }
+
+        // Acceso directo a configurar horario y gestionar bloqueos desde el modal de detalle
+        function handleDetailManageSchedule() {
+            closeModal('modalWorkerBlocksDetail');
+            if (currentDetailWorkerId && currentDetailWorkerName) {
+                openScheduleModal(currentDetailWorkerId, currentDetailWorkerName);
             }
         }
 
@@ -4963,6 +5716,31 @@
                 }
             });
         });
+
+        // Restricción en tiempo real en los bloqueos de disponibilidad para no permitir días anteriores
+        const blockDateInput = document.getElementById('newBlockDate');
+        if (blockDateInput) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+            blockDateInput.min = todayStr;
+
+            blockDateInput.addEventListener('change', function () {
+                if (this.value && this.value < todayStr) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Fecha no permitida',
+                        text: 'No puedes seleccionar fechas de días anteriores en los bloqueos de disponibilidad.',
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#0055ff'
+                    });
+                    this.value = '';
+                }
+            });
+        }
     </script>
 </body>
 </html>

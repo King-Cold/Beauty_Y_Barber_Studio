@@ -568,7 +568,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            align-items: flex-end;
+            align-items: flex-start;
         }
 
         .special-field-group {
@@ -597,6 +597,64 @@
             height: 38px;
             box-sizing: border-box;
             transition: all 0.2s ease;
+        }
+
+        .special-date-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .special-date-input-wrap input[type="text"] {
+            padding-right: 38px;
+            width: 100%;
+        }
+
+        .btn-calendar-trigger {
+            position: absolute;
+            right: 8px;
+            background: transparent;
+            border: none;
+            color: #ffffff !important;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1 !important;
+            transition: all 0.2s ease;
+        }
+
+        .btn-calendar-trigger svg {
+            color: #ffffff !important;
+            stroke: #ffffff !important;
+            opacity: 1 !important;
+        }
+
+        .btn-calendar-trigger:hover {
+            opacity: 1 !important;
+            transform: scale(1.15);
+            color: #ffffff !important;
+        }
+
+        .btn-calendar-trigger:hover svg {
+            stroke: #ffffff !important;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(100%) contrast(100%) !important;
+            cursor: pointer;
+            opacity: 1 !important;
+        }
+
+        .special-date-help-text {
+            font-size: 11px;
+            color: #ef4444;
+            font-weight: 600;
+            margin-top: 4px;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
         }
 
         .special-form-control:focus {
@@ -638,6 +696,12 @@
             gap: 6px;
         }
 
+        .special-form-actions-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 14px;
+        }
+
         .btn-add-special {
             background: linear-gradient(135deg, var(--barber-blue) 0%, #0044cc 100%);
             color: #ffffff;
@@ -654,7 +718,6 @@
             gap: 6px;
             transition: all 0.2s ease;
             box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
-            margin-left: auto;
         }
 
         .btn-add-special:hover {
@@ -724,6 +787,34 @@
             font-weight: 600;
         }
 
+        .btn-edit-special {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit-special:hover {
+            background: var(--barber-blue-pale);
+            color: #60a5fa;
+            border-color: rgba(0, 85, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .special-actions-cell {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
         .btn-delete-special {
             background: transparent;
             border: 1px solid var(--border-subtle);
@@ -743,6 +834,141 @@
             color: var(--barber-red);
             border-color: rgba(239, 68, 68, 0.4);
             transform: scale(1.05);
+        }
+
+        /* Modal para Edición de Fecha Especial */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 10, 21, 0.8);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-dialog {
+            background: var(--bg-header);
+            border: 1px solid var(--border-strong);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+            transform: scale(0.95);
+            transition: transform 0.25s var(--ease-fluid);
+            overflow: hidden;
+        }
+
+        .modal-overlay.open .modal-dialog {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-header);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-white);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-title svg {
+            color: var(--barber-blue-light);
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-white);
+        }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            background: rgba(10, 17, 36, 0.95);
+        }
+
+        .btn-modal-cancel {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-modal-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-white);
+        }
+
+        .btn-modal-save {
+            background: linear-gradient(135deg, var(--barber-blue) 0%, #0044cc 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
+        }
+
+        .btn-modal-save:hover {
+            background: linear-gradient(135deg, var(--barber-blue-light) 0%, var(--barber-blue) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 85, 255, 0.45);
         }
 
         .special-empty-row {
@@ -1172,6 +1398,40 @@
             box-shadow: 0 4px 14px rgba(0, 85, 255, 0.35);
         }
 
+        .schedule-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .schedule-autosave-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .schedule-autosave-indicator.is-visible {
+            opacity: 1;
+        }
+
+        .schedule-autosave-indicator.is-saving {
+            color: #38bdf8;
+        }
+
+        .schedule-autosave-indicator.is-saved {
+            color: #34d399;
+        }
+
+        .schedule-autosave-indicator svg {
+            flex-shrink: 0;
+        }
+
         .btn-save-schedule:hover {
             background: var(--barber-blue-light);
             transform: translateY(-1px);
@@ -1583,14 +1843,20 @@
                         <span>Los clientes únicamente podrán reservar servicios dentro de los horarios de apertura configurados.</span>
                     </div>
 
-                    <button type="button" class="btn-save-schedule" id="btnSaveSchedule" onclick="saveBranchSchedule()">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                            <polyline points="7 3 7 8 15 8"></polyline>
-                        </svg>
-                        <span>Guardar Horarios</span>
-                    </button>
+                    <div class="schedule-card-actions">
+                        <div class="schedule-autosave-indicator" id="scheduleAutosaveIndicator" aria-live="polite">
+                            <!-- Estado dinámico de sincronización automática -->
+                        </div>
+
+                        <button type="button" class="btn-save-schedule" id="btnSaveSchedule" onclick="saveBranchSchedule()">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            <span>Guardar Horarios</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -1620,21 +1886,34 @@
                 <!-- Formulario en Línea -->
                 <div class="special-form-container">
                     <form id="formSpecialDate" onsubmit="submitSpecialDate(event)">
+                        <!-- Fila de Campos alineados -->
                         <div class="special-form-grid">
-                            <!-- Selector de Fecha -->
-                            <div class="special-field-group" style="min-width: 150px;">
+                            <!-- Selector de Fecha con máscara DD/MM/AAAA -->
+                            <div class="special-field-group" style="width: 145px; flex-shrink: 0;">
                                 <label for="specialDateInput">Fecha</label>
-                                <input type="date" id="specialDateInput" class="special-form-control" min="{{ date('Y-m-d') }}" required>
+                                <div class="special-date-input-wrap">
+                                    <input type="text" id="specialDateInput" class="special-form-control" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off" required>
+                                    <input type="date" id="specialDateNativePicker" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" min="{{ date('Y-m-d') }}" max="{{ date('Y') }}-12-31" tabindex="-1">
+                                    <button type="button" class="btn-calendar-trigger" onclick="openNativeDatePicker('specialDateNativePicker')" title="Abrir calendario" aria-label="Abrir calendario">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <span class="special-date-help-text">Orden de captura manual: día, mes y año</span>
                             </div>
 
                             <!-- Campo de texto para el Motivo -->
-                            <div class="special-field-group" style="flex: 1; min-width: 200px;">
+                            <div class="special-field-group" style="flex: 1; min-width: 180px;">
                                 <label for="specialReasonInput">Motivo</label>
                                 <input type="text" id="specialReasonInput" class="special-form-control" placeholder="Ej. Navidad, Día Festivo..." required>
                             </div>
 
                             <!-- Casilla de verificación (Checkbox): Cerrado todo el día -->
-                            <div class="special-field-group">
+                            <div class="special-field-group" style="flex-shrink: 0;">
                                 <label style="visibility: hidden;">Cerrado</label>
                                 <label class="special-checkbox-wrapper" title="Marcar si el estudio no abrirá este día">
                                     <input type="checkbox" id="specialClosedAllDay" onchange="toggleSpecialHours(this.checked)">
@@ -1643,7 +1922,7 @@
                             </div>
 
                             <!-- Selector de Hora Apertura (deshabilitable) -->
-                            <div class="special-field-group">
+                            <div class="special-field-group" style="width: 105px; flex-shrink: 0;">
                                 <label for="specialOpenInput">Apertura</label>
                                 <select id="specialOpenInput" class="special-form-control time-select">
                                     @foreach($timeSlots as $slot)
@@ -1653,7 +1932,7 @@
                             </div>
 
                             <!-- Selector de Hora Cierre (deshabilitable) -->
-                            <div class="special-field-group">
+                            <div class="special-field-group" style="width: 105px; flex-shrink: 0;">
                                 <label for="specialCloseInput">Cierre</label>
                                 <select id="specialCloseInput" class="special-form-control time-select">
                                     @foreach($timeSlots as $slot)
@@ -1661,18 +1940,17 @@
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
 
-                            <!-- Botón + Agregar Excepción -->
-                            <div class="special-field-group">
-                                <label style="visibility: hidden;">Acción</label>
-                                <button type="submit" class="btn-add-special" id="btnAddSpecial">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                    <span>+ Agregar Excepción</span>
-                                </button>
-                            </div>
+                        <!-- Fila Inferior: Botón + Agregar Excepción alineado abajo -->
+                        <div class="special-form-actions-row">
+                            <button type="submit" class="btn-add-special" id="btnAddSpecial">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>Agregar Excepción</span>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1717,14 +1995,23 @@
                                         @endif
                                     </td>
                                     <td style="text-align: right;">
-                                        <button type="button" class="btn-delete-special" title="Eliminar excepción" onclick="deleteSpecialDate({{ $fechaEsp->id }}, '{{ addslashes($fechaEsp->motivo) }}')">
-                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                            </svg>
-                                        </button>
+                                        <div class="special-actions-cell">
+                                            <button type="button" class="btn-edit-special" title="Editar horario y datos de la fecha especial" 
+                                                onclick="openEditSpecialDateModal({{ $fechaEsp->id }}, '{{ $fechaEsp->fecha ? \Illuminate\Support\Carbon::parse($fechaEsp->fecha)->format('Y-m-d') : '' }}', '{{ addslashes($fechaEsp->fecha_legible) }}', '{{ addslashes($fechaEsp->motivo) }}', {{ $fechaEsp->cerrado_todo_el_dia ? 'true' : 'false' }}, '{{ $fechaEsp->hora_apertura ? substr((string)$fechaEsp->hora_apertura, 0, 5) : '09:00' }}', '{{ $fechaEsp->hora_cierre ? substr((string)$fechaEsp->hora_cierre, 0, 5) : '15:00' }}')">
+                                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                            </button>
+                                            <button type="button" class="btn-delete-special" title="Eliminar excepción" onclick="deleteSpecialDate({{ $fechaEsp->id }}, '{{ addslashes($fechaEsp->motivo) }}')">
+                                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -1739,6 +2026,90 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- MODAL: EDITAR HORARIO Y DETALLES DE FECHA ESPECIAL -->
+    <div class="modal-overlay" id="modalEditSpecialDate" role="dialog" aria-modal="true" aria-labelledby="modalEditSpecialTitle">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalEditSpecialTitle">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    <span>Editar Fecha Especial</span>
+                </h3>
+                <button type="button" class="modal-close-btn" onclick="closeEditSpecialModal()" aria-label="Cerrar modal">&times;</button>
+            </div>
+            <form id="formEditSpecialDate" onsubmit="submitEditSpecialDate(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="editSpecialId">
+
+                    <!-- Selector de Fecha / Día Editable con máscara DD/MM/AAAA -->
+                    <div class="special-field-group">
+                        <label for="editSpecialDateInput">Fecha / Día de la Excepción</label>
+                        <div class="special-date-input-wrap">
+                            <input type="text" id="editSpecialDateInput" class="special-form-control" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off" required>
+                            <input type="date" id="editSpecialDateNativePicker" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" min="{{ date('Y-m-d') }}" max="{{ date('Y') }}-12-31" tabindex="-1">
+                            <button type="button" class="btn-calendar-trigger" onclick="openNativeDatePicker('editSpecialDateNativePicker')" title="Abrir calendario" aria-label="Abrir calendario">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="special-date-help-text">Orden de captura manual: día, mes y año</span>
+                    </div>
+
+                    <!-- Motivo -->
+                    <div class="special-field-group">
+                        <label for="editSpecialReason">Motivo de la excepción</label>
+                        <input type="text" id="editSpecialReason" class="special-form-control" required placeholder="Ej. Navidad, Aniversario, etc.">
+                    </div>
+
+                    <!-- Checkbox Cerrado todo el día -->
+                    <div class="special-field-group">
+                        <label class="special-checkbox-wrapper" style="justify-content: flex-start; cursor: pointer;">
+                            <input type="checkbox" id="editSpecialClosedAllDay" onchange="toggleEditSpecialHours(this.checked)">
+                            <span>Cerrado todo el día</span>
+                        </label>
+                    </div>
+
+                    <!-- Horarios de Apertura y Cierre -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;" id="editSpecialHoursContainer">
+                        <div class="special-field-group">
+                            <label for="editSpecialOpen">Hora Apertura</label>
+                            <select id="editSpecialOpen" class="special-form-control time-select">
+                                @foreach($timeSlots as $slot)
+                                    <option value="{{ $slot }}">{{ $slot }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="special-field-group">
+                            <label for="editSpecialClose">Hora Cierre</label>
+                            <select id="editSpecialClose" class="special-form-control time-select">
+                                @foreach($timeSlots as $slot)
+                                    <option value="{{ $slot }}">{{ $slot }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" onclick="closeEditSpecialModal()">Cancelar</button>
+                    <button type="submit" class="btn-modal-save" id="btnSaveEditSpecial">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        <span>Guardar Cambios</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- SCRIPTS DE INTERACCIÓN (FRONTEND) -->
@@ -1812,7 +2183,43 @@
                     }
                 });
             });
+
+            // Escuchar cambios en los selectores de hora de apertura y cierre de la sucursal para auto-guardado
+            BRANCH_DAYS.forEach(day => {
+                const openSel = document.getElementById(`open-${day}`);
+                const closeSel = document.getElementById(`close-${day}`);
+                if (openSel) {
+                    openSel.addEventListener('change', () => triggerBranchScheduleAutoSave());
+                }
+                if (closeSel) {
+                    closeSel.addEventListener('change', () => triggerBranchScheduleAutoSave());
+                }
+            });
         });
+
+        // Temporizador de auto-guardado (Debounce)
+        let branchScheduleAutoSaveTimer = null;
+        let isSavingBranchSchedule = false;
+
+        function triggerBranchScheduleAutoSave() {
+            clearTimeout(branchScheduleAutoSaveTimer);
+
+            const indicator = document.getElementById('scheduleAutosaveIndicator');
+            if (indicator) {
+                indicator.className = 'schedule-autosave-indicator is-visible is-saving';
+                indicator.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;">
+                        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                        <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+                    </svg>
+                    <span>Sincronizando con trabajadores...</span>
+                `;
+            }
+
+            branchScheduleAutoSaveTimer = setTimeout(() => {
+                saveBranchSchedule(true);
+            }, 600);
+        }
 
         // Alternar estado Abierto / Cerrado de un día específico
         function toggleBranchDay(day, isOpen) {
@@ -1838,6 +2245,7 @@
             }
 
             updateSummaryCount();
+            triggerBranchScheduleAutoSave();
         }
 
         // Actualizar contador del pill en el encabezado
@@ -1861,9 +2269,14 @@
         }
 
         // Guardar Horarios de la Sucursal en Base de Datos (AJAX)
-        async function saveBranchSchedule() {
+        // isAuto: si es true, es disparo automático en tiempo real sin bloquear modal
+        async function saveBranchSchedule(isAuto = false) {
+            if (isSavingBranchSchedule) return;
+            isSavingBranchSchedule = true;
+
             const btn = document.getElementById('btnSaveSchedule');
-            const originalHtml = btn.innerHTML;
+            const originalHtml = btn ? btn.innerHTML : '';
+            const indicator = document.getElementById('scheduleAutosaveIndicator');
 
             const dias = {};
             BRANCH_DAYS.forEach(day => {
@@ -1878,14 +2291,27 @@
                 };
             });
 
-            btn.disabled = true;
-            btn.innerHTML = `
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;">
-                    <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
-                    <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
-                </svg>
-                <span>Guardando...</span>
-            `;
+            if (!isAuto && btn) {
+                btn.disabled = true;
+                btn.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;">
+                        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                        <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+                    </svg>
+                    <span>Guardando...</span>
+                `;
+            }
+
+            if (indicator) {
+                indicator.className = 'schedule-autosave-indicator is-visible is-saving';
+                indicator.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;">
+                        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                        <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+                    </svg>
+                    <span>Sincronizando con trabajadores...</span>
+                `;
+            }
 
             try {
                 const response = await fetch('{{ route("admin.configuracion.horarios.save") }}', {
@@ -1902,40 +2328,74 @@
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: result.message || '¡Horarios de la sucursal actualizados exitosamente!',
-                        showConfirmButton: false,
-                        timer: 3500,
-                        timerProgressBar: true,
-                        background: '#10b981',
-                        color: '#ffffff',
-                        iconColor: '#ffffff'
-                    });
+                    if (indicator) {
+                        indicator.className = 'schedule-autosave-indicator is-visible is-saved';
+                        indicator.innerHTML = `
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 6L9 17l-5-5"></path>
+                            </svg>
+                            <span>Horarios de trabajadores actualizados</span>
+                        `;
+                        setTimeout(() => {
+                            if (indicator.classList.contains('is-saved')) {
+                                indicator.classList.remove('is-visible');
+                            }
+                        }, 3000);
+                    }
+
+                    if (!isAuto) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: result.message || '¡Horarios de la sucursal actualizados exitosamente!',
+                            showConfirmButton: false,
+                            timer: 3500,
+                            timerProgressBar: true,
+                            background: '#10b981',
+                            color: '#ffffff',
+                            iconColor: '#ffffff'
+                        });
+                    }
                 } else {
+                    if (indicator) {
+                        indicator.className = 'schedule-autosave-indicator is-visible';
+                        indicator.style.color = '#ef4444';
+                        indicator.innerHTML = `<span>Error al sincronizar</span>`;
+                    }
+                    if (!isAuto) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al guardar horarios',
+                            text: result.message || 'No se pudieron actualizar los horarios de la sucursal.',
+                            background: '#1e293b',
+                            color: '#ffffff',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    }
+                }
+            } catch (err) {
+                if (indicator) {
+                    indicator.className = 'schedule-autosave-indicator is-visible';
+                    indicator.style.color = '#ef4444';
+                    indicator.innerHTML = `<span>Error de conexión</span>`;
+                }
+                if (!isAuto) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error al guardar horarios',
-                        text: result.message || 'No se pudieron actualizar los horarios de la sucursal.',
+                        title: 'Error de conexión',
+                        text: 'No se pudo conectar con el servidor para guardar los horarios.',
                         background: '#1e293b',
                         color: '#ffffff',
                         confirmButtonColor: '#ef4444'
                     });
                 }
-            } catch (err) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error de conexión',
-                    text: 'No se pudo conectar con el servidor para guardar los horarios.',
-                    background: '#1e293b',
-                    color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
-                });
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalHtml;
+                isSavingBranchSchedule = false;
+                if (!isAuto && btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
             }
         }
 
@@ -1967,44 +2427,31 @@
             const closeSel = document.getElementById('specialCloseInput');
             const submitBtn = document.getElementById('btnAddSpecial');
 
-            const fecha = dateInput.value;
+            let rawDateValue = dateInput.value.trim();
+            if (!rawDateValue) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha requerida',
+                    text: 'Por favor ingresa la fecha de la excepción en formato DD/MM/AAAA.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                dateInput.focus();
+                return;
+            }
+
+            if (!validateSpecialDateField(dateInput)) {
+                dateInput.focus();
+                return;
+            }
+
+            // Convertir de DD/MM/AAAA a YYYY-MM-DD para la petición AJAX al backend
+            const fecha = formatDmyToYmd(dateInput.value.trim());
             const motivo = reasonInput.value.trim();
             const cerrado_todo_el_dia = closedCheckbox.checked;
             const hora_apertura = cerrado_todo_el_dia ? null : openSel.value;
             const hora_cierre = cerrado_todo_el_dia ? null : closeSel.value;
-
-            if (!fecha) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Fecha requerida',
-                    text: 'Por favor selecciona la fecha de la excepción.',
-                    background: '#1e293b',
-                    color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
-                });
-                dateInput.focus();
-                return;
-            }
-
-            // Validación estricta: No permitir fechas pasadas ni años anteriores
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
-
-            if (fecha < todayStr) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Fecha no permitida',
-                    text: 'No puedes seleccionar fechas de días o años pasados.',
-                    background: '#1e293b',
-                    color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
-                });
-                dateInput.focus();
-                return;
-            }
 
             if (!motivo) {
                 Swal.fire({
@@ -2178,31 +2625,430 @@
             }
         }
 
-        // Restricción dinámica en tiempo real para no permitir fechas pasadas ni años pasados
-        document.addEventListener('DOMContentLoaded', function () {
-            const dateInput = document.getElementById('specialDateInput');
+        // ===================================================
+        // EDICIÓN DE FECHAS ESPECIALES (MODAL & AJAX)
+        // ===================================================
+        function openEditSpecialDateModal(id, fechaRaw, fechaLegible, motivo, cerrado, horaApertura, horaCierre) {
+            document.getElementById('editSpecialId').value = id;
+            
+            const dateInput = document.getElementById('editSpecialDateInput');
             if (dateInput) {
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const todayStr = `${year}-${month}-${day}`;
-                dateInput.min = todayStr;
+                dateInput.value = formatYmdToDmy(fechaRaw) || '';
+            }
 
-                dateInput.addEventListener('change', function () {
-                    if (this.value && this.value < todayStr) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Fecha no permitida',
-                            text: 'No puedes seleccionar fechas de días o años pasados.',
-                            background: '#1e293b',
-                            color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
-                        });
-                        this.value = '';
+            document.getElementById('editSpecialReason').value = motivo || '';
+            
+            const closedCheckbox = document.getElementById('editSpecialClosedAllDay');
+            closedCheckbox.checked = !!cerrado;
+            
+            const openSel = document.getElementById('editSpecialOpen');
+            const closeSel = document.getElementById('editSpecialClose');
+            if (openSel && horaApertura) openSel.value = horaApertura;
+            if (closeSel && horaCierre) closeSel.value = horaCierre;
+
+            toggleEditSpecialHours(!!cerrado);
+
+            const modal = document.getElementById('modalEditSpecialDate');
+            if (modal) {
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeEditSpecialModal() {
+            const modal = document.getElementById('modalEditSpecialDate');
+            if (modal) {
+                modal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function toggleEditSpecialHours(isClosed) {
+            const openSel = document.getElementById('editSpecialOpen');
+            const closeSel = document.getElementById('editSpecialClose');
+
+            if (openSel) {
+                openSel.disabled = isClosed;
+                openSel.style.opacity = isClosed ? '0.35' : '1';
+                openSel.style.cursor = isClosed ? 'not-allowed' : 'pointer';
+            }
+            if (closeSel) {
+                closeSel.disabled = isClosed;
+                closeSel.style.opacity = isClosed ? '0.35' : '1';
+                closeSel.style.cursor = isClosed ? 'not-allowed' : 'pointer';
+            }
+        }
+
+        async function submitEditSpecialDate(e) {
+            if (e) e.preventDefault();
+
+            const id = document.getElementById('editSpecialId').value;
+            const dateInput = document.getElementById('editSpecialDateInput');
+            const motivo = document.getElementById('editSpecialReason').value.trim();
+            const cerrado = document.getElementById('editSpecialClosedAllDay').checked;
+            const horaApertura = cerrado ? null : document.getElementById('editSpecialOpen').value;
+            const horaCierre = cerrado ? null : document.getElementById('editSpecialClose').value;
+            const submitBtn = document.getElementById('btnSaveEditSpecial');
+
+            const rawDate = dateInput ? dateInput.value.trim() : '';
+            if (!rawDate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha requerida',
+                    text: 'Por favor ingresa la fecha de la excepción en formato DD/MM/AAAA.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                if (dateInput) dateInput.focus();
+                return;
+            }
+
+            if (!validateSpecialDateField(dateInput)) {
+                if (dateInput) dateInput.focus();
+                return;
+            }
+
+            const fecha = formatDmyToYmd(rawDate);
+
+            if (!motivo) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Motivo requerido',
+                    text: 'Por favor escribe el motivo de la excepción.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                return;
+            }
+
+            if (!cerrado && horaApertura >= horaCierre) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Horario inválido',
+                    text: 'La hora de apertura debe ser anterior a la hora de cierre.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                return;
+            }
+
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span>Guardando...</span>`;
+
+            try {
+                const response = await fetch(`/admin/configuracion/fechas-especiales/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        fecha: fecha,
+                        motivo: motivo,
+                        cerrado_todo_el_dia: cerrado,
+                        hora_apertura: horaApertura,
+                        hora_cierre: horaCierre
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: result.message || 'Fecha especial actualizada exitosamente.',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: '#10b981',
+                        color: '#ffffff',
+                        iconColor: '#ffffff'
+                    });
+
+                    closeEditSpecialModal();
+
+                    // Actualizar dinámicamente la fila en la tabla
+                    const row = document.getElementById(`special-row-${id}`);
+                    if (row && result.data) {
+                        const data = result.data;
+                        const badgeHtml = data.cerrado_todo_el_dia
+                            ? `<span class="badge-special-closed">
+                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                </svg>
+                                Cerrado
+                               </span>`
+                            : `<span class="badge-special-hours">
+                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                ${data.horario_formateado}
+                               </span>`;
+
+                        const escapedMotivo = data.motivo.replace(/'/g, "\\'");
+                        const escapedFechaLegible = data.fecha_legible.replace(/'/g, "\\'");
+                        const openTime = data.hora_apertura || '09:00';
+                        const closeTime = data.hora_cierre || '15:00';
+
+                        row.innerHTML = `
+                            <td style="font-weight: 700; color: #ffffff;">
+                                ${data.fecha_legible}
+                            </td>
+                            <td>
+                                ${data.motivo}
+                            </td>
+                            <td>
+                                ${badgeHtml}
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="special-actions-cell">
+                                    <button type="button" class="btn-edit-special" title="Editar horario y datos de la fecha especial" 
+                                        onclick="openEditSpecialDateModal(${data.id}, '${data.fecha}', '${escapedFechaLegible}', '${escapedMotivo}', ${data.cerrado_todo_el_dia ? 'true' : 'false'}, '${openTime}', '${closeTime}')">
+                                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="btn-delete-special" title="Eliminar excepción" onclick="deleteSpecialDate(${data.id}, '${escapedMotivo}')">
+                                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                    } else {
+                        setTimeout(() => window.location.reload(), 800);
+                    }
+                } else {
+                    let errorMsg = result.message || 'No se pudo actualizar la fecha especial.';
+                    if (result.errors) {
+                        errorMsg = Object.values(result.errors).flat().join('<br>');
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de validación',
+                        html: errorMsg,
+                        background: '#1e293b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo comunicar con el servidor.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ef4444'
+                });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        }
+
+        // ===================================================
+        // MANEJO Y VALIDACIÓN DE INPUTS DE FECHAS ESPECIALES
+        // Formato DD/MM/AAAA, máscara estricta, validación diferida (onBlur / 8 dígitos)
+        // y restricción estricta al año actual del sistema.
+        // ===================================================
+
+        // Función para abrir el selector nativo de fecha asociado
+        function openNativeDatePicker(pickerId) {
+            const picker = document.getElementById(pickerId);
+            if (!picker) return;
+            if (typeof picker.showPicker === 'function') {
+                picker.showPicker();
+            } else {
+                picker.click();
+            }
+        }
+
+        // Convierte fecha YYYY-MM-DD a DD/MM/AAAA
+        function formatYmdToDmy(ymd) {
+            if (!ymd || !ymd.includes('-')) return '';
+            const parts = ymd.split('-');
+            if (parts.length !== 3) return '';
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        // Convierte fecha DD/MM/AAAA a YYYY-MM-DD
+        function formatDmyToYmd(dmy) {
+            if (!dmy || !dmy.includes('/')) return '';
+            const parts = dmy.split('/');
+            if (parts.length !== 3) return '';
+            return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+
+        // Validación estricta diferida (al perder foco o al completar los 8 dígitos)
+        function validateSpecialDateField(input) {
+            const val = input.value.trim();
+            if (!val) return true;
+
+            // Si el usuario no ha completado los 10 caracteres (DD/MM/AAAA), avisar y limpiar
+            if (val.length < 10) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha incompleta',
+                    text: 'Por favor ingresa la fecha completa en formato DD/MM/AAAA.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                return false;
+            }
+
+            const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+            const match = val.match(regex);
+            if (!match) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Formato incorrecto',
+                    text: 'El formato de fecha debe ser DD/MM/AAAA (día, mes y año).',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                return false;
+            }
+
+            const day = parseInt(match[1], 10);
+            const month = parseInt(match[2], 10);
+            const year = parseInt(match[3], 10);
+
+            const now = new Date();
+            const currentYear = now.getFullYear();
+
+            // Regla estricta: Únicamente fechas del año actual
+            if (year !== currentYear) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Año no permitido',
+                    text: `Únicamente se admiten fechas correspondientes al año en curso (${currentYear}).`,
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                return false;
+            }
+
+            // Validar existencia de fecha real (días válidos por mes y año bisiesto)
+            if (month < 1 || month > 12) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Mes inválido',
+                    text: 'El mes ingresado no es válido (debe estar entre 01 y 12).',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                return false;
+            }
+
+            const testDate = new Date(year, month - 1, day);
+            if (testDate.getFullYear() !== year || (testDate.getMonth() + 1) !== month || testDate.getDate() !== day) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha inválida',
+                    text: 'La fecha ingresada no existe en el calendario.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                return false;
+            }
+
+            // Validar que no sea fecha pasada dentro del mismo año
+            const todayStart = new Date(currentYear, now.getMonth(), now.getDate()).getTime();
+            if (testDate.getTime() < todayStart) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha no permitida',
+                    text: 'No puedes seleccionar fechas de días pasados.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff'
+                });
+                input.value = '';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Aplicar máscara DD/MM/AAAA y configurar eventos deferred
+        function setupDateInputMaskAndEvents(textInputId, nativePickerId) {
+            const textInput = document.getElementById(textInputId);
+            const nativePicker = document.getElementById(nativePickerId);
+
+            if (!textInput) return;
+
+            // Evento input: formateo dinámico con máscara DD/MM/AAAA sin disparar alertas prematuras
+            textInput.addEventListener('input', function (e) {
+                // Solo dígitos y máximo 8 dígitos (DDMMAAAA)
+                let rawDigits = this.value.replace(/\D/g, '').slice(0, 8);
+                let formatted = '';
+
+                if (rawDigits.length > 0) {
+                    formatted += rawDigits.slice(0, 2);
+                }
+                if (rawDigits.length > 2) {
+                    formatted += '/' + rawDigits.slice(2, 4);
+                }
+                if (rawDigits.length > 4) {
+                    formatted += '/' + rawDigits.slice(4, 8);
+                }
+
+                this.value = formatted;
+
+                // Si ha completado exactamente los 8 dígitos (10 caracteres "DD/MM/AAAA"), validar
+                if (formatted.length === 10) {
+                    validateSpecialDateField(this);
+                }
+            });
+
+            // Evento blur: validar cuando pierde el foco si hay contenido
+            textInput.addEventListener('blur', function () {
+                if (this.value.trim().length > 0) {
+                    validateSpecialDateField(this);
+                }
+            });
+
+            // Sincronización cuando se selecciona una fecha mediante el selector nativo del icono de calendario
+            if (nativePicker) {
+                nativePicker.addEventListener('change', function () {
+                    if (this.value) {
+                        textInput.value = formatYmdToDmy(this.value);
+                        validateSpecialDateField(textInput);
                     }
                 });
             }
+        }
+
+        // Inicializar máscaras de fechas al cargar el DOM
+        document.addEventListener('DOMContentLoaded', function () {
+            setupDateInputMaskAndEvents('specialDateInput', 'specialDateNativePicker');
+            setupDateInputMaskAndEvents('editSpecialDateInput', 'editSpecialDateNativePicker');
         });
     </script>
 </body>
