@@ -2873,6 +2873,21 @@
                         </div>
                     </div>
 
+                    <!-- Contraseña -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="workerPassword">Contraseña <span class="required">*</span></label>
+                            <input 
+                                type="password" 
+                                id="workerPassword" 
+                                name="password" 
+                                class="form-control" 
+                                placeholder="Al menos 8 caracteres, 1 mayúscula, 1 número" 
+                                required
+                            >
+                        </div>
+                    </div>
+
                     <!-- Dirección -->
                     <div class="form-group">
                         <label class="form-label" for="workerAddress">Dirección Domiciliaria <span class="required">*</span></label>

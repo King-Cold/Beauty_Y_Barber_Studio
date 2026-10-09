@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Trabajador;
 use App\Models\Service;
 use App\Models\HorarioSucursal;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class TrabajadorController extends Controller
@@ -139,7 +142,6 @@ class TrabajadorController extends Controller
                 'string',
                 'max:100',
                 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
-                'unique:trabajadores,nombre',
             ],
             'apellidos' => [
                 'required',
@@ -147,11 +149,12 @@ class TrabajadorController extends Controller
                 'max:100',
                 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
             ],
-            'telefono' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/', 'unique:trabajadores,telefono'],
-            'email' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', 'unique:trabajadores,email'],
+            'telefono' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/', 'unique:users,telefono'],
+            'email' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', 'unique:users,email'],
             'direccion' => ['required', 'string', 'max:255'],
             'experiencia' => ['required', 'integer', 'min:0', 'max:50'],
             'fotografia' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/'],
             'activo' => ['nullable', 'boolean'],
         ], [
             'nombre.required' => 'El nombre del trabajador es obligatorio.',
@@ -162,10 +165,10 @@ class TrabajadorController extends Controller
             'telefono.required' => 'El teléfono de contacto es obligatorio.',
             'telefono.size' => 'El número de teléfono debe contener exactamente 10 dígitos numéricos.',
             'telefono.regex' => 'El número de teléfono debe contener únicamente 10 dígitos numéricos (sin letras ni caracteres especiales).',
-            'telefono.unique' => 'Ya existe un trabajador registrado con este número de teléfono.',
+            'telefono.unique' => 'Ya existe un trabajador o usuario registrado con este número de teléfono.',
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.regex' => 'Introduce un correo electrónico válido (ej. usuario@dominio.com).',
-            'email.unique' => 'Ya existe un trabajador registrado con este correo electrónico.',
+            'email.unique' => 'Ya existe un trabajador o usuario registrado con este correo electrónico.',
             'direccion.required' => 'La dirección es obligatoria.',
             'experiencia.required' => 'Los años de experiencia son obligatorios.',
             'experiencia.integer' => 'La experiencia debe ser un número entero.',
@@ -173,6 +176,10 @@ class TrabajadorController extends Controller
             'fotografia.image' => 'El archivo seleccionado debe ser una imagen válida.',
             'fotografia.mimes' => 'La fotografía debe ser en formato JPG, JPEG, PNG o WEBP.',
             'fotografia.max' => 'La fotografía no debe superar 2 MB.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'password.regex' => 'La contraseña debe contener al menos una mayúscula y un número.',
         ]);
 
         // Manejo de la subida de fotografía
@@ -184,7 +191,26 @@ class TrabajadorController extends Controller
         // Estado por defecto activo (Subtarea 8)
         $validated['activo'] = $request->has('activo') ? $request->boolean('activo') : true;
 
-        $trabajador = Trabajador::create($validated);
+        $trabajador = DB::transaction(function () use ($validated) {
+            // Crear el usuario asociado al trabajador
+            $user = User::create([
+                'name' => $validated['nombre'],
+                'apellidos' => $validated['apellidos'],
+                'telefono' => $validated['telefono'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role_id' => 3, // 3 es el rol de Trabajador
+            ]);
+
+            // Asignar user_id al trabajador
+            $validated['user_id'] = $user->id;
+
+            // Quitar password del array para no intentar insertarlo en trabajadores
+            unset($validated['password'], $validated['password_confirmation']);
+
+            // Crear el registro de trabajador
+            return Trabajador::create($validated);
+        });
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
@@ -228,7 +254,6 @@ class TrabajadorController extends Controller
                 'string',
                 'max:100',
                 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
-                Rule::unique('trabajadores', 'nombre')->ignore($trabajador->id),
             ],
             'apellidos' => [
                 'required',
@@ -241,14 +266,14 @@ class TrabajadorController extends Controller
                 'string',
                 'size:10',
                 'regex:/^[0-9]{10}$/',
-                Rule::unique('trabajadores', 'telefono')->ignore($trabajador->id),
+                Rule::unique('users', 'telefono')->ignore($trabajador->user_id),
             ],
             'email' => [
                 'required',
                 'string',
                 'max:255',
                 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
-                Rule::unique('trabajadores', 'email')->ignore($trabajador->id),
+                Rule::unique('users', 'email')->ignore($trabajador->user_id),
             ],
             'direccion' => ['required', 'string', 'max:255'],
             'experiencia' => ['required', 'integer', 'min:0', 'max:50'],
@@ -295,7 +320,17 @@ class TrabajadorController extends Controller
 
         unset($validated['status']);
 
-        $trabajador->update($validated);
+        DB::transaction(function () use ($trabajador, $validated) {
+            if ($trabajador->user) {
+                $trabajador->user->update([
+                    'name' => $validated['nombre'],
+                    'apellidos' => $validated['apellidos'],
+                    'telefono' => $validated['telefono'],
+                    'email' => $validated['email'],
+                ]);
+            }
+            $trabajador->update($validated);
+        });
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([

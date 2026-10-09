@@ -12,15 +12,12 @@ class Trabajador extends Model
     protected $table = 'trabajadores';
 
     protected $fillable = [
-        'nombre',
-        'apellidos',
-        'telefono',
-        'email',
         'direccion',
         'fotografia',
         'experiencia',
         'activo',
         'horario',
+        'user_id',
     ];
 
     protected $casts = [
@@ -38,11 +35,40 @@ class Trabajador extends Model
     }
 
     /**
+     * Get the user that owns the worker.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * Nombre completo formateado del trabajador.
      */
     public function getNombreCompletoAttribute(): string
     {
-        return "{$this->nombre} {$this->apellidos}";
+        return trim(($this->user->name ?? '') . ' ' . ($this->user->apellidos ?? ''));
+    }
+
+    // Accessors para mantener la compatibilidad con el resto del sistema
+    public function getNombreAttribute()
+    {
+        return $this->user->name ?? '';
+    }
+
+    public function getApellidosAttribute()
+    {
+        return $this->user->apellidos ?? '';
+    }
+
+    public function getTelefonoAttribute()
+    {
+        return $this->user->telefono ?? '';
+    }
+
+    public function getEmailAttribute()
+    {
+        return $this->user->email ?? '';
     }
 
     /**
