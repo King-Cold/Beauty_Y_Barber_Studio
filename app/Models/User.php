@@ -62,6 +62,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Relación con el rol del usuario.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    /**
      * Relación con el perfil de trabajador asociado.
      */
     public function trabajador()
@@ -69,3 +77,4 @@ class User extends Authenticatable
         return $this->hasOne(Trabajador::class, 'user_id');
     }
 }
+

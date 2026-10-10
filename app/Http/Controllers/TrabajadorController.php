@@ -142,6 +142,7 @@ class TrabajadorController extends Controller
         }
 
         $validated = $request->validate([
+            'user_id' => ['nullable', 'integer', 'exists:users,id'],
             'nombre' => [
                 'required',
                 'string',
@@ -154,12 +155,12 @@ class TrabajadorController extends Controller
                 'max:100',
                 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u',
             ],
-            'telefono' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/', 'unique:users,telefono'],
-            'email' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', 'unique:users,email'],
+            'telefono' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/', Rule::unique('users', 'telefono')->ignore($request->user_id)],
+            'email' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', Rule::unique('users', 'email')->ignore($request->user_id)],
             'direccion' => ['required', 'string', 'max:255'],
             'experiencia' => ['required', 'integer', 'min:0', 'max:50'],
             'fotografia' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
-            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[\W_]/'],
+            'password' => [$request->filled('user_id') ? 'nullable' : 'required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[\W_]/'],
             'activo' => ['nullable', 'boolean'],
         ], [
             'nombre.required' => 'El nombre del trabajador es obligatorio.',
@@ -191,7 +192,10 @@ class TrabajadorController extends Controller
         $nombreNorm = mb_strtolower(trim($validated['nombre']));
         $apellidosNorm = mb_strtolower(trim($validated['apellidos']));
 
-        $existeDuplicado = Trabajador::where(function ($query) use ($nombreNorm, $apellidosNorm) {
+        $existeDuplicado = Trabajador::where(function ($query) use ($nombreNorm, $apellidosNorm, $request) {
+            if ($request->filled('user_id')) {
+                $query->where('user_id', '!=', $request->user_id);
+            }
             $query->whereHas('user', function ($q) use ($nombreNorm, $apellidosNorm) {
                 $q->whereRaw('LOWER(TRIM(name)) = ?', [$nombreNorm])
                   ->whereRaw('LOWER(TRIM(apellidos)) = ?', [$apellidosNorm]);
@@ -219,16 +223,29 @@ class TrabajadorController extends Controller
         // Estado por defecto activo (Subtarea 8)
         $validated['activo'] = $request->has('activo') ? $request->boolean('activo') : true;
 
-        $trabajador = DB::transaction(function () use ($validated) {
-            // Crear el usuario asociado al trabajador
-            $user = User::create([
-                'name' => $validated['nombre'],
-                'apellidos' => $validated['apellidos'],
-                'telefono' => $validated['telefono'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'role_id' => 3, // 3 es el rol de Trabajador
-            ]);
+        $trabajador = DB::transaction(function () use ($validated, $request) {
+            if ($request->filled('user_id')) {
+                $user = User::findOrFail($request->user_id);
+                $user->update([
+                    'name' => $validated['nombre'],
+                    'apellidos' => $validated['apellidos'],
+                    'telefono' => $validated['telefono'],
+                    'email' => $validated['email'],
+                    'role_id' => 3,
+                ]);
+                if (!empty($validated['password'])) {
+                    $user->update(['password' => Hash::make($validated['password'])]);
+                }
+            } else {
+                $user = User::create([
+                    'name' => $validated['nombre'],
+                    'apellidos' => $validated['apellidos'],
+                    'telefono' => $validated['telefono'],
+                    'email' => $validated['email'],
+                    'password' => Hash::make($validated['password']),
+                    'role_id' => 3, // 3 es el rol de Trabajador
+                ]);
+            }
 
             // Asignar user_id al trabajador
             $validated['user_id'] = $user->id;

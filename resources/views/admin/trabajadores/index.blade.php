@@ -2556,7 +2556,7 @@
                     </a>
 
                     <!-- 2. Usuarios -->
-                    <a href="#usuarios" class="nav-item" title="Usuarios">
+                    <a href="{{ route('admin.usuarios') }}" class="nav-item" title="Usuarios">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -3071,6 +3071,7 @@
 
             <form id="formCreateWorker" action="{{ route('admin.trabajadores.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" id="workerUserId" name="user_id" value="">
                 <div class="modal-body">
                     <!-- Fotografía -->
                     <div class="form-group">
@@ -3819,6 +3820,87 @@
             // Inicializar visibilidad de contraseñas con ojito (Crear y Editar)
             initPasswordToggle('toggleCreatePassword', 'workerPassword');
             initPasswordToggle('toggleEditPassword', 'editWorkerPassword');
+
+            // Precarga de datos transferidos desde el módulo de Usuarios
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const fromUsers = urlParams.get('from_usuarios');
+                const storedDataStr = sessionStorage.getItem('preloadedWorkerData');
+                
+                if (fromUsers === '1' || storedDataStr) {
+                    let preloadedData = null;
+                    if (storedDataStr) {
+                        try {
+                            preloadedData = JSON.parse(storedDataStr);
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+
+                    // Abrir modal de creación de trabajador
+                    openModal('modalCreateWorker');
+
+                    if (preloadedData) {
+                        if (preloadedData.nombre) {
+                            const nameInp = document.getElementById('workerName');
+                            if (nameInp) { 
+                                nameInp.value = preloadedData.nombre; 
+                                nameInp.dispatchEvent(new Event('input'));
+                            }
+                        }
+                        if (preloadedData.apellidos) {
+                            const lastInp = document.getElementById('workerLastName');
+                            if (lastInp) { 
+                                lastInp.value = preloadedData.apellidos; 
+                                lastInp.dispatchEvent(new Event('input'));
+                            }
+                        }
+                        if (preloadedData.telefono) {
+                            const phoneInp = document.getElementById('workerPhone');
+                            if (phoneInp) { 
+                                phoneInp.value = preloadedData.telefono;
+                                validatePhoneInput(phoneInp);
+                            }
+                        }
+                        if (preloadedData.email) {
+                            const emailInp = document.getElementById('workerEmail');
+                            if (emailInp) { 
+                                emailInp.value = preloadedData.email;
+                                validateEmailInput(emailInp);
+                            }
+                        }
+                        if (preloadedData.user_id) {
+                            const userInp = document.getElementById('workerUserId');
+                            if (userInp) { userInp.value = preloadedData.user_id; }
+                        }
+                        if (preloadedData.password) {
+                            const passInp = document.getElementById('workerPassword');
+                            if (passInp) { passInp.value = preloadedData.password; }
+                        }
+                    }
+
+                    // Notificación Toast informativa
+                    setTimeout(() => {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Datos transferidos desde Usuarios. Completa la información laboral.',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+                            background: '#1e293b',
+                            color: '#ffffff',
+                            iconColor: '#38bdf8'
+                        });
+                    }, 400);
+
+                    // Limpiar datos transferidos para no reabrir involuntariamente
+                    sessionStorage.removeItem('preloadedWorkerData');
+                }
+            } catch (err) {
+                console.error('Error al procesar precarga de trabajador:', err);
+            }
         });
 
         // Alternador de visibilidad de contraseña (Diseño y comportamiento idéntico a Login)

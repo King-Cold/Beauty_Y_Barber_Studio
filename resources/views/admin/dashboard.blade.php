@@ -1044,7 +1044,7 @@
                     </a>
 
                     <!-- 2. Usuarios -->
-                    <a href="#usuarios" class="nav-item" title="Usuarios">
+                    <a href="{{ route('admin.usuarios') }}" class="nav-item" title="Usuarios">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
