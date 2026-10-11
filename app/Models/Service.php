@@ -34,4 +34,12 @@ class Service extends Model
             ->where('trabajadores.activo', true)
             ->withTimestamps();
     }
+
+    /**
+     * Citas registradas para este servicio.
+     */
+    public function citas()
+    {
+        return $this->hasMany(Cita::class, 'service_id');
+    }
 }

@@ -65,11 +65,15 @@ Route::middleware('auth')->group(function () {
     // ==========================================
     // RUTAS PARA RECEPCIONISTAS (Rol 2)
     // ==========================================
-    Route::middleware(['role:1,2'])->group(function () {
-        Route::get('/recepcion', function () {
-            $swal = session('success') ? "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>document.addEventListener('DOMContentLoaded', ()=>Swal.fire({toast:true,position:'top-end',icon:'success',title:'".session('success')."',showConfirmButton:false,timer:3500,timerProgressBar:true,background:'#10b981',color:'#fff',iconColor:'#fff'}));</script>" : "";
-            return $swal . "<h1>Panel de Recepcionista en construcción...</h1> <br> <form action='".route('logout')."' method='POST'>".csrf_field()."<button type='submit'>Cerrar sesión</button></form>";
-        })->name('recepcion.dashboard');
+    Route::middleware(['role:1,2'])->prefix('recepcion')->name('recepcion.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\RecepcionController::class, 'index'])->name('dashboard');
+        Route::get('/citas', [\App\Http\Controllers\RecepcionController::class, 'citas'])->name('citas');
+        Route::get('/agendamiento', [\App\Http\Controllers\RecepcionController::class, 'agendamiento'])->name('agendamiento');
+        Route::get('/agendamiento/disponibilidad', [\App\Http\Controllers\RecepcionController::class, 'consultarDisponibilidad'])->name('agendamiento.disponibilidad');
+        Route::post('/agendamiento/validar-horario', [\App\Http\Controllers\RecepcionController::class, 'validarHorario'])->name('agendamiento.validar-horario');
+        Route::post('/agendamiento/confirmar', [\App\Http\Controllers\RecepcionController::class, 'confirmarCita'])->name('agendamiento.confirmar');
+        Route::get('/calendario', [\App\Http\Controllers\RecepcionController::class, 'calendario'])->name('calendario');
+        Route::get('/clientes', [\App\Http\Controllers\RecepcionController::class, 'clientes'])->name('clientes');
     });
 
     // ==========================================
@@ -85,10 +89,16 @@ Route::middleware('auth')->group(function () {
     // ==========================================
     // RUTAS PARA CLIENTES (Rol 4)
     // ==========================================
-    Route::middleware(['role:1,4'])->group(function () {
-        Route::get('/cliente', function () {
-            $swal = session('success') ? "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>document.addEventListener('DOMContentLoaded', ()=>Swal.fire({toast:true,position:'top-end',icon:'success',title:'".session('success')."',showConfirmButton:false,timer:3500,timerProgressBar:true,background:'#10b981',color:'#fff',iconColor:'#fff'}));</script>" : "";
-            return $swal . "<h1>Perfil de Cliente en construcción...</h1> <br> <form action='".route('logout')."' method='POST'>".csrf_field()."<button type='submit'>Cerrar sesión</button></form>";
-        })->name('cliente.dashboard');
+    Route::middleware(['role:1,4'])->prefix('cliente')->name('cliente.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\ClienteController::class, 'index'])->name('dashboard');
+        Route::get('/agendamiento', [\App\Http\Controllers\ClienteController::class, 'agendamiento'])->name('agendamiento');
+        Route::get('/agendamiento/disponibilidad', [\App\Http\Controllers\ClienteController::class, 'consultarDisponibilidad'])->name('agendamiento.disponibilidad');
+        Route::post('/agendamiento/validar-horario', [\App\Http\Controllers\ClienteController::class, 'validarHorario'])->name('agendamiento.validar-horario');
+        Route::post('/agendamiento/confirmar', [\App\Http\Controllers\ClienteController::class, 'confirmarCita'])->name('agendamiento.confirmar');
+        Route::post('/agendamiento', [\App\Http\Controllers\ClienteController::class, 'confirmarCita'])->name('agendamiento.store');
+        Route::get('/historial', [\App\Http\Controllers\ClienteController::class, 'historial'])->name('historial');
+        Route::get('/citas', [\App\Http\Controllers\ClienteController::class, 'historial'])->name('citas.index');
+        Route::get('/citas/{cita}', [\App\Http\Controllers\ClienteController::class, 'showCita'])->name('citas.show');
+        Route::match(['post', 'patch'], '/citas/{cita}/cancelar', [\App\Http\Controllers\ClienteController::class, 'cancelarCita'])->name('citas.cancelar');
     });
 });

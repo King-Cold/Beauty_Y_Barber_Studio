@@ -76,5 +76,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(Trabajador::class, 'user_id');
     }
+
+    /**
+     * Relación con las citas registradas por el usuario.
+     */
+    public function citas()
+    {
+        return $this->hasMany(Cita::class, 'user_id');
+    }
 }
 

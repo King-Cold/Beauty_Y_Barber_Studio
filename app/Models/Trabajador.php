@@ -317,4 +317,12 @@ class Trabajador extends Model
             'texto' => $estado,
         ];
     }
+
+    /**
+     * Citas registradas para este trabajador.
+     */
+    public function citas()
+    {
+        return $this->hasMany(Cita::class, 'trabajador_id');
+    }
 }

@@ -1367,7 +1367,13 @@
                         </div>
                         <div style="flex: 1; min-width: 180px;">
                             <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Duración (min) <span style="color: var(--barber-red);">*</span></label>
-                            <input type="number" min="20" name="duration_minutes" value="{{ old('duration_minutes') }}" required placeholder="45" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                            <select name="duration_minutes" required style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; appearance: none; padding-right: 32px; background-image: url('data:image/svg+xml;utf8,<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'6 9 12 15 18 9\'/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                <option value="" disabled {{ old('duration_minutes') ? '' : 'selected' }} style="background: var(--bg-header);">Selecciona la duración</option>
+                                <option value="15" {{ old('duration_minutes') == '15' ? 'selected' : '' }} style="background: var(--bg-header);">15 minutos</option>
+                                <option value="30" {{ old('duration_minutes') == '30' ? 'selected' : '' }} style="background: var(--bg-header);">30 minutos</option>
+                                <option value="45" {{ old('duration_minutes') == '45' ? 'selected' : '' }} style="background: var(--bg-header);">45 minutos</option>
+                                <option value="60" {{ old('duration_minutes') == '60' ? 'selected' : '' }} style="background: var(--bg-header);">60 minutos</option>
+                            </select>
                         </div>
                     </div>
 
@@ -1481,7 +1487,13 @@
                     </div>
                     <div style="flex: 1; min-width: 180px;">
                         <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Duración (min) <span style="color: var(--barber-red);">*</span></label>
-                        <input type="number" min="20" id="edit_duration" name="duration_minutes" value="{{ old('duration_minutes') }}" required placeholder="45" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                        <select id="edit_duration" name="duration_minutes" required style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit; appearance: none; padding-right: 32px; background-image: url('data:image/svg+xml;utf8,<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'6 9 12 15 18 9\'/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                            <option value="" disabled {{ old('duration_minutes', '') == '' ? 'selected' : '' }} style="background: var(--bg-header);">Selecciona la duración</option>
+                            <option value="15" {{ old('duration_minutes') == '15' ? 'selected' : '' }} style="background: var(--bg-header);">15 minutos</option>
+                            <option value="30" {{ old('duration_minutes') == '30' ? 'selected' : '' }} style="background: var(--bg-header);">30 minutos</option>
+                            <option value="45" {{ old('duration_minutes') == '45' ? 'selected' : '' }} style="background: var(--bg-header);">45 minutos</option>
+                            <option value="60" {{ old('duration_minutes') == '60' ? 'selected' : '' }} style="background: var(--bg-header);">60 minutos</option>
+                        </select>
                     </div>
                 </div>
 
@@ -1538,7 +1550,29 @@
             @if(!($errors->any() && old('_method') === 'PUT'))
             document.getElementById('edit_name').value = name;
             document.getElementById('edit_price').value = price;
-            document.getElementById('edit_duration').value = duration;
+            
+            const durationSelect = document.getElementById('edit_duration');
+            const existingLegacyOption = document.getElementById('edit_duration_legacy_option');
+            if (existingLegacyOption) {
+                existingLegacyOption.remove();
+            }
+
+            const standardDurations = ['15', '30', '45', '60'];
+            if (standardDurations.includes(String(duration))) {
+                durationSelect.value = String(duration);
+            } else if (duration) {
+                // Registro existente con duración previa no estándar: se muestra su duración actual
+                const legacyOpt = document.createElement('option');
+                legacyOpt.id = 'edit_duration_legacy_option';
+                legacyOpt.value = duration;
+                legacyOpt.textContent = `${duration} minutos (Duración actual no estándar)`;
+                legacyOpt.style.background = 'var(--bg-header)';
+                legacyOpt.selected = true;
+                durationSelect.prepend(legacyOpt);
+            } else {
+                durationSelect.value = '';
+            }
+
             document.getElementById('edit_category').value = category;
             document.getElementById('edit_description').value = description;
             @endif

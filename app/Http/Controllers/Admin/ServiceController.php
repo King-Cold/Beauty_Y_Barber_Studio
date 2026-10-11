@@ -36,7 +36,7 @@ class ServiceController extends Controller
             ],
             'description' => 'required|string',
             'price' => 'required|numeric|gt:0',
-            'duration_minutes' => 'required|integer|min:20',
+            'duration_minutes' => 'required|integer|in:15,30,45,60',
             'category' => 'required|in:barberia,estetica',
             'image' => 'required|image|max:2048',
         ], [
@@ -47,9 +47,9 @@ class ServiceController extends Controller
             'price.required' => 'El precio del servicio es obligatorio.',
             'price.numeric' => 'El precio debe ser un número válido.',
             'price.gt' => 'El precio debe ser mayor a cero (no se permite 0 ni valores negativos).',
-            'duration_minutes.min' => 'La duración mínima permitida es de 20 minutos.',
             'duration_minutes.required' => 'La duración del servicio es obligatoria.',
             'duration_minutes.integer' => 'La duración debe ser un número entero de minutos.',
+            'duration_minutes.in' => 'La duración seleccionada no es válida. Solo se permiten 15, 30, 45 o 60 minutos.',
         ]);
 
         if ($request->hasFile('image')) {
@@ -77,7 +77,7 @@ class ServiceController extends Controller
             ],
             'description' => 'required|string',
             'price' => 'required|numeric|gt:0',
-            'duration_minutes' => 'required|integer|min:20',
+            'duration_minutes' => 'required|integer|in:15,30,45,60',
             'category' => 'required|in:barberia,estetica',
             'image' => 'nullable|image|max:2048',
         ], [
@@ -88,9 +88,9 @@ class ServiceController extends Controller
             'price.required' => 'El precio del servicio es obligatorio.',
             'price.numeric' => 'El precio debe ser un número válido.',
             'price.gt' => 'El precio debe ser mayor a cero (no se permite 0 ni valores negativos).',
-            'duration_minutes.min' => 'La duración mínima permitida es de 20 minutos.',
             'duration_minutes.required' => 'La duración del servicio es obligatoria.',
             'duration_minutes.integer' => 'La duración debe ser un número entero de minutos.',
+            'duration_minutes.in' => 'La duración seleccionada no es válida. Solo se permiten 15, 30, 45 o 60 minutos.',
         ]);
 
         if ($request->hasFile('image')) {

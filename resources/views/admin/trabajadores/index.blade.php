@@ -4082,8 +4082,14 @@
             openModal('modalServices');
         }
 
-        // Almacenamiento frontend de bloqueos por especialista (Inicia completamente vacío para cada trabajador)
-        const workerBlocksStore = {};
+        // Almacenamiento frontend de bloqueos por especialista precargado desde la BD
+        const workerBlocksStore = {
+            @if(isset($trabajadores))
+                @foreach($trabajadores as $tr)
+                    {{ $tr->id }}: @json((is_array($tr->horario) && isset($tr->horario['bloqueos'])) ? $tr->horario['bloqueos'] : []),
+                @endforeach
+            @endif
+        };
 
         // Límites globales de la sucursal disponibles en el Frontend (PARTE 1)
         const branchLimits = @json($branchLimits ?? \App\Models\HorarioSucursal::getHorariosMap());
@@ -4251,6 +4257,10 @@
                     const limits = data.branch_limits || branchLimits;
                     currentModalBranchLimits = limits;
                     currentModalWorkerSchedule = data.horario || null;
+                    if (data.horario && Array.isArray(data.horario.bloqueos)) {
+                        workerBlocksStore[id] = data.horario.bloqueos;
+                        renderWorkerBlocks(id);
+                    }
                     applyBranchLimitsToWorkerModal(limits, data.horario);
                 }
             } catch (err) {
@@ -4786,6 +4796,7 @@
             });
 
             renderWorkerBlocks(workerId);
+            autoPersistWorkerBlocks(workerId);
 
             // Limpiar formulario
             dateInput.value = '';
@@ -4798,11 +4809,45 @@
             if (hintBox) hintBox.style.display = 'none';
         }
 
-        // Eliminar Bloqueo de Disponibilidad (Frontend)
+        // Auto-persistencia en backend al agregar o remover bloqueos
+        async function autoPersistWorkerBlocks(workerId) {
+            try {
+                const getRes = await fetch(`/admin/trabajadores/${workerId}/horario`, {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                if (!getRes.ok) return;
+                const getData = await getRes.json();
+                const horario = getData.horario || {};
+                horario.bloqueos = workerBlocksStore[workerId] || [];
+
+                await fetch(`/admin/trabajadores/${workerId}/horario`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ horario })
+                });
+
+                const badgeEl = document.querySelector(`#worker-card-${workerId} .worker-blocks-badge`);
+                if (badgeEl) {
+                    const count = horario.bloqueos.length;
+                    badgeEl.textContent = `${count} Bloqueos`;
+                    badgeEl.style.display = count > 0 ? 'inline-flex' : 'none';
+                }
+            } catch (err) {
+                console.error('Error persistiendo bloqueos:', err);
+            }
+        }
+
+        // Eliminar Bloqueo de Disponibilidad (Frontend y Backend)
         function removeAvailabilityBlock(workerId, index) {
             if (workerBlocksStore[workerId] && workerBlocksStore[workerId][index] !== undefined) {
                 workerBlocksStore[workerId].splice(index, 1);
                 renderWorkerBlocks(workerId);
+                autoPersistWorkerBlocks(workerId);
             }
         }
 
@@ -4811,7 +4856,7 @@
         let currentDetailWorkerName = '';
 
         // Abrir Modal de Vista Detallada de Bloqueos de Disponibilidad del Especialista
-        function openWorkerBlocksDetailModal(workerId, workerName) {
+        async function openWorkerBlocksDetailModal(workerId, workerName) {
             currentDetailWorkerId = workerId;
             currentDetailWorkerName = workerName;
 
@@ -4825,6 +4870,18 @@
                 const initials = (words[0] ? words[0][0] : '') + (words[1] ? words[1][0] : '');
                 avatarEl.textContent = initials.toUpperCase() || 'E';
             }
+
+            try {
+                const res = await fetch(`/admin/trabajadores/${workerId}/horario`, {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.horario && Array.isArray(data.horario.bloqueos)) {
+                        workerBlocksStore[workerId] = data.horario.bloqueos;
+                    }
+                }
+            } catch (err) {}
 
             renderDetailModalBlocks(workerId);
             openModal('modalWorkerBlocksDetail');
@@ -4944,6 +5001,9 @@
                     horario[day] = { entrada, salida };
                 }
             }
+
+            // Adjuntar los bloqueos de disponibilidad registrados para el especialista
+            horario.bloqueos = workerBlocksStore[workerId] || [];
 
             const submitBtn = document.querySelector('#formWorkerSchedule button[type="submit"]');
             const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
