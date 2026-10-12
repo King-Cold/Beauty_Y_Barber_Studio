@@ -1162,32 +1162,85 @@
             <!-- Formulario interactivo -->
             <form id="appointmentForm" onsubmit="event.preventDefault();">
                 
-                <!-- 1. SELECCIÓN DE CLIENTE (EXCLUSIVO DE RECEPCIÓN) -->
-                <div class="form-group">
-                    <label for="clientSelect" class="form-label">
+                <!-- 1. SELECCIÓN DE CLIENTE (BUSCADOR DINÁMICO DE RECEPCIÓN) -->
+                <div class="form-group" style="position: relative;">
+                    <label class="form-label" for="clientSearchInput">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
                         <span>Cliente</span>
                     </label>
-                    <select id="clientSelect" class="form-control" name="client_id" required>
-                        <option value="" selected disabled>Selecciona un cliente</option>
-                        @if(isset($clientes) && $clientes->count() > 0)
-                            @foreach($clientes as $cliente)
-                                <option 
-                                    value="{{ $cliente->id }}"
-                                    data-name="{{ $cliente->name }} {{ $cliente->apellidos ?? '' }}"
-                                    data-email="{{ $cliente->email }}"
-                                    data-phone="{{ $cliente->telefono ?? '' }}"
-                                    {{ (request('client_id') == $cliente->id) ? 'selected' : '' }}
-                                >
-                                    {{ $cliente->name }} {{ $cliente->apellidos ?? '' }} ({{ $cliente->email }})
-                                </option>
-                            @endforeach
-                        @endif
-                    </select>
-                    <p class="form-hint" id="clientHint">Elige el cliente para quien se registrará la reserva.</p>
+
+                    @php
+                        $preId = $clientePreseleccionado->id ?? request('client_id');
+                        $preName = $clientePreseleccionado ? trim($clientePreseleccionado->name . ' ' . ($clientePreseleccionado->apellidos ?? '')) : '';
+                        $preEmail = $clientePreseleccionado->email ?? '';
+                        $prePhone = $clientePreseleccionado->telefono ?? '';
+                        $preInitials = $clientePreseleccionado ? strtoupper(substr($clientePreseleccionado->name, 0, 1) . substr($clientePreseleccionado->apellidos ?? '', 0, 1)) : 'CL';
+                    @endphp
+
+                    <!-- Input oculto para compatibilidad con validación de backend y envío -->
+                    <input 
+                        type="hidden" 
+                        id="clientSelect" 
+                        name="client_id" 
+                        value="{{ $preId ?? '' }}" 
+                        data-name="{{ $preName }}" 
+                        data-email="{{ $preEmail }}" 
+                        data-phone="{{ $prePhone }}" 
+                        required
+                    >
+
+                    <!-- Ficha visual del cliente seleccionado -->
+                    <div id="selectedClientCard" class="selected-client-card" style="display: {{ $preId ? 'flex' : 'none' }}; align-items: center; justify-content: space-between; background: rgba(0, 85, 255, 0.08); border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px;">
+                        <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                            <div id="selectedClientAvatar" style="width: 34px; height: 34px; border-radius: 50%; background: var(--barber-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
+                                {{ $preInitials }}
+                            </div>
+                            <div style="min-width: 0;">
+                                <div id="selectedClientNameText" style="font-size: 13px; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $preName ?: 'Cliente #' . $preId }}
+                                </div>
+                                <div id="selectedClientMetaText" style="font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $preEmail }} {{ $prePhone ? '• ' . $prePhone : '' }}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="btnChangeClient" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border-subtle); color: #94a3b8; border-radius: 6px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all 0.2s;" title="Cambiar cliente">
+                            Cambiar
+                        </button>
+                    </div>
+
+                    <!-- Buscador dinámico con autocompletado y debounce -->
+                    <div id="clientSearchBoxWrapper" style="position: relative; display: {{ $preId ? 'none' : 'block' }};">
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <input 
+                                type="text" 
+                                id="clientSearchInput" 
+                                class="form-control" 
+                                placeholder="Escribe el nombre o apellidos del cliente..." 
+                                autocomplete="off"
+                                style="padding-left: 32px; padding-right: 32px;"
+                            >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 10px; width: 14px; height: 14px; color: var(--text-muted); pointer-events: none;">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <span id="clientSearchSpinner" style="position: absolute; right: 10px; display: none;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-animation" style="animation: spin 1s linear infinite; color: var(--barber-blue-light);">
+                                    <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                                    <path d="M12 2a10 10 0 0 1 10 10"></path>
+                                </svg>
+                            </span>
+                        </div>
+
+                        <!-- Dropdown de resultados interactivos -->
+                        <div id="clientSearchResults" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #0c142b; border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 50; max-height: 220px; overflow-y: auto;">
+                        </div>
+                    </div>
+
+                    <p class="form-hint" id="clientHint">Busca y selecciona el cliente registrado para asociar la cita.</p>
                 </div>
 
                 <!-- 2. SERVICIO SELECCIONADO (FIJO - DESDE CARDS O SELECT TÉCNICO) -->
@@ -1411,6 +1464,16 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // Datos de servicios
         const servicesData = [
             @if(isset($servicios) && $servicios->count() > 0)
@@ -1481,21 +1544,151 @@
         const unavailableModalMessage = document.getElementById('unavailableModalMessage');
         const btnCloseUnavailableModal = document.getElementById('btnCloseUnavailableModal');
 
-        // Inicialización de cliente en resumen si viene preseleccionado
+        // --- LÓGICA DEL BUSCADOR DINÁMICO DE CLIENTES ---
+        const clientSearchInput = document.getElementById('clientSearchInput');
+        const clientSearchResults = document.getElementById('clientSearchResults');
+        const clientSearchSpinner = document.getElementById('clientSearchSpinner');
+        const selectedClientCard = document.getElementById('selectedClientCard');
+        const clientSearchBoxWrapper = document.getElementById('clientSearchBoxWrapper');
+        const selectedClientNameText = document.getElementById('selectedClientNameText');
+        const selectedClientMetaText = document.getElementById('selectedClientMetaText');
+        const selectedClientAvatar = document.getElementById('selectedClientAvatar');
+        const btnChangeClient = document.getElementById('btnChangeClient');
+
+        let clientSearchTimer = null;
+
         function updateClientSummary() {
             if (clientSelect && clientSelect.value) {
-                const opt = clientSelect.selectedOptions[0];
-                summaryClientName.textContent = opt ? (opt.getAttribute('data-name') || opt.text) : 'Cliente #' + clientSelect.value;
+                const name = clientSelect.getAttribute('data-name') || ('Cliente #' + clientSelect.value);
+                summaryClientName.textContent = name;
                 summaryClientName.classList.remove('empty');
             } else {
                 summaryClientName.textContent = 'Selecciona un cliente';
                 summaryClientName.classList.add('empty');
             }
         }
-        if (clientSelect) {
-            clientSelect.addEventListener('change', updateClientSummary);
+
+        function renderClientSearchResults(clientes, term) {
+            if (!clientSearchResults) return;
+            clientSearchResults.innerHTML = '';
+
+            if (!clientes || clientes.length === 0) {
+                clientSearchResults.innerHTML = `
+                    <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 11.5px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 4px; opacity: 0.6; display: block; margin-left: auto; margin-right: auto;"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                        <div>No se encontraron clientes coincidentes con "<strong>${escapeHtml(term)}</strong>".</div>
+                    </div>
+                `;
+                clientSearchResults.style.display = 'block';
+                return;
+            }
+
+            clientes.forEach(c => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s ease;';
+                item.innerHTML = `
+                    <div style="width: 30px; height: 30px; border-radius: 50%; background: var(--barber-blue-pale); border: 1px solid var(--barber-blue-border); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex-shrink: 0;">
+                        ${escapeHtml(c.iniciales || 'CL')}
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 12.5px; font-weight: 600; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            ${escapeHtml(c.nombre_completo)}
+                        </div>
+                        <div style="font-size: 10.5px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            ${escapeHtml(c.email)} ${c.telefono ? '• ' + escapeHtml(c.telefono) : ''}
+                        </div>
+                    </div>
+                `;
+                item.addEventListener('mouseenter', () => item.style.background = 'rgba(0, 85, 255, 0.18)');
+                item.addEventListener('mouseleave', () => item.style.background = 'transparent');
+                item.addEventListener('click', () => {
+                    selectSearchedClient(c);
+                });
+                clientSearchResults.appendChild(item);
+            });
+
+            clientSearchResults.style.display = 'block';
+        }
+
+        function selectSearchedClient(c) {
+            if (!clientSelect) return;
+            clientSelect.value = c.id;
+            clientSelect.setAttribute('data-name', c.nombre_completo);
+            clientSelect.setAttribute('data-email', c.email || '');
+            clientSelect.setAttribute('data-phone', c.telefono || '');
+
+            if (selectedClientNameText) selectedClientNameText.textContent = c.nombre_completo;
+            if (selectedClientMetaText) selectedClientMetaText.textContent = `${c.email || ''} ${c.telefono ? '• ' + c.telefono : ''}`;
+            if (selectedClientAvatar) selectedClientAvatar.textContent = c.iniciales || 'CL';
+
+            if (selectedClientCard) selectedClientCard.style.display = 'flex';
+            if (clientSearchBoxWrapper) clientSearchBoxWrapper.style.display = 'none';
+            if (clientSearchResults) clientSearchResults.style.display = 'none';
+            if (clientSearchInput) clientSearchInput.value = '';
+
             updateClientSummary();
         }
+
+        function clearSelectedClient() {
+            if (clientSelect) {
+                clientSelect.value = '';
+                clientSelect.removeAttribute('data-name');
+                clientSelect.removeAttribute('data-email');
+                clientSelect.removeAttribute('data-phone');
+            }
+            if (selectedClientCard) selectedClientCard.style.display = 'none';
+            if (clientSearchBoxWrapper) clientSearchBoxWrapper.style.display = 'block';
+            if (clientSearchInput) {
+                clientSearchInput.value = '';
+                clientSearchInput.focus();
+            }
+            updateClientSummary();
+        }
+
+        if (btnChangeClient) {
+            btnChangeClient.addEventListener('click', clearSelectedClient);
+        }
+
+        if (clientSearchInput) {
+            clientSearchInput.addEventListener('input', function () {
+                const term = this.value.trim();
+                clearTimeout(clientSearchTimer);
+
+                if (term.length === 0) {
+                    if (clientSearchResults) clientSearchResults.style.display = 'none';
+                    if (clientSearchSpinner) clientSearchSpinner.style.display = 'none';
+                    return;
+                }
+
+                if (clientSearchSpinner) clientSearchSpinner.style.display = 'inline-block';
+
+                clientSearchTimer = setTimeout(async () => {
+                    try {
+                        const response = await fetch(`{{ route('recepcion.agendamiento.buscar-clientes') }}?q=${encodeURIComponent(term)}`, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        const data = await response.json();
+                        if (clientSearchSpinner) clientSearchSpinner.style.display = 'none';
+                        if (data && data.success) {
+                            renderClientSearchResults(data.clientes, term);
+                        }
+                    } catch (err) {
+                        if (clientSearchSpinner) clientSearchSpinner.style.display = 'none';
+                    }
+                }, 300);
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('#clientSearchBoxWrapper') && clientSearchResults) {
+                    clientSearchResults.style.display = 'none';
+                }
+            });
+        }
+
+        updateClientSummary();
 
         // Estado inicial de trabajador
         workerSelect.disabled = true;
@@ -1796,7 +1989,7 @@
             });
         }
 
-        // Envío y confirmación de la cita
+        // Envío y confirmación interactiva de la cita
         if (btnContinue) {
             btnContinue.addEventListener('click', async function () {
                 const clientId = clientSelect ? clientSelect.value : '';
@@ -1806,8 +1999,8 @@
                 const timeVal = timeSelect ? timeSelect.value : '';
 
                 if (!clientId) {
-                    mostrarAvisoCampoFaltante('Por favor selecciona un cliente registrado.');
-                    if (clientSelect) clientSelect.focus();
+                    mostrarAvisoCampoFaltante('Por favor selecciona o busca un cliente registrado.');
+                    if (clientSearchInput) clientSearchInput.focus();
                     return;
                 }
                 if (!serviceId) {
@@ -1827,6 +2020,97 @@
                 if (!timeVal) {
                     mostrarAvisoCampoFaltante('Por favor selecciona un horario de atención disponible.');
                     if (timeSelect) timeSelect.focus();
+                    return;
+                }
+
+                const clienteNombre = clientSelect ? (clientSelect.getAttribute('data-name') || ('Cliente #' + clientId)) : '';
+                const serviceObj = servicesData.find(s => String(s.id) === String(serviceId));
+                const workerObj = workersData.find(w => String(w.id) === String(workerId));
+
+                // Formateo de fecha amigable en español
+                let fechaFormateada = dateVal;
+                try {
+                    const [y, m, d] = dateVal.split('-');
+                    const fechaObj = new Date(y, m - 1, d);
+                    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    fechaFormateada = fechaObj.toLocaleDateString('es-MX', opciones);
+                    fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+                } catch (e) {
+                    fechaFormateada = dateVal;
+                }
+
+                // Modal estructurado de confirmación con SweetAlert2 o fallback
+                let confirmacionAceptada = false;
+                if (typeof Swal !== 'undefined') {
+                    const confirmResult = await Swal.fire({
+                        title: '¿Confirmar Reservación de Cita?',
+                        html: `
+                            <div style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;">
+                                Revisa atentamente los datos antes de registrar la cita en recepción:
+                            </div>
+                            <div style="text-align: left; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.5;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #60a5fa; flex-shrink: 0;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        Cliente:
+                                    </span>
+                                    <span style="color: #ffffff; font-weight: 700; text-align: right; max-width: 65%; word-break: break-word;">${escapeHtml(clienteNombre)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #c084fc; flex-shrink: 0;"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+                                        Servicio:
+                                    </span>
+                                    <span style="color: #ffffff; font-weight: 700; text-align: right; max-width: 65%;">${escapeHtml(serviceObj ? serviceObj.name : 'Servicio')}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8; flex-shrink: 0;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                                        Especialista:
+                                    </span>
+                                    <span style="color: #ffffff; font-weight: 700; text-align: right; max-width: 65%;">${escapeHtml(workerObj ? workerObj.name : 'Especialista')}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #fbbf24; flex-shrink: 0;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                        Fecha:
+                                    </span>
+                                    <span style="color: #ffffff; font-weight: 700; text-align: right;">${escapeHtml(fechaFormateada)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                        Horario:
+                                    </span>
+                                    <span style="color: #38bdf8; font-weight: 700; text-align: right;">${escapeHtml(timeVal)} hrs (${serviceObj ? serviceObj.duration : 30} min)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 9px 0 2px 0;">
+                                    <span style="color: #94a3b8; font-weight: 600; font-size: 13.5px; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #10b981; flex-shrink: 0;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                        Total a pagar:
+                                    </span>
+                                    <span style="color: #10b981; font-weight: 800; font-size: 16px; text-align: right;">$${serviceObj ? serviceObj.price : '0.00'} MXN</span>
+                                </div>
+                            </div>
+                        `,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Confirmar Cita',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#0055ff',
+                        cancelButtonColor: '#64748b',
+                        background: '#0c142b',
+                        color: '#ffffff',
+                        reverseButtons: true,
+                        focusCancel: false
+                    });
+                    confirmacionAceptada = !!(confirmResult && confirmResult.isConfirmed);
+                } else {
+                    confirmacionAceptada = window.confirm(`¿Confirmar cita para ${clienteNombre} - ${serviceObj ? serviceObj.name : 'Servicio'} con ${workerObj ? workerObj.name : 'Especialista'} el ${fechaFormateada} a las ${timeVal} hrs?`);
+                }
+
+                // Si el usuario cancela la confirmación, la cita NO se registra
+                if (!confirmacionAceptada) {
                     return;
                 }
 
@@ -1871,7 +2155,9 @@
                             background: '#0c142b',
                             color: '#ffffff',
                             confirmButtonColor: '#0055ff',
-                            confirmButtonText: 'Aceptar'
+                            confirmButtonText: 'Aceptar',
+                            timer: 3500,
+                            timerProgressBar: true
                         }).then(() => {
                             // Limpiar horario y refrescar disponibilidad
                             if (timeSelect) timeSelect.value = '';

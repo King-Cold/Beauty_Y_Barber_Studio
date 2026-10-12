@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
         // Gestión de usuarios
         Route::get('/admin/usuarios', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.usuarios');
         Route::post('/admin/usuarios', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.usuarios.store');
-        Route::put('/admin/usuarios/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.usuarios.update');
+        Route::match(['PUT', 'POST'], '/admin/usuarios/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.usuarios.update');
         Route::delete('/admin/usuarios/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.usuarios.destroy');
 
         // Rutas de administración de servicios
@@ -69,11 +69,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [\App\Http\Controllers\RecepcionController::class, 'index'])->name('dashboard');
         Route::get('/citas', [\App\Http\Controllers\RecepcionController::class, 'citas'])->name('citas');
         Route::get('/agendamiento', [\App\Http\Controllers\RecepcionController::class, 'agendamiento'])->name('agendamiento');
+        Route::get('/agendamiento/buscar-clientes', [\App\Http\Controllers\RecepcionController::class, 'buscarClientes'])->name('agendamiento.buscar-clientes');
         Route::get('/agendamiento/disponibilidad', [\App\Http\Controllers\RecepcionController::class, 'consultarDisponibilidad'])->name('agendamiento.disponibilidad');
         Route::post('/agendamiento/validar-horario', [\App\Http\Controllers\RecepcionController::class, 'validarHorario'])->name('agendamiento.validar-horario');
         Route::post('/agendamiento/confirmar', [\App\Http\Controllers\RecepcionController::class, 'confirmarCita'])->name('agendamiento.confirmar');
         Route::get('/calendario', [\App\Http\Controllers\RecepcionController::class, 'calendario'])->name('calendario');
         Route::get('/clientes', [\App\Http\Controllers\RecepcionController::class, 'clientes'])->name('clientes');
+        Route::get('/clientes/buscar', [\App\Http\Controllers\RecepcionController::class, 'buscarClientes'])->name('clientes.buscar');
     });
 
     // ==========================================

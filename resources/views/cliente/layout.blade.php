@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         /* ===================================================
@@ -65,7 +67,7 @@
             flex-direction: column;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
+            overflow-x: clip;
         }
 
         /* Enlace de accesibilidad para teclado */
@@ -360,11 +362,11 @@
             flex: 1;
             min-height: calc(100vh - var(--header-height));
             position: relative;
-            overflow-x: hidden;
+            overflow-x: clip;
         }
 
         /* ===================================================
-           SIDEBAR DEL CLIENTE
+           SIDEBAR DEL CLIENTE (FIJO AL HACER SCROLL)
            =================================================== */
         .client-sidebar {
             width: var(--sidebar-width);
@@ -375,7 +377,25 @@
             display: flex;
             flex-direction: column;
             z-index: 30;
-            overflow: hidden;
+            position: sticky;
+            top: var(--header-height);
+            height: calc(100vh - var(--header-height));
+            align-self: flex-start;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .client-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .client-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+        }
+
+        .client-sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--barber-blue);
         }
 
         .sidebar-header {
@@ -469,7 +489,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 100%;
+            min-height: 100%;
         }
 
         .sidebar-nav {
@@ -909,41 +929,43 @@
     </script>
 
     @if(session('success'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: @json(session('success')),
-                showConfirmButton: false,
-                timer: 3500,
-                timerProgressBar: true,
-                background: '#10b981',
-                color: '#ffffff',
-                iconColor: '#ffffff'
-            });
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: @json(session('success')),
+                    showConfirmButton: false,
+                    timer: 3500,
+                    timerProgressBar: true,
+                    background: '#10b981',
+                    color: '#ffffff',
+                    iconColor: '#ffffff'
+                });
+            }
         });
     </script>
     @endif
 
     @if(session('error'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: @json(session('error')),
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true,
-                background: '#ef4444',
-                color: '#ffffff',
-                iconColor: '#ffffff'
-            });
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: @json(session('error')),
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    background: '#ef4444',
+                    color: '#ffffff',
+                    iconColor: '#ffffff'
+                });
+            }
         });
     </script>
     @endif

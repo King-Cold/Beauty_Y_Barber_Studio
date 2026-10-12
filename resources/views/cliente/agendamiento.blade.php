@@ -1509,6 +1509,16 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // Datos de servicios
         const servicesData = [
             @if(isset($servicios) && $servicios->count() > 0)
@@ -2081,6 +2091,97 @@
                     return;
                 }
 
+                const clienteNombre = @json(Auth::user()->name . ' ' . (Auth::user()->apellidos ?? ''));
+                const serviceObj = servicesData.find(s => String(s.id) === String(serviceId));
+                const workerObj = workersData.find(w => String(w.id) === String(workerId));
+
+                // Formateo de fecha amigable en español
+                let fechaFormateada = dateVal;
+                try {
+                    const [y, m, d] = dateVal.split('-');
+                    const fechaObj = new Date(y, m - 1, d);
+                    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    fechaFormateada = fechaObj.toLocaleDateString('es-MX', opciones);
+                    fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+                } catch (e) {
+                    fechaFormateada = dateVal;
+                }
+
+                // Modal estructurado de confirmación de la cita con SweetAlert2 o fallback seguro
+                let confirmacionAceptada = false;
+                if (typeof Swal !== 'undefined') {
+                    const confirmResult = await Swal.fire({
+                        title: '¿Deseas Confirmar tu Cita?',
+                        html: `
+                            <div style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;">
+                                Por favor revisa cuidadosamente el resumen de tu reservación:
+                            </div>
+                            <div style="text-align: left; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.5;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #60a5fa; flex-shrink: 0;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        Cliente:
+                                    </span>
+                                    <span style="color: #ffffff; font-weight: 700; text-align: right; max-width: 65%; word-break: break-word;">${escapeHtml(clienteNombre)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #c084fc; flex-shrink: 0;"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+                                        Servicio:
+                                    </span>
+                                    <span style="color: #ffffff; font-weight: 700; text-align: right; max-width: 65%;">${escapeHtml(serviceObj ? serviceObj.name : 'Servicio')}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8; flex-shrink: 0;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                                        Especialista:
+                                    </span>
+                                    <span style="color: #ffffff; font-weight: 700; text-align: right; max-width: 65%;">${escapeHtml(workerObj ? workerObj.name : 'Especialista')}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #fbbf24; flex-shrink: 0;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                        Fecha:
+                                    </span>
+                                    <span style="color: #ffffff; font-weight: 700; text-align: right;">${escapeHtml(fechaFormateada)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                        Horario:
+                                    </span>
+                                    <span style="color: #38bdf8; font-weight: 700; text-align: right;">${escapeHtml(timeVal)} hrs (${serviceObj ? serviceObj.duration : 30} min)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 9px 0 2px 0;">
+                                    <span style="color: #94a3b8; font-weight: 600; font-size: 13.5px; display: inline-flex; align-items: center; gap: 7px;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #10b981; flex-shrink: 0;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                        Total a pagar:
+                                    </span>
+                                    <span style="color: #10b981; font-weight: 800; font-size: 16px; text-align: right;">$${serviceObj ? serviceObj.price : '0.00'} MXN</span>
+                                </div>
+                            </div>
+                        `,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Confirmar Cita',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#0055ff',
+                        cancelButtonColor: '#64748b',
+                        background: '#101d36',
+                        color: '#ffffff',
+                        reverseButtons: true,
+                        focusCancel: false
+                    });
+                    confirmacionAceptada = !!(confirmResult && confirmResult.isConfirmed);
+                } else {
+                    confirmacionAceptada = window.confirm(`¿Deseas confirmar tu cita para ${serviceObj ? serviceObj.name : 'el servicio'} con ${workerObj ? workerObj.name : 'el especialista'} el día ${fechaFormateada} a las ${timeVal} hrs?`);
+                }
+
+                // Si el usuario cancela la confirmación, la cita NO se registra
+                if (!confirmacionAceptada) {
+                    return;
+                }
+
                 // Evitar registros duplicados bloqueando el botón mientras se procesa
                 btnContinue.disabled = true;
                 const originalHtml = btnContinue.innerHTML;
@@ -2114,7 +2215,7 @@
                     btnContinue.innerHTML = originalHtml;
 
                     if (response.ok && data.success) {
-                        // 1. Confirmar únicamente cuando el registro en BD fue exitoso
+                        // 1. Confirmar únicamente cuando el registro en BD fue exitoso con SweetAlert2
                         if (typeof Swal !== 'undefined') {
                             Swal.fire({
                                 icon: 'success',
@@ -2123,10 +2224,11 @@
                                 background: '#101d36',
                                 color: '#ffffff',
                                 confirmButtonColor: '#0055ff',
-                                confirmButtonText: 'Aceptar'
+                                confirmButtonText: 'Aceptar',
+                                timer: 3500,
+                                timerProgressBar: true
                             });
                         }
-                        mostrarNotificacionExito(data.mensaje || '¡Cita registrada y confirmada exitosamente!');
 
                         // 2. Limpiar selector de horario y consultar disponibilidad fresca (el turno recién ocupado ya no aparecerá)
                         if (timeSelect) {
@@ -2156,14 +2258,6 @@
             toast.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg><span>${mensaje}</span>`;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3200);
-        }
-
-        function mostrarNotificacionExito(mensaje) {
-            const toast = document.createElement('div');
-            toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; background: #064e3b; border: 1px solid #10b981; color: #a7f3d0; padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 10000; display: flex; align-items: center; gap: 8px;';
-            toast.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${mensaje}</span>`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3500);
         }
     });
 </script>
