@@ -60,7 +60,7 @@
             flex-direction: column;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
+            overflow-x: clip;
         }
 
         /* Enlace de accesibilidad para teclado */
@@ -347,9 +347,10 @@
             flex: 1;
             min-height: calc(100vh - var(--header-height));
             position: relative;
-            overflow-x: hidden;
+            overflow-x: clip;
         }
 
+        /* SIDEBAR MINIMALISTA (FIJO AL HACER SCROLL) */
         .admin-sidebar {
             width: var(--sidebar-width);
             background-color: var(--bg-sidebar);
@@ -359,7 +360,25 @@
             display: flex;
             flex-direction: column;
             z-index: 30;
-            overflow: hidden;
+            position: sticky;
+            top: var(--header-height);
+            height: calc(100vh - var(--header-height));
+            align-self: flex-start;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .admin-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--barber-blue);
         }
 
         .sidebar-header {
@@ -455,7 +474,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 100%;
+            min-height: 100%;
         }
 
         .sidebar-nav {

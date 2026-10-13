@@ -411,7 +411,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 100%;
+            min-height: 100%;
         }
 
         .sidebar-nav {

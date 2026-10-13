@@ -337,7 +337,7 @@ class UserController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Cuenta de usuario "' . $user->name . ' ' . $user->apellidos . '" actualizada exitosamente.',
+                'message' => 'Usuario actualizado exitosamente.',
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
@@ -357,7 +357,7 @@ class UserController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.usuarios')->with('success', 'Cuenta de usuario actualizada exitosamente.');
+        return redirect()->route('admin.usuarios')->with('success', 'Usuario actualizado exitosamente.');
     }
 
     /**

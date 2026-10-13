@@ -332,6 +332,7 @@
             flex: 1;
             min-height: calc(100vh - var(--header-height));
             position: relative;
+            overflow-x: clip;
         }
 
         .admin-sidebar {
@@ -449,7 +450,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 100%;
+            min-height: 100%;
         }
 
         .sidebar-nav {
@@ -3826,21 +3827,28 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const fromUsers = urlParams.get('from_usuarios');
                 const storedDataStr = sessionStorage.getItem('preloadedWorkerData');
-                
-                if (fromUsers === '1' || storedDataStr) {
+
+                // Si viene el parámetro from_usuarios, limpiar la URL de inmediato para evitar que cualquier recarga futura lo active
+                if (fromUsers) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+
+                // ÚNICAMENTE abrir el modal de creación si existen datos transferidos reales en sessionStorage
+                if (storedDataStr) {
                     let preloadedData = null;
-                    if (storedDataStr) {
-                        try {
-                            preloadedData = JSON.parse(storedDataStr);
-                        } catch (e) {
-                            console.error(e);
-                        }
+                    try {
+                        preloadedData = JSON.parse(storedDataStr);
+                    } catch (e) {
+                        console.error(e);
                     }
 
-                    // Abrir modal de creación de trabajador
-                    openModal('modalCreateWorker');
+                    // Limpiar inmediatamente el sessionStorage para que no vuelva a abrirse tras guardar o recargar
+                    sessionStorage.removeItem('preloadedWorkerData');
 
-                    if (preloadedData) {
+                    if (preloadedData && (preloadedData.nombre || preloadedData.email || preloadedData.user_id)) {
+                        // Abrir modal de creación de trabajador sólo cuando hay datos válidos
+                        openModal('modalCreateWorker');
+
                         if (preloadedData.nombre) {
                             const nameInp = document.getElementById('workerName');
                             if (nameInp) { 
@@ -3877,26 +3885,23 @@
                             const passInp = document.getElementById('workerPassword');
                             if (passInp) { passInp.value = preloadedData.password; }
                         }
+
+                        // Notificación Toast informativa
+                        setTimeout(() => {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'info',
+                                title: 'Datos transferidos desde Usuarios. Completa la información laboral.',
+                                showConfirmButton: false,
+                                timer: 5000,
+                                timerProgressBar: true,
+                                background: '#1e293b',
+                                color: '#ffffff',
+                                iconColor: '#38bdf8'
+                            });
+                        }, 400);
                     }
-
-                    // Notificación Toast informativa
-                    setTimeout(() => {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'info',
-                            title: 'Datos transferidos desde Usuarios. Completa la información laboral.',
-                            showConfirmButton: false,
-                            timer: 5000,
-                            timerProgressBar: true,
-                            background: '#1e293b',
-                            color: '#ffffff',
-                            iconColor: '#38bdf8'
-                        });
-                    }, 400);
-
-                    // Limpiar datos transferidos para no reabrir involuntariamente
-                    sessionStorage.removeItem('preloadedWorkerData');
                 }
             } catch (err) {
                 console.error('Error al procesar precarga de trabajador:', err);
@@ -5543,6 +5548,7 @@
                     if (response.ok && result.success) {
                         closeModal('modalCreateWorker');
                         formCreate.reset();
+                        sessionStorage.removeItem('preloadedWorkerData');
                         const preview = document.getElementById('workerPhotoPreview');
                         const placeholder = document.getElementById('photoPlaceholder');
                         if (preview) preview.style.display = 'none';
@@ -5561,7 +5567,9 @@
                             iconColor: '#ffffff'
                         });
 
-                        setTimeout(() => window.location.reload(), 1200);
+                        setTimeout(() => {
+                            window.location.href = "{{ route('admin.trabajadores.index') }}";
+                        }, 1200);
                     } else {
                         let errorMsg = result.message || 'Ocurrió un error al registrar el trabajador.';
                         if (result.errors) {

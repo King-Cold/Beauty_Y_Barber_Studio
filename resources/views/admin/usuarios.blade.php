@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Beauty & Barber Studio - Panel de Administración</title>
 
     <!-- Google Fonts -->
@@ -62,7 +63,7 @@
             flex-direction: column;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
+            overflow-x: clip;
         }
 
         /* Enlace de accesibilidad para teclado */
@@ -349,9 +350,10 @@
             flex: 1;
             min-height: calc(100vh - var(--header-height));
             position: relative;
-            overflow-x: hidden;
+            overflow-x: clip;
         }
 
+        /* SIDEBAR MINIMALISTA (FIJO AL HACER SCROLL) */
         .admin-sidebar {
             width: var(--sidebar-width);
             background-color: var(--bg-sidebar);
@@ -361,7 +363,25 @@
             display: flex;
             flex-direction: column;
             z-index: 30;
-            overflow: hidden;
+            position: sticky;
+            top: var(--header-height);
+            height: calc(100vh - var(--header-height));
+            align-self: flex-start;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .admin-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--barber-blue);
         }
 
         .sidebar-header {
@@ -457,7 +477,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 100%;
+            min-height: 100%;
         }
 
         .sidebar-nav {
@@ -2064,6 +2084,37 @@
 
     <!-- SCRIPTS PARA INTERACTIVIDAD Y GESTIÓN DE USUARIOS -->
     <script>
+        // Notificaciones Flash de Laravel (Sesiones)
+        @if(session('success'))
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Operación Exitosa!',
+                    text: @json(session('success')),
+                    background: '#0c142b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#0055ff',
+                    confirmButtonText: 'Aceptar',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            });
+        @endif
+
+        @if(session('error'))
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: @json(session('error')),
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ef4444',
+                    confirmButtonText: 'Aceptar'
+                });
+            });
+        @endif
+
         // Funciones Globales para Control de Modales
         function openModal(id) {
             const modal = document.getElementById(id);
@@ -2609,6 +2660,25 @@
             }
         }
 
+        function updateKpiStats(stats) {
+            if (!stats) return;
+            const statTotal = document.getElementById('statTotalUsers');
+            const statAdmin = document.getElementById('statAdminUsers');
+            const statTrabajador = document.getElementById('statTrabajadorUsers');
+            const statRecepcion = document.getElementById('statRecepcionUsers');
+            const statCliente = document.getElementById('statClienteUsers');
+            const totalCountEl = document.getElementById('totalCount');
+            const visibleCountEl = document.getElementById('visibleCount');
+
+            if (statTotal && stats.total !== undefined) statTotal.textContent = stats.total;
+            if (totalCountEl && stats.total !== undefined) totalCountEl.textContent = stats.total;
+            if (visibleCountEl && stats.total !== undefined) visibleCountEl.textContent = stats.total;
+            if (statAdmin && stats.admins !== undefined) statAdmin.textContent = stats.admins;
+            if (statTrabajador && stats.trabajadores !== undefined) statTrabajador.textContent = stats.trabajadores;
+            if (statRecepcion && stats.recepcionistas !== undefined) statRecepcion.textContent = stats.recepcionistas;
+            if (statCliente && stats.clientes !== undefined) statCliente.textContent = stats.clientes;
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             // --- Menú de Perfil ---
             const dropdownWrapper = document.getElementById('profileDropdownWrapper');
@@ -3067,12 +3137,14 @@
                     }
 
                     try {
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
                         const response = await fetch(`/admin/usuarios/${userId}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'X-HTTP-Method-Override': 'PUT',
                                 'X-Requested-With': 'XMLHttpRequest'
                             },
                             body: JSON.stringify({
@@ -3086,7 +3158,30 @@
                             })
                         });
 
-                        const data = await response.json();
+                        if (response.status === 419) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Sesión expirada',
+                                text: 'Tu sesión o token de seguridad ha expirado. Haz clic en el botón para recargar la página e iniciar sesión nuevamente.',
+                                background: '#1e293b',
+                                color: '#ffffff',
+                                confirmButtonColor: '#0055ff',
+                                confirmButtonText: 'Recargar página'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                            return;
+                        }
+
+                        let data = {};
+                        try {
+                            data = await response.json();
+                        } catch (parseErr) {
+                            data = {
+                                success: false,
+                                message: `Respuesta del servidor no válida (código ${response.status}). Por favor recarga la página e intenta de nuevo.`
+                            };
+                        }
 
                         if (response.ok && data.success) {
                             closeModal('modalEditUser');
@@ -3098,7 +3193,7 @@
                                     icon: 'success',
                                     timer: 1500,
                                     showConfirmButton: false,
-                                    background: '#0f172a',
+                                    background: '#0c142b',
                                     color: '#ffffff',
                                 }).then(() => {
                                     window.location.href = data.redirect;
@@ -3113,17 +3208,17 @@
                                 updateKpiStats(data.stats);
                             }
 
+                            // Alerta de éxito con SweetAlert2 inmediatamente tras confirmar actualización en BD
                             Swal.fire({
-                                toast: true,
-                                position: 'top-end',
                                 icon: 'success',
-                                title: data.message || 'Usuario actualizado correctamente.',
-                                showConfirmButton: false,
-                                timer: 3500,
-                                timerProgressBar: true,
-                                background: '#10b981',
+                                title: '¡Usuario Actualizado!',
+                                text: data.message || 'Usuario actualizado exitosamente.',
+                                background: '#0c142b',
                                 color: '#ffffff',
-                                iconColor: '#ffffff'
+                                confirmButtonColor: '#0055ff',
+                                confirmButtonText: 'Aceptar',
+                                timer: 3000,
+                                timerProgressBar: true
                             });
                         } else {
                             let errorHtml = data.message || 'Ocurrió un error al actualizar la cuenta de usuario.';
@@ -3132,19 +3227,20 @@
                             }
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Error de validación',
+                                title: 'Error al actualizar',
                                 html: errorHtml,
                                 background: '#1e293b',
                                 color: '#ffffff',
-                                confirmButtonColor: '#ef4444'
+                                confirmButtonColor: '#ef4444',
+                                confirmButtonText: 'Entendido'
                             });
                         }
                     } catch (error) {
-                        console.error(error);
+                        console.error('Error al actualizar usuario:', error);
                         Swal.fire({
                             icon: 'error',
                             title: 'Error de conexión',
-                            text: 'No se pudo comunicar con el servidor para actualizar el usuario.',
+                            text: error.message || 'No se pudo comunicar con el servidor para actualizar el usuario.',
                             background: '#1e293b',
                             color: '#ffffff',
                             confirmButtonColor: '#ef4444'

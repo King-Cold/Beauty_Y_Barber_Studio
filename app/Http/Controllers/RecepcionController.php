@@ -44,9 +44,15 @@ class RecepcionController extends Controller
     /**
      * Formulario interactivo de agendamiento de citas desde la recepción.
      */
-    public function agendamiento()
+    public function agendamiento(Request $request)
     {
         $user = Auth::user();
+
+        // Cliente preseleccionado si viene especificado por parámetro en la URL
+        $clientePreseleccionado = null;
+        if ($request->filled('client_id')) {
+            $clientePreseleccionado = User::where('role_id', 4)->find($request->client_id);
+        }
 
         // Clientes registrados en el sistema (rol 4)
         $clientes = User::where('role_id', 4)
@@ -69,11 +75,62 @@ class RecepcionController extends Controller
         return view('recepcion.agendamiento', compact(
             'user',
             'clientes',
+            'clientePreseleccionado',
             'servicios',
             'serviciosEstetica',
             'serviciosBarberia',
             'trabajadores'
         ));
+    }
+
+    /**
+     * Búsqueda dinámica de clientes mediante AJAX para el selector interactivo de agendamiento.
+     */
+    public function buscarClientes(Request $request)
+    {
+        $term = trim($request->input('q', ''));
+
+        $query = User::where('role_id', 4);
+
+        if ($term !== '') {
+            $words = array_filter(explode(' ', $term));
+            $query->where(function ($q) use ($term, $words) {
+                $q->where('name', 'like', "%{$term}%")
+                  ->orWhere('apellidos', 'like', "%{$term}%")
+                  ->orWhere('email', 'like', "%{$term}%")
+                  ->orWhere('telefono', 'like', "%{$term}%");
+
+                if (count($words) > 1) {
+                    $q->orWhere(function ($sub) use ($words) {
+                        foreach ($words as $w) {
+                            $sub->where(function ($wordQ) use ($w) {
+                                $wordQ->where('name', 'like', "%{$w}%")
+                                      ->orWhere('apellidos', 'like', "%{$w}%");
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        $clientes = $query->select('id', 'name', 'apellidos', 'email', 'telefono')
+            ->orderBy('name', 'asc')
+            ->take(15)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'total' => $clientes->count(),
+            'clientes' => $clientes->map(fn($c) => [
+                'id' => $c->id,
+                'nombre_completo' => trim("{$c->name} " . ($c->apellidos ?? '')),
+                'name' => $c->name,
+                'apellidos' => $c->apellidos ?? '',
+                'email' => $c->email,
+                'telefono' => $c->telefono ?? '',
+                'iniciales' => strtoupper(substr($c->name, 0, 1) . substr($c->apellidos ?? '', 0, 1)),
+            ]),
+        ]);
     }
 
     /**

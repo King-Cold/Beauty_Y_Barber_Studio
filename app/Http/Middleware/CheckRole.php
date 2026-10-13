@@ -19,13 +19,19 @@ class CheckRole
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         if (!auth()->check()) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No autenticado.',
+                ], 401);
+            }
             return redirect()->route('login');
         }
 
         $user = auth()->user();
 
         // Si el usuario es administrador (rol 1), siempre tiene acceso a todo.
-        if ($user->role_id == 1) {
+        if ((int)$user->role_id === 1) {
             return $next($request);
         }
 
@@ -34,7 +40,15 @@ class CheckRole
             return $next($request);
         }
 
-        // Si no tiene permiso, abortamos con un error 403 (Prohibido)
+        // Si no tiene permiso y la petición es AJAX / JSON
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para acceder a esta página.',
+            ], 403);
+        }
+
+        // Si es una petición web convencional desde el navegador, abortar con error 403 (Prohibido)
         abort(403, 'No tienes permiso para acceder a esta página.');
     }
 }
