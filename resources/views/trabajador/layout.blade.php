@@ -371,6 +371,7 @@
         /* ===================================================
            SIDEBAR DEL TRABAJADOR (FIJO / FIXED)
            =================================================== */
+        /* SIDEBAR DEL TRABAJADOR (FIJO, SIN SCROLL INTERNO) */
         .trabajador-sidebar {
             width: var(--sidebar-width);
             background-color: var(--bg-sidebar);
@@ -385,23 +386,15 @@
             left: 0;
             bottom: 0;
             height: calc(100vh - var(--header-height));
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
-        /* Scrollbar discreto para el sidebar */
         .trabajador-sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .trabajador-sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .trabajador-sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 4px;
-        }
-        .trabajador-sidebar::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
+            display: none;
+            width: 0;
+            height: 0;
         }
 
         .sidebar-header {
@@ -498,7 +491,8 @@
             flex: 1;
             padding: 16px 0;
             justify-content: space-between;
-            min-height: calc(100vh - var(--header-height) - 60px);
+            min-height: 0;
+            overflow: hidden;
             box-sizing: border-box;
         }
 
@@ -1021,5 +1015,7 @@
     @endif
 
     @stack('scripts')
+
+    @include('partials.inactivity-timer')
 </body>
 </html>

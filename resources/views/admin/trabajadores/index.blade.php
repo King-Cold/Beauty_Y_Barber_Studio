@@ -348,21 +348,15 @@
             top: var(--header-height);
             height: calc(100vh - var(--header-height));
             align-self: flex-start;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         .admin-sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .admin-sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 4px;
-        }
-
-        .admin-sidebar::-webkit-scrollbar-thumb:hover {
-            background: var(--barber-blue);
+            display: none;
+            width: 0;
+            height: 0;
         }
 
         .sidebar-header {
@@ -446,11 +440,12 @@
         }
 
         .sidebar-inner {
-            padding: 24px 0;
+            padding: 16px 0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 100%;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
         }
 
         .sidebar-nav {
@@ -6066,5 +6061,7 @@
             });
         });
     </script>
+
+    @include('partials.inactivity-timer')
 </body>
 </html>

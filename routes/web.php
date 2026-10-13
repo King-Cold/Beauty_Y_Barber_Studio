@@ -10,7 +10,7 @@ Route::post('/', [AuthController::class, 'authenticate'])->name('login.post');
 Route::get('/registro', [AuthController::class, 'register'])->name('register');
 Route::post('/registro', [AuthController::class, 'store'])->name('register.post');
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rutas de recuperación de contraseña
 Route::get('/forgot-password', [App\Http\Controllers\PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');

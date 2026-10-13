@@ -316,7 +316,7 @@
             overflow: hidden;
         }
 
-        /* MENÚ LATERAL (SIDEBAR) - FIJO AL HACER SCROLL */
+        /* MENÚ LATERAL (SIDEBAR) - FIJO AL HACER SCROLL, SIN SCROLL INTERNO */
         .admin-sidebar {
             width: var(--sidebar-width);
             background-color: var(--bg-sidebar);
@@ -329,21 +329,15 @@
             position: sticky;
             top: 0;
             height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         .admin-sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .admin-sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 4px;
-        }
-
-        .admin-sidebar::-webkit-scrollbar-thumb:hover {
-            background: var(--barber-blue);
+            display: none;
+            width: 0;
+            height: 0;
         }
 
         .sidebar-header {
@@ -407,11 +401,12 @@
         }
 
         .sidebar-inner {
-            padding: 24px 0;
+            padding: 16px 0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 100%;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
         }
 
         .sidebar-nav {
@@ -3051,5 +3046,7 @@
             setupDateInputMaskAndEvents('editSpecialDateInput', 'editSpecialDateNativePicker');
         });
     </script>
+
+    @include('partials.inactivity-timer')
 </body>
 </html>

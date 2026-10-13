@@ -999,5 +999,42 @@
         }
     </script>
 
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: '{{ session("success") }}',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                background: '#10b981',
+                color: '#ffffff',
+                iconColor: '#ffffff'
+            });
+        });
+    </script>
+    @endif
+
+    @if(session('warning'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Sesión finalizada por inactividad',
+                text: '{{ session("warning") }}',
+                confirmButtonColor: '#0055ff',
+                confirmButtonText: 'Entendido',
+                background: '#0c142b',
+                color: '#ffffff'
+            });
+        });
+    </script>
+    @endif
 </body>
 </html>

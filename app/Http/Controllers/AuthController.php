@@ -107,6 +107,10 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        if ($request->has('inactivity') || $request->query('reason') === 'inactivity') {
+            return redirect('/')->with('warning', 'Tu sesión se ha cerrado automáticamente por 5 minutos de inactividad.');
+        }
+
         return redirect('/')->with('success', 'Has cerrado sesión exitosamente.');
     }
 }
