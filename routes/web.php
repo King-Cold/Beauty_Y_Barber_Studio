@@ -79,11 +79,13 @@ Route::middleware('auth')->group(function () {
     // ==========================================
     // RUTAS PARA TRABAJADORES (Rol 3)
     // ==========================================
-    Route::middleware(['role:1,3'])->group(function () {
-        Route::get('/trabajador', function () {
-            $swal = session('success') ? "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script><script>document.addEventListener('DOMContentLoaded', ()=>Swal.fire({toast:true,position:'top-end',icon:'success',title:'".session('success')."',showConfirmButton:false,timer:3500,timerProgressBar:true,background:'#10b981',color:'#fff',iconColor:'#fff'}));</script>" : "";
-            return $swal . "<h1>Panel de Trabajador en construcción...</h1> <br> <form action='".route('logout')."' method='POST'>".csrf_field()."<button type='submit'>Cerrar sesión</button></form>";
-        })->name('trabajador.dashboard');
+    Route::middleware(['role:1,3'])->prefix('trabajador')->name('trabajador.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\TrabajadorPanelController::class, 'dashboard'])->name('dashboard');
+        Route::get('/agenda', [\App\Http\Controllers\TrabajadorPanelController::class, 'agenda'])->name('agenda');
+        Route::get('/configuracion', [\App\Http\Controllers\TrabajadorPanelController::class, 'configuracion'])->name('configuracion');
+        Route::get('/citas/{cita}', [\App\Http\Controllers\TrabajadorPanelController::class, 'showCita'])->name('citas.show');
+        Route::patch('/citas/{cita}/estado', [\App\Http\Controllers\TrabajadorPanelController::class, 'actualizarEstado'])->name('citas.actualizar_estado');
+        Route::post('/citas/{cita}/observaciones', [\App\Http\Controllers\TrabajadorPanelController::class, 'guardarObservaciones'])->name('citas.observaciones');
     });
 
     // ==========================================

@@ -22,6 +22,7 @@ class Cita extends Model
         'precio',
         'estado',
         'notas',
+        'observaciones',
     ];
 
     protected $casts = [
@@ -47,9 +48,13 @@ class Cita extends Model
                     $table->string('hora_fin', 10);
                     $table->integer('duracion_minutos')->default(30);
                     $table->decimal('precio', 10, 2)->default(0.00);
-                    $table->string('estado', 30)->default('confirmada');
                     $table->text('notas')->nullable();
+                    $table->text('observaciones')->nullable();
                     $table->timestamps();
+                });
+            } else if (!\Illuminate\Support\Facades\Schema::hasColumn('citas', 'observaciones')) {
+                \Illuminate\Support\Facades\Schema::table('citas', function (\Illuminate\Database\Schema\Blueprint $table) {
+                    $table->text('observaciones')->nullable();
                 });
             }
         } catch (\Throwable $e) {
