@@ -664,7 +664,7 @@
                     <div class="brand-info">
                         <span class="brand-name">Beauty & Barber Studio</span>
                         <div class="brand-badge-container">
-                            <span class="brand-role-badge">Panel Recepción</span>
+                            <span class="brand-role-badge">{{ Auth::user() && (int)Auth::user()->role_id === 1 ? 'Panel Administración' : 'Panel Recepción' }}</span>
                         </div>
                     </div>
                 </a>
@@ -732,10 +732,10 @@
     <!-- CONTENEDOR ESTRUCTURAL: SIDEBAR + MAIN -->
     <div class="recepcion-layout" id="recepcionLayout">
 
-        <!-- SIDEBAR DE NAVEGACIÓN DE RECEPCIÓN -->
-        <aside class="recepcion-sidebar" id="recepcionSidebar" aria-label="Menú de navegación de recepción">
+        <!-- SIDEBAR DE NAVEGACIÓN -->
+        <aside class="recepcion-sidebar" id="recepcionSidebar" aria-label="Menú de navegación">
             <div class="sidebar-header">
-                <span class="sidebar-title">Recepción</span>
+                <span class="sidebar-title">{{ Auth::user() && (int)Auth::user()->role_id === 1 ? 'Administración' : 'Recepción' }}</span>
                 <button 
                     type="button" 
                     class="sidebar-toggle-btn" 
@@ -754,80 +754,167 @@
             </div>
 
             <div class="sidebar-inner">
-                <nav class="sidebar-nav" aria-label="Secciones del panel de recepcionista">
-                    
-                    <!-- 1. Inicio -->
-                    <a 
-                        href="{{ route('recepcion.dashboard') }}" 
-                        class="nav-item {{ request()->routeIs('recepcion.dashboard') ? 'active' : '' }}" 
-                        aria-current="{{ request()->routeIs('recepcion.dashboard') ? 'page' : 'false' }}"
-                        title="Inicio"
-                    >
-                        <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                            </svg>
-                        </div>
-                        <span class="nav-label">Inicio</span>
-                    </a>
+                <nav class="sidebar-nav" aria-label="Secciones del panel">
+                    @if(Auth::user() && (int)Auth::user()->role_id === 1)
+                        <!-- 1. Dashboard Admin -->
+                        <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" title="Dashboard">
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Dashboard</span>
+                        </a>
 
-                    <!-- 2. Gestión de citas -->
-                    <a 
-                        href="{{ route('recepcion.citas') }}" 
-                        class="nav-item {{ (request()->routeIs('recepcion.citas*') || request()->routeIs('recepcion.agendamiento*')) ? 'active' : '' }}" 
-                        aria-current="{{ (request()->routeIs('recepcion.citas*') || request()->routeIs('recepcion.agendamiento*')) ? 'page' : 'false' }}"
-                        title="Gestión de citas"
-                    >
-                        <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                                <path d="m9 16 2 2 4-4"></path>
-                            </svg>
-                        </div>
-                        <span class="nav-label">Gestión de citas</span>
-                        <span class="nav-badge badge-primary">Agendar</span>
-                    </a>
+                        <!-- 2. Usuarios -->
+                        <a href="{{ route('admin.usuarios') }}" class="nav-item {{ request()->routeIs('admin.usuarios*') ? 'active' : '' }}" title="Usuarios">
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Usuarios</span>
+                        </a>
 
-                    <!-- 3. Calendario -->
-                    <a 
-                        href="{{ route('recepcion.calendario') }}" 
-                        class="nav-item {{ request()->routeIs('recepcion.calendario') ? 'active' : '' }}" 
-                        aria-current="{{ request()->routeIs('recepcion.calendario') ? 'page' : 'false' }}"
-                        title="Calendario"
-                    >
-                        <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                        </div>
-                        <span class="nav-label">Calendario</span>
-                    </a>
+                        <!-- 3. Trabajadores -->
+                        <a href="{{ url('/admin/trabajadores') }}" class="nav-item {{ request()->is('admin/trabajadores*') ? 'active' : '' }}" title="Trabajadores">
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Trabajadores</span>
+                        </a>
 
-                    <!-- 4. Clientes -->
-                    <a 
-                        href="{{ route('recepcion.clientes') }}" 
-                        class="nav-item {{ request()->routeIs('recepcion.clientes') ? 'active' : '' }}" 
-                        aria-current="{{ request()->routeIs('recepcion.clientes') ? 'page' : 'false' }}"
-                        title="Clientes"
-                    >
-                        <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                        </div>
-                        <span class="nav-label">Clientes</span>
-                    </a>
+                        <!-- 4. Clientes -->
+                        <a href="{{ route('recepcion.clientes') }}" class="nav-item {{ request()->routeIs('recepcion.clientes*') ? 'active' : '' }}" title="Clientes">
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Clientes</span>
+                        </a>
 
+                        <!-- 5. Servicios -->
+                        <a href="{{ route('admin.services') }}" class="nav-item {{ request()->routeIs('admin.services*') ? 'active' : '' }}" title="Servicios">
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="6" cy="6" r="3"></circle>
+                                    <circle cx="6" cy="18" r="3"></circle>
+                                    <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                                    <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
+                                    <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Servicios</span>
+                        </a>
+
+                        <!-- 6. Citas -->
+                        <a href="{{ route('admin.citas') }}" class="nav-item {{ request()->routeIs('admin.citas*') ? 'active' : '' }}" title="Citas">
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Citas</span>
+                            <span class="nav-badge">Agenda</span>
+                        </a>
+
+                        <!-- 7. Configuración General -->
+                        <a href="{{ route('admin.configuracion') }}" class="nav-item {{ request()->routeIs('admin.configuracion*') ? 'active' : '' }}" title="Configuración general">
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Configuración</span>
+                        </a>
+                    @else
+                        <!-- 1. Inicio -->
+                        <a 
+                            href="{{ route('recepcion.dashboard') }}" 
+                            class="nav-item {{ request()->routeIs('recepcion.dashboard') ? 'active' : '' }}" 
+                            aria-current="{{ request()->routeIs('recepcion.dashboard') ? 'page' : 'false' }}"
+                            title="Inicio"
+                        >
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Inicio</span>
+                        </a>
+
+                        <!-- 2. Gestión de citas -->
+                        <a 
+                            href="{{ route('recepcion.citas') }}" 
+                            class="nav-item {{ (request()->routeIs('recepcion.citas*') || request()->routeIs('recepcion.agendamiento*')) ? 'active' : '' }}" 
+                            aria-current="{{ (request()->routeIs('recepcion.citas*') || request()->routeIs('recepcion.agendamiento*')) ? 'page' : 'false' }}"
+                            title="Gestión de citas"
+                        >
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    <path d="m9 16 2 2 4-4"></path>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Gestión de citas</span>
+                            <span class="nav-badge badge-primary">Agendar</span>
+                        </a>
+
+                        <!-- 3. Calendario -->
+                        <a 
+                            href="{{ route('recepcion.calendario') }}" 
+                            class="nav-item {{ request()->routeIs('recepcion.calendario') ? 'active' : '' }}" 
+                            aria-current="{{ request()->routeIs('recepcion.calendario') ? 'page' : 'false' }}"
+                            title="Calendario"
+                        >
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Calendario</span>
+                        </a>
+
+                        <!-- 4. Clientes -->
+                        <a 
+                            href="{{ route('recepcion.clientes') }}" 
+                            class="nav-item {{ request()->routeIs('recepcion.clientes') ? 'active' : '' }}" 
+                            aria-current="{{ request()->routeIs('recepcion.clientes') ? 'page' : 'false' }}"
+                            title="Clientes"
+                        >
+                            <div class="nav-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            <span class="nav-label">Clientes</span>
+                        </a>
+                    @endif
                 </nav>
             </div>
         </aside>

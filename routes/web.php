@@ -59,7 +59,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/configuracion/fechas-especiales', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'getFechasEspeciales'])->name('admin.configuracion.fechas_especiales.index');
         Route::post('/admin/configuracion/fechas-especiales', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'storeFechaEspecial'])->name('admin.configuracion.fechas_especiales.store');
         Route::put('/admin/configuracion/fechas-especiales/{fechaEspecial}', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'updateFechaEspecial'])->name('admin.configuracion.fechas_especiales.update');
-        Route::delete('/admin/configuracion/fechas-especiales/{fechaEspecial}', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'destroyFechaEspecial'])->name('admin.configuracion.fechas_especiales.destroy');
+        // Consulta y Visualización de Citas y Calendario para Administrador (Solo lectura / Auditoría)
+        Route::get('/admin/citas', [\App\Http\Controllers\Admin\CitaAdminController::class, 'index'])->name('admin.citas');
+        Route::get('/admin/calendario', [\App\Http\Controllers\Admin\CitaAdminController::class, 'calendario'])->name('admin.calendario');
+        Route::get('/admin/calendario/eventos', [\App\Http\Controllers\Admin\CitaAdminController::class, 'obtenerCitasCalendario'])->name('admin.calendario.eventos');
+        Route::get('/admin/citas/{cita}/detalle', [\App\Http\Controllers\Admin\CitaAdminController::class, 'detalleCita'])->name('admin.citas.detalle');
+        // Operaciones de mutación sobre citas bloqueadas con 403 para Administrador (Solo lectura)
+        Route::patch('/admin/citas/{cita}/estado', [\App\Http\Controllers\Admin\CitaAdminController::class, 'actualizarEstadoCita'])->name('admin.citas.actualizar-estado');
+        Route::match(['put', 'patch'], '/admin/citas/{cita}', [\App\Http\Controllers\Admin\CitaAdminController::class, 'actualizarCita'])->name('admin.citas.update');
+        Route::match(['post', 'patch'], '/admin/citas/{cita}/cancelar', [\App\Http\Controllers\Admin\CitaAdminController::class, 'cancelarCita'])->name('admin.citas.cancelar');
+        Route::match(['post', 'patch'], '/admin/citas/{cita}/confirmar', [\App\Http\Controllers\Admin\CitaAdminController::class, 'confirmarCita'])->name('admin.citas.confirmar');
+        Route::post('/admin/citas/{cita}/checkin', [\App\Http\Controllers\Admin\CitaAdminController::class, 'checkInCita'])->name('admin.citas.checkin');
     });
 
     // ==========================================
@@ -74,6 +84,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/agendamiento/validar-horario', [\App\Http\Controllers\RecepcionController::class, 'validarHorario'])->name('agendamiento.validar-horario');
         Route::post('/agendamiento/confirmar', [\App\Http\Controllers\RecepcionController::class, 'confirmarCita'])->name('agendamiento.confirmar');
         Route::get('/calendario', [\App\Http\Controllers\RecepcionController::class, 'calendario'])->name('calendario');
+        Route::get('/calendario/eventos', [\App\Http\Controllers\RecepcionController::class, 'obtenerCitasCalendario'])->name('calendario.eventos');
+        Route::get('/citas/{cita}/detalle', [\App\Http\Controllers\RecepcionController::class, 'detalleCita'])->name('citas.detalle');
+        Route::patch('/citas/{cita}/estado', [\App\Http\Controllers\RecepcionController::class, 'actualizarEstadoCita'])->name('citas.actualizar-estado');
+        Route::match(['put', 'patch'], '/citas/{cita}', [\App\Http\Controllers\RecepcionController::class, 'actualizarCita'])->name('citas.update');
+        Route::match(['post', 'patch'], '/citas/{cita}/cancelar', [\App\Http\Controllers\RecepcionController::class, 'cancelarCita'])->name('citas.cancelar');
+        Route::match(['post', 'patch'], '/citas/{cita}/confirmar', [\App\Http\Controllers\RecepcionController::class, 'confirmarCitaDirecta'])->name('citas.confirmar');
+        Route::post('/citas/{cita}/checkin', [\App\Http\Controllers\RecepcionController::class, 'checkInCita'])->name('citas.checkin');
         Route::get('/clientes', [\App\Http\Controllers\RecepcionController::class, 'clientes'])->name('clientes');
         Route::get('/clientes/buscar', [\App\Http\Controllers\RecepcionController::class, 'buscarClientes'])->name('clientes.buscar');
     });

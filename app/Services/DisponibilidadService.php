@@ -24,9 +24,9 @@ class DisponibilidadService
      * @param Service|null $servicio Opcional si se pasa duración como primer arg
      * @return array Lista de horas disponibles (ej. ['10:00', '10:30', ...])
      */
-    public function calcularHorariosDisponibles(Trabajador $trabajador, string|Carbon $fecha, int|Service $duracionMinutos = 30, ?Service $servicio = null): array
+    public function calcularHorariosDisponibles(Trabajador $trabajador, string|Carbon $fecha, int|Service $duracionMinutos = 30, ?Service $servicio = null, ?int $excludeCitaId = null): array
     {
-        $detalle = $this->obtenerDisponibilidadCompleta($trabajador, $fecha, $duracionMinutos, $servicio);
+        $detalle = $this->obtenerDisponibilidadCompleta($trabajador, $fecha, $duracionMinutos, $servicio, $excludeCitaId);
         return $detalle['horarios_disponibles'] ?? [];
     }
 
@@ -40,7 +40,7 @@ class DisponibilidadService
      * @param Service|null $servicio
      * @return array ['disponible' => bool, 'mensaje' => string]
      */
-    public function validarHorarioSeleccionado(Trabajador $trabajador, string|Carbon $fecha, string $hora, int|Service $duracionMinutos = 30, ?Service $servicio = null): array
+    public function validarHorarioSeleccionado(Trabajador $trabajador, string|Carbon $fecha, string $hora, int|Service $duracionMinutos = 30, ?Service $servicio = null, ?int $excludeCitaId = null): array
     {
         $horaNormalizada = $this->normalizarHora($hora);
         if (!$horaNormalizada) {
@@ -50,7 +50,7 @@ class DisponibilidadService
             ];
         }
 
-        $detalle = $this->obtenerDisponibilidadCompleta($trabajador, $fecha, $duracionMinutos, $servicio);
+        $detalle = $this->obtenerDisponibilidadCompleta($trabajador, $fecha, $duracionMinutos, $servicio, $excludeCitaId);
         $horarios = $detalle['horarios_disponibles'] ?? [];
 
         if (in_array($horaNormalizada, $horarios, true)) {
@@ -189,7 +189,7 @@ class DisponibilidadService
      * @param Service|null $servicio
      * @return array
      */
-    public function obtenerDisponibilidadCompleta(Trabajador $trabajador, string|Carbon $fecha, int|Service $duracionMinutos = 30, ?Service $servicio = null): array
+    public function obtenerDisponibilidadCompleta(Trabajador $trabajador, string|Carbon $fecha, int|Service $duracionMinutos = 30, ?Service $servicio = null, ?int $excludeCitaId = null): array
     {
         // Resolver servicio y duración en minutos
         if ($duracionMinutos instanceof Service) {
@@ -389,7 +389,7 @@ class DisponibilidadService
         }
 
         // C) Citas existentes para esta fecha y trabajador
-        $citas = $this->obtenerCitasExistentes($trabajador, $fechaString);
+        $citas = $this->obtenerCitasExistentes($trabajador, $fechaString, $excludeCitaId);
         foreach ($citas as $cita) {
             $intervalosOcupados[] = [
                 'tipo' => 'cita',
@@ -693,9 +693,9 @@ class DisponibilidadService
     }
 
     /**
-     * Extrae citas existentes para el trabajador y la fecha dada.
+     * Extrae citas existentes para el trabajador y la fecha dada, excluyendo opcionalmente una cita (para edición).
      */
-    protected function obtenerCitasExistentes(Trabajador $trabajador, string $fechaString): array
+    protected function obtenerCitasExistentes(Trabajador $trabajador, string $fechaString, ?int $excludeCitaId = null): array
     {
         $citas = [];
 
@@ -741,6 +741,10 @@ class DisponibilidadService
                         $q->where("{$nombreTablaCitas}.fecha", $fechaString)
                           ->orWhereDate("{$nombreTablaCitas}.fecha", $fechaString);
                     });
+
+                if ($excludeCitaId) {
+                    $query->where("{$nombreTablaCitas}.id", '!=', $excludeCitaId);
+                }
 
                 // Excluir canceladas si existe columna de estado
                 if (Schema::hasColumn($nombreTablaCitas, 'estado')) {

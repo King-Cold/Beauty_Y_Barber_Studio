@@ -1159,7 +1159,7 @@
                     </a>
 
                     <!-- 6. Citas -->
-                    <a href="#citas" class="nav-item" title="Citas">
+                    <a href="{{ route('admin.citas') }}" class="nav-item" title="Citas">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <rect x="3" y="4" width="18" height="18" rx="2"></rect>

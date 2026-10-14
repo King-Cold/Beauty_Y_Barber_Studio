@@ -1462,8 +1462,20 @@
 @endsection
 
 @push('scripts')
+@php
+    $listadoCitasUrl = route('recepcion.citas');
+    $buscarClientesUrl = route('recepcion.agendamiento.buscar-clientes');
+    $disponibilidadUrl = route('recepcion.agendamiento.disponibilidad');
+    $validarHorarioUrl = route('recepcion.agendamiento.validar-horario');
+    $confirmarUrl = route('recepcion.agendamiento.confirmar');
+@endphp
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const URL_LISTADO_CITAS = '{{ $listadoCitasUrl }}';
+        const URL_BUSCAR_CLIENTES = '{{ $buscarClientesUrl }}';
+        const URL_DISPONIBILIDAD = '{{ $disponibilidadUrl }}';
+        const URL_VALIDAR_HORARIO = '{{ $validarHorarioUrl }}';
+        const URL_CONFIRMAR = '{{ $confirmarUrl }}';
         function escapeHtml(text) {
             if (text === null || text === undefined) return '';
             return String(text)
@@ -1664,7 +1676,7 @@
 
                 clientSearchTimer = setTimeout(async () => {
                     try {
-                        const response = await fetch(`{{ route('recepcion.agendamiento.buscar-clientes') }}?q=${encodeURIComponent(term)}`, {
+                        const response = await fetch(`${URL_BUSCAR_CLIENTES}?q=${encodeURIComponent(term)}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -1937,7 +1949,7 @@
             }
 
             try {
-                const url = `{{ route('recepcion.agendamiento.disponibilidad') }}?service_id=${encodeURIComponent(serviceId)}&worker_id=${encodeURIComponent(workerId)}&date=${encodeURIComponent(dateVal)}`;
+                const url = `${URL_DISPONIBILIDAD}?service_id=${encodeURIComponent(serviceId)}&worker_id=${encodeURIComponent(workerId)}&date=${encodeURIComponent(dateVal)}`;
                 const response = await fetch(url, {
                     headers: {
                         'Accept': 'application/json',
@@ -2102,7 +2114,7 @@
                 `;
 
                 try {
-                    const valResponse = await fetch(`{{ route('recepcion.agendamiento.validar-horario') }}`, {
+                    const valResponse = await fetch(URL_VALIDAR_HORARIO, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2229,7 +2241,7 @@
                 `;
 
                 try {
-                    const response = await fetch(`{{ route('recepcion.agendamiento.confirmar') }}`, {
+                    const response = await fetch(URL_CONFIRMAR, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2264,16 +2276,22 @@
                             text: data.mensaje || 'La cita ha sido registrada y confirmada exitosamente.',
                             background: '#0c142b',
                             color: '#ffffff',
+                            showCancelButton: true,
                             confirmButtonColor: '#0055ff',
-                            confirmButtonText: 'Aceptar',
-                            timer: 3500,
-                            timerProgressBar: true
-                        }).then(() => {
-                            // Limpiar horario y refrescar disponibilidad
-                            if (timeSelect) timeSelect.value = '';
-                            summaryTimeVal.textContent = 'Selecciona un horario';
-                            summaryTimeVal.classList.add('empty');
-                            fetchAvailability();
+                            cancelButtonColor: '#334155',
+                            confirmButtonText: 'Ver listado de citas',
+                            cancelButtonText: 'Agendar otra cita',
+                            reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = URL_LISTADO_CITAS;
+                            } else {
+                                // Limpiar horario y refrescar disponibilidad
+                                if (timeSelect) timeSelect.value = '';
+                                summaryTimeVal.textContent = 'Selecciona un horario';
+                                summaryTimeVal.classList.add('empty');
+                                fetchAvailability();
+                            }
                         });
                         return;
                     }

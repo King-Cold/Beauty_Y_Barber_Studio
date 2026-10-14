@@ -23,12 +23,24 @@ class Cita extends Model
         'estado',
         'notas',
         'observaciones',
+        'check_in_at',
     ];
 
     protected $casts = [
         'fecha' => 'date:Y-m-d',
         'duracion_minutos' => 'integer',
         'precio' => 'decimal:2',
+        'check_in_at' => 'datetime',
+    ];
+
+    protected $appends = [
+        'estado_visual',
+        'estado_label',
+        'precio_formateado',
+        'folio',
+        'checked_in',
+        'check_in_hora',
+        'check_in_formateado',
     ];
 
     /**
@@ -55,6 +67,12 @@ class Cita extends Model
             } else if (!\Illuminate\Support\Facades\Schema::hasColumn('citas', 'observaciones')) {
                 \Illuminate\Support\Facades\Schema::table('citas', function (\Illuminate\Database\Schema\Blueprint $table) {
                     $table->text('observaciones')->nullable();
+                });
+            }
+
+            if (\Illuminate\Support\Facades\Schema::hasTable('citas') && !\Illuminate\Support\Facades\Schema::hasColumn('citas', 'check_in_at')) {
+                \Illuminate\Support\Facades\Schema::table('citas', function (\Illuminate\Database\Schema\Blueprint $table) {
+                    $table->timestamp('check_in_at')->nullable();
                 });
             }
         } catch (\Throwable $e) {
@@ -108,6 +126,62 @@ class Cita extends Model
     public function getHoraAttribute(): ?string
     {
         return $this->hora_inicio;
+    }
+
+    /**
+     * Folio formateado de la cita (ej. CITA-00001).
+     */
+    public function getFolioAttribute(): string
+    {
+        return 'CITA-' . str_pad((string)$this->id, 5, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Precio formateado en formato de moneda (ej. $250.00).
+     */
+    public function getPrecioFormateadoAttribute(): string
+    {
+        return '$' . number_format((float)$this->precio, 2);
+    }
+
+    /**
+     * Determina el estado visual calculado (confirmada, en_proceso, completada, cancelada, vencida).
+     */
+    public function getEstadoVisualAttribute(): string
+    {
+        $raw = strtolower(trim((string)$this->estado));
+        if ($raw === 'en_atencion') {
+            return 'en_proceso';
+        }
+        if ($raw === 'confirmada') {
+            $tz = config('app.timezone') ?: 'America/Mexico_City';
+            $now = \Carbon\Carbon::now($tz);
+            $today = $now->format('Y-m-d');
+            $currentTime = $now->format('H:i');
+            $fechaStr = $this->fecha instanceof \Carbon\Carbon ? $this->fecha->format('Y-m-d') : (string)$this->fecha;
+
+            $esPasada = ($fechaStr < $today) || ($fechaStr === $today && $this->hora_fin < $currentTime);
+            if ($esPasada) {
+                return 'vencida';
+            }
+        }
+        return $raw ?: 'confirmada';
+    }
+
+    /**
+     * Etiqueta legible del estado para interfaces y reportes.
+     */
+    public function getEstadoLabelAttribute(): string
+    {
+        $labels = [
+            'confirmada' => 'Confirmada',
+            'en_proceso' => 'En proceso',
+            'en_atencion' => 'En proceso',
+            'completada' => 'Completada',
+            'cancelada' => 'Cancelada',
+            'vencida' => 'Vencida',
+        ];
+        return $labels[$this->estado_visual] ?? ucfirst(str_replace('_', ' ', $this->estado_visual));
     }
 
     /**
@@ -187,5 +261,138 @@ class Cita extends Model
         $estado = strtolower((string) $this->estado);
         return !in_array($estado, ['cancelada', 'cancelled', 'anulada', 'completada', 'completed'])
             && $this->minutos_para_inicio > 0;
+    }
+
+    /**
+     * Determina si la llegada del cliente ya fue registrada.
+     */
+    public function isCheckedIn(): bool
+    {
+        return !is_null($this->check_in_at);
+    }
+
+    /**
+     * Accesor booleano para serialización JSON.
+     */
+    public function getCheckedInAttribute(): bool
+    {
+        return $this->isCheckedIn();
+    }
+
+    /**
+     * Hora formateada del check-in (ej. 10:25).
+     */
+    public function getCheckInHoraAttribute(): ?string
+    {
+        return $this->check_in_at ? $this->check_in_at->format('H:i') : null;
+    }
+
+    /**
+     * Fecha y hora formateada legible del check-in.
+     */
+    public function getCheckInFormateadoAttribute(): ?string
+    {
+        if (!$this->check_in_at) {
+            return null;
+        }
+        $tz = config('app.timezone') ?: 'America/Mexico_City';
+        return \Carbon\Carbon::parse($this->check_in_at, $tz)->locale('es')->isoFormat('D [de] MMMM [a las] HH:mm [hrs]');
+    }
+
+    /**
+     * Determina si la cita cumple con las condiciones para registrar check-in:
+     * - No tener check-in registrado previamente.
+     * - No estar cancelada ni completada.
+     * - No estar vencida.
+     * - Estar en estado confirmada o en atención.
+     */
+    public function puedeRegistrarCheckIn(): bool
+    {
+        if ($this->isCheckedIn()) {
+            return false;
+        }
+
+        $estado = strtolower(trim((string) $this->estado));
+        if (in_array($estado, ['cancelada', 'completada'], true)) {
+            return false;
+        }
+
+        if ($this->estado_visual === 'vencida') {
+            return false;
+        }
+
+        return in_array($estado, ['confirmada', 'en_atencion', 'en_proceso'], true);
+    }
+
+    /**
+     * Retorna el motivo explicativo por el cual no se puede registrar check-in, o null si sí se puede.
+     */
+    public function getMotivoNoCheckInAttribute(): ?string
+    {
+        if ($this->isCheckedIn()) {
+            return 'La llegada del cliente ya fue registrada previamente a las ' . ($this->check_in_hora ?? '') . ' hrs.';
+        }
+
+        $estado = strtolower(trim((string) $this->estado));
+        if ($estado === 'cancelada') {
+            return 'No se puede registrar la llegada de una cita que se encuentra cancelada.';
+        }
+
+        if ($estado === 'completada') {
+            return 'No se puede registrar la llegada de una cita que ya fue completada.';
+        }
+
+        if ($this->estado_visual === 'vencida') {
+            return 'La cita se encuentra vencida. Debe ser reagendada a un horario válido antes de registrar la llegada.';
+        }
+
+        return null;
+    }
+
+    /**
+     * Determina si la cita cumple con las condiciones para iniciar la atención (Subtarea 6):
+     * - Estar en estado confirmada.
+     * - No estar cancelada ni completada.
+     * - No estar vencida por fecha y hora transcurrida.
+     */
+    public function puedeIniciarAtencion(): bool
+    {
+        $estado = strtolower(trim((string) $this->estado));
+        if ($estado !== 'confirmada') {
+            return false;
+        }
+
+        if ($this->estado_visual === 'vencida') {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Accesor booleano para serialización JSON.
+     */
+    public function getPuedeIniciarAtencionAttribute(): bool
+    {
+        return $this->puedeIniciarAtencion();
+    }
+
+    /**
+     * Determina si la cita cumple con las condiciones para finalizar la atención (Subtarea 6):
+     * - Estar actualmente en estado en_atencion / en_proceso.
+     * - No estar cancelada, completada previamente ni confirmada sin haber iniciado.
+     */
+    public function puedeFinalizarAtencion(): bool
+    {
+        $estado = strtolower(trim((string) $this->estado));
+        return in_array($estado, ['en_atencion', 'en_proceso'], true);
+    }
+
+    /**
+     * Accesor booleano para serialización JSON.
+     */
+    public function getPuedeFinalizarAtencionAttribute(): bool
+    {
+        return $this->puedeFinalizarAtencion();
     }
 }

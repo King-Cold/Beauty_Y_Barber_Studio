@@ -98,7 +98,7 @@
     /* KPI Summary Cards */
     .kpi-summary-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 16px;
         margin-bottom: 28px;
     }
@@ -153,6 +153,12 @@
         background: rgba(239, 68, 68, 0.15);
         color: #f87171;
         border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .kpi-icon-wrap.amber {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
     .kpi-icon-wrap svg {
@@ -294,10 +300,19 @@
         background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
     }
 
-    .cita-card.pasada:not(.cancelada) {
+    .cita-card.vencida {
+        border-color: rgba(245, 158, 11, 0.3);
+        opacity: 0.95;
+    }
+    .cita-card.vencida::before {
+        background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+    }
+
+    .cita-card.pasada:not(.cancelada):not(.vencida) {
         border-color: rgba(16, 185, 129, 0.25);
     }
-    .cita-card.pasada:not(.cancelada)::before {
+    .cita-card.pasada:not(.cancelada):not(.vencida)::before {
         background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
     }
 
@@ -409,6 +424,16 @@
     }
     .status-badge.status-cancelada::before {
         background-color: #f87171;
+    }
+
+    .status-badge.status-vencida {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+    .status-badge.status-vencida::before {
+        background-color: #fbbf24;
+        box-shadow: 0 0 6px #fbbf24;
     }
 
     /* Nombre del Servicio y Precio */
@@ -658,6 +683,13 @@
         color: #6ee7b7;
     }
 
+    .action-status-pill.expired,
+    .action-status-pill.vencida {
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        color: #fcd34d;
+    }
+
     .action-status-pill.passed {
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -799,6 +831,14 @@
             </a>
         </div>
     @else
+        @php
+            $totalCitas = $citas->count();
+            $proximasCount = $citasProximas->count();
+            $completadasCount = $citas->filter(fn($c) => in_array($c->estado_visual, ['completada', 'completed']))->count();
+            $vencidasCount = $citas->filter(fn($c) => $c->estado_visual === 'vencida')->count();
+            $canceladasCount = $citas->filter(fn($c) => $c->estado_visual === 'cancelada')->count();
+        @endphp
+
         <!-- TARJETAS DE RESUMEN KPI -->
         <div class="kpi-summary-grid">
             <div class="kpi-card">
@@ -811,7 +851,7 @@
                     </svg>
                 </div>
                 <div class="kpi-content">
-                    <span class="kpi-number">{{ $citas->count() }}</span>
+                    <span class="kpi-number">{{ $totalCitas }}</span>
                     <span class="kpi-label">Total de Citas</span>
                 </div>
             </div>
@@ -824,7 +864,7 @@
                     </svg>
                 </div>
                 <div class="kpi-content">
-                    <span class="kpi-number">{{ $citasProximas->count() }}</span>
+                    <span class="kpi-number">{{ $proximasCount }}</span>
                     <span class="kpi-label">Próximas Activas</span>
                 </div>
             </div>
@@ -837,8 +877,22 @@
                     </svg>
                 </div>
                 <div class="kpi-content">
-                    <span class="kpi-number">{{ $citasPasadas->where('estado', '!=', 'cancelada')->count() }}</span>
-                    <span class="kpi-label">Finalizadas</span>
+                    <span class="kpi-number">{{ $completadasCount }}</span>
+                    <span class="kpi-label">Completadas</span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon-wrap amber">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-number">{{ $vencidasCount }}</span>
+                    <span class="kpi-label">Vencidas</span>
                 </div>
             </div>
 
@@ -851,7 +905,7 @@
                     </svg>
                 </div>
                 <div class="kpi-content">
-                    <span class="kpi-number">{{ $citas->where('estado', 'cancelada')->count() }}</span>
+                    <span class="kpi-number">{{ $canceladasCount }}</span>
                     <span class="kpi-label">Canceladas</span>
                 </div>
             </div>
@@ -866,20 +920,28 @@
                     <rect x="14" y="14" width="7" height="7"></rect>
                     <rect x="3" y="14" width="7" height="7"></rect>
                 </svg>
-                Todas <span class="filter-badge-count">{{ $citas->count() }}</span>
+                Todas <span class="filter-badge-count">{{ $totalCitas }}</span>
             </button>
             <button type="button" class="filter-btn" data-filter="proximas">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
-                Próximas <span class="filter-badge-count">{{ $citasProximas->count() }}</span>
+                Próximas <span class="filter-badge-count">{{ $proximasCount }}</span>
             </button>
-            <button type="button" class="filter-btn" data-filter="pasadas">
+            <button type="button" class="filter-btn" data-filter="completadas">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                Pasadas / Finalizadas <span class="filter-badge-count">{{ $citasPasadas->where('estado', '!=', 'cancelada')->count() }}</span>
+                Completadas <span class="filter-badge-count">{{ $completadasCount }}</span>
+            </button>
+            <button type="button" class="filter-btn" data-filter="vencidas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Vencidas <span class="filter-badge-count">{{ $vencidasCount }}</span>
             </button>
             <button type="button" class="filter-btn" data-filter="canceladas">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -887,7 +949,7 @@
                     <line x1="15" y1="9" x2="9" y2="15"></line>
                     <line x1="9" y1="9" x2="15" y2="15"></line>
                 </svg>
-                Canceladas <span class="filter-badge-count">{{ $citas->where('estado', 'cancelada')->count() }}</span>
+                Canceladas <span class="filter-badge-count">{{ $canceladasCount }}</span>
             </button>
         </div>
 
@@ -895,8 +957,9 @@
         <div class="citas-grid" id="citasGrid">
             @foreach($citas as $cita)
                 @php
+                    $estadoVisual = $cita->estado_visual;
+                    $estadoLabel = $cita->estado_label;
                     $esProxima = $cita->esProxima();
-                    $estadoLower = strtolower($cita->estado);
                     $puedeCancelar = $cita->puedeCancelar();
                     $minutosRestantes = $cita->minutos_para_inicio;
                     $fechaCarbon = $cita->fecha ? \Carbon\Carbon::parse($cita->fecha) : null;
@@ -908,12 +971,21 @@
                         $iniciales = strtoupper(substr($n, 0, 1) . substr($a, 0, 1));
                     }
                     if (!$iniciales) { $iniciales = 'BB'; }
+
+                    $cardClass = 'pasada';
+                    if ($esProxima) {
+                        $cardClass = 'proxima';
+                    } elseif ($estadoVisual === 'cancelada') {
+                        $cardClass = 'cancelada';
+                    } elseif ($estadoVisual === 'vencida') {
+                        $cardClass = 'vencida';
+                    }
                 @endphp
-                <div class="cita-card {{ $esProxima ? 'proxima' : ($estadoLower === 'cancelada' ? 'cancelada' : 'pasada') }}"
+                <div class="cita-card {{ $cardClass }}"
                      id="citaCard-{{ $cita->id }}"
                      data-id="{{ $cita->id }}"
                      data-tipo="{{ $esProxima ? 'proxima' : 'pasada' }}"
-                     data-estado="{{ $estadoLower }}">
+                     data-estado="{{ $estadoVisual }}">
                     
                     <div>
                         <!-- FILA SUPERIOR: CATEGORÍA Y ESTADO -->
@@ -935,8 +1007,8 @@
                                 {{ ucfirst($cita->service->category ?? 'Estudio') }}
                             </span>
 
-                            <span class="status-badge status-{{ $estadoLower }}" id="statusBadge-{{ $cita->id }}">
-                                {{ ucfirst($cita->estado) }}
+                            <span class="status-badge status-{{ $estadoVisual }}" id="statusBadge-{{ $cita->id }}">
+                                {{ $estadoLabel }}
                             </span>
                         </div>
 
@@ -1006,7 +1078,7 @@
                                 </svg>
                                 Cancelación permitida hasta 30 minutos antes del inicio.
                             </span>
-                        @elseif($estadoLower === 'cancelada')
+                        @elseif($estadoVisual === 'cancelada')
                             <div class="action-status-pill cancelled">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="12" cy="12" r="10"></circle>
@@ -1015,7 +1087,16 @@
                                 </svg>
                                 Cita cancelada
                             </div>
-                        @elseif(in_array($estadoLower, ['completada', 'completed']))
+                        @elseif($estadoVisual === 'vencida')
+                            <div class="action-status-pill expired">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                Cita no asistida / Vencida
+                            </div>
+                        @elseif(in_array($estadoVisual, ['completada', 'completed']))
                             <div class="action-status-pill completed">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -1087,8 +1168,10 @@
                         show = true;
                     } else if (filter === 'proximas') {
                         show = (tipo === 'proxima');
-                    } else if (filter === 'pasadas') {
-                        show = (tipo === 'pasada' && estado !== 'cancelada');
+                    } else if (filter === 'completadas') {
+                        show = (estado === 'completada' || estado === 'completed');
+                    } else if (filter === 'vencidas') {
+                        show = (estado === 'vencida');
                     } else if (filter === 'canceladas') {
                         show = (estado === 'cancelada');
                     }

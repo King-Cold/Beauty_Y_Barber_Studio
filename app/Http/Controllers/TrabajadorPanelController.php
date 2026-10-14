@@ -6,6 +6,7 @@ use App\Models\Cita;
 use App\Models\Service;
 use App\Models\Trabajador;
 use App\Models\User;
+use App\Services\CitaCalendarioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -264,9 +265,9 @@ class TrabajadorPanelController extends Controller
     }
 
     /**
-     * Actualiza el estado de la cita asignada al trabajador.
+     * Actualiza el estado de la cita asignada al trabajador aplicando las reglas de transición.
      */
-    public function actualizarEstado(Request $request, Cita $cita)
+    public function actualizarEstado(Request $request, Cita $cita, CitaCalendarioService $calendarioService)
     {
         $user = Auth::user();
         $trabajador = $this->getOrCreateTrabajador($user);
@@ -279,41 +280,56 @@ class TrabajadorPanelController extends Controller
         }
 
         $validated = $request->validate([
-            'estado' => ['required', 'string', 'in:confirmada,en_atencion,completada,cancelada'],
+            'estado' => ['required', 'string', 'in:confirmada,en_atencion,en_proceso,completada,cancelada'],
             'observaciones' => ['nullable', 'string', 'max:2500'],
         ]);
 
-        $updateData = ['estado' => $validated['estado']];
-        if ($request->has('observaciones')) {
-            $updateData['observaciones'] = $request->input('observaciones');
+        try {
+            $resultado = $calendarioService->actualizarEstado(
+                cita: $cita,
+                nuevoEstado: $validated['estado'],
+                observaciones: $request->has('observaciones') ? $validated['observaciones'] : null,
+                notas: null,
+                usuario: $user
+            );
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'mensaje' => $resultado['mensaje'],
+                    'nuevo_estado' => $resultado['cita']['estado'],
+                    'observaciones' => $resultado['cita']['observaciones'] ?? '',
+                ]);
+            }
+
+            return back()->with('success', $resultado['mensaje']);
+        } catch (\DomainException | \InvalidArgumentException $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'mensaje' => $e->getMessage(),
+                ], 422);
+            }
+
+            return back()->with('error', $e->getMessage());
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Error al actualizar la cita: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', 'Error al actualizar la cita.');
         }
-
-        $cita->update($updateData);
-
-        $mensajes = [
-            'confirmada' => 'La cita ha sido marcada como confirmada.',
-            'en_atencion' => '¡Servicio iniciado! La cita está ahora en atención.',
-            'completada' => '¡Excelente trabajo! La cita ha sido marcada como completada.',
-            'cancelada' => 'La cita ha sido cancelada.',
-        ];
-
-        if ($request->wantsJson() || $request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'mensaje' => $mensajes[$validated['estado']] ?? 'Estado actualizado correctamente.',
-                'nuevo_estado' => $validated['estado'],
-                'observaciones' => $cita->observaciones ?: '',
-            ]);
-        }
-
-        return back()->with('success', $mensajes[$validated['estado']] ?? 'Estado actualizado correctamente.');
     }
 
     /**
      * Guarda o actualiza las observaciones técnicas del servicio de la cita.
-     * Permite opcionalmente marcar la cita como completada en la misma acción.
+     * Permite opcionalmente marcar la cita como completada en la misma acción bajo las reglas de transición.
      */
-    public function guardarObservaciones(Request $request, Cita $cita)
+    public function guardarObservaciones(Request $request, Cita $cita, CitaCalendarioService $calendarioService)
     {
         $user = Auth::user();
         $trabajador = $this->getOrCreateTrabajador($user);
@@ -330,28 +346,44 @@ class TrabajadorPanelController extends Controller
             'marcar_completada' => ['nullable', 'boolean'],
         ]);
 
-        $cita->observaciones = $validated['observaciones'] ?? '';
+        try {
+            if (!empty($validated['marcar_completada'])) {
+                $resultado = $calendarioService->actualizarEstado(
+                    cita: $cita,
+                    nuevoEstado: 'completada',
+                    observaciones: $validated['observaciones'] ?? null,
+                    notas: null,
+                    usuario: $user
+                );
 
-        if (!empty($validated['marcar_completada'])) {
-            $cita->estado = 'completada';
+                $mensaje = '¡Servicio completado y observaciones técnicas registradas con éxito!';
+            } else {
+                $cita->observaciones = $validated['observaciones'] ?? '';
+                $cita->save();
+                $mensaje = 'Observaciones del servicio guardadas correctamente.';
+            }
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'mensaje' => $mensaje,
+                    'observaciones' => $cita->observaciones ?: '',
+                    'nuevo_estado' => $cita->estado,
+                ]);
+            }
+
+            return back()->with('success', $mensaje);
+        } catch (\DomainException | \InvalidArgumentException $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'mensaje' => $e->getMessage(),
+                ], 422);
+            }
+
+            return back()->with('error', $e->getMessage());
         }
-
-        $cita->save();
-
-        $mensaje = !empty($validated['marcar_completada'])
-            ? '¡Servicio completado y observaciones técnicas registradas con éxito!'
-            : 'Observaciones del servicio guardadas correctamente.';
-
-        if ($request->wantsJson() || $request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'mensaje' => $mensaje,
-                'observaciones' => $cita->observaciones ?: '',
-                'nuevo_estado' => $cita->estado,
-            ]);
-        }
-
-        return back()->with('success', $mensaje);
     }
 
     /**
