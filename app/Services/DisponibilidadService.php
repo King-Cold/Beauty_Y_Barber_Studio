@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Cita;
 use App\Models\FechaEspecial;
 use App\Models\HorarioSucursal;
 use App\Models\Service;
 use App\Models\Trabajador;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
@@ -129,7 +131,8 @@ class DisponibilidadService
                 } elseif ($tipo === 'descanso') {
                     $mensaje = "El horario seleccionado coincide con el tiempo de descanso del especialista (de {$iniStr} a {$finStr} hrs).";
                 } elseif ($tipo === 'cita') {
-                    $mensaje = "El horario seleccionado ya no está disponible debido a otra cita reservada previamente (de {$iniStr} a {$finStr} hrs).";
+                    $srvInfo = !empty($ocupado['servicio_nombre']) ? " ({$ocupado['servicio_nombre']})" : '';
+                    $mensaje = "El horario seleccionado ya no está disponible debido a otra cita reservada previamente{$srvInfo} (de {$iniStr} a {$finStr} hrs).";
                 } else {
                     $mensaje = "El horario seleccionado no está disponible por coincidir con un rango bloqueado de {$iniStr} a {$finStr} hrs.";
                 }
@@ -393,6 +396,9 @@ class DisponibilidadService
                 'inicio' => $this->horaAMinutos($cita['inicio']),
                 'fin' => $this->horaAMinutos($cita['fin']),
                 'motivo' => 'Cita reservada',
+                'servicio_id' => $cita['servicio_id'] ?? null,
+                'servicio_nombre' => $cita['servicio_nombre'] ?? null,
+                'servicio_categoria' => $cita['servicio_categoria'] ?? null,
             ];
         }
 
@@ -415,6 +421,7 @@ class DisponibilidadService
         $minutosAhora = ($ahora->hour * 60) + $ahora->minute;
 
         $horariosDisponibles = [];
+        $horariosBloqueados = [];
 
         for ($candidatoInicio = $inicioMin; ($candidatoInicio + $duracion) <= $finMin; $candidatoInicio += $pasoMinutos) {
             $candidatoFin = $candidatoInicio + $duracion;
@@ -426,15 +433,32 @@ class DisponibilidadService
 
             // 2. Verificar que no solape con ningún descanso, bloqueo o cita existente
             $tieneConflicto = false;
+            $conflictoBloqueo = null;
             foreach ($intervalosOcupados as $ocupado) {
                 if ($this->solapanIntervalos($candidatoInicio, $candidatoFin, $ocupado['inicio'], $ocupado['fin'])) {
                     $tieneConflicto = true;
-                    break;
+                    if ($ocupado['tipo'] === 'bloqueo') {
+                        $conflictoBloqueo = $ocupado;
+                    }
                 }
             }
 
             if (!$tieneConflicto) {
                 $horariosDisponibles[] = $this->minutosAHora($candidatoInicio);
+            } elseif ($conflictoBloqueo !== null) {
+                $iniStr = $this->minutosAHora($conflictoBloqueo['inicio']);
+                $finStr = $this->minutosAHora($conflictoBloqueo['fin']);
+                $motivo = $conflictoBloqueo['motivo'] ?? 'Bloqueo de disponibilidad';
+                $horaStr = $this->minutosAHora($candidatoInicio);
+
+                $horariosBloqueados[] = [
+                    'hora' => $horaStr,
+                    'tipo' => 'bloqueo',
+                    'motivo' => $motivo,
+                    'inicio' => $iniStr,
+                    'fin' => $finStr,
+                    'mensaje' => "El especialista cuenta con un bloqueo de disponibilidad registrado ({$motivo}) de {$iniStr} a {$finStr} hrs. Ese rango de horario no está disponible para citas.",
+                ];
             }
         }
 
@@ -482,6 +506,8 @@ class DisponibilidadService
             'aviso_cierre' => $avisoCierre,
             'intervalos_ocupados' => $intervalosOcupados,
             'horarios_disponibles' => $horariosDisponibles,
+            'horarios_bloqueados' => $horariosBloqueados,
+            'bloqueos_detalle' => $bloqueos,
             'mensaje' => $mensajeExito,
         ];
     }
@@ -710,12 +736,25 @@ class DisponibilidadService
 
             if ($nombreTablaCitas) {
                 $query = DB::table($nombreTablaCitas)
-                    ->where('trabajador_id', $trabajador->id)
-                    ->whereDate('fecha', $fechaString);
+                    ->where("{$nombreTablaCitas}.trabajador_id", $trabajador->id)
+                    ->where(function ($q) use ($fechaString, $nombreTablaCitas) {
+                        $q->where("{$nombreTablaCitas}.fecha", $fechaString)
+                          ->orWhereDate("{$nombreTablaCitas}.fecha", $fechaString);
+                    });
 
                 // Excluir canceladas si existe columna de estado
                 if (Schema::hasColumn($nombreTablaCitas, 'estado')) {
-                    $query->whereNotIn('estado', ['cancelada', 'cancelled', 'anulada']);
+                    $query->whereNotIn("{$nombreTablaCitas}.estado", ['cancelada', 'cancelled', 'anulada', 'rechazada']);
+                }
+
+                if (Schema::hasTable('services')) {
+                    $query->leftJoin('services', "{$nombreTablaCitas}.service_id", '=', 'services.id')
+                          ->select(
+                              "{$nombreTablaCitas}.*",
+                              'services.name as service_name',
+                              'services.category as service_category',
+                              'services.duration_minutes as service_duration'
+                          );
                 }
 
                 $registros = $query->get();
@@ -723,10 +762,10 @@ class DisponibilidadService
                 foreach ($registros as $c) {
                     $inicio = $c->hora_inicio ?? ($c->hora ?? null);
                     $fin = $c->hora_fin ?? null;
+                    $dur = (int)($c->duracion_minutos ?? ($c->service_duration ?? 30));
 
                     // Si no tiene hora_fin pero tiene duracion_minutos
                     if ($inicio && !$fin) {
-                        $dur = $c->duracion_minutos ?? 30;
                         $inicioM = $this->horaAMinutos($inicio);
                         $fin = $this->minutosAHora($inicioM + $dur);
                     }
@@ -735,6 +774,10 @@ class DisponibilidadService
                         $citas[] = [
                             'inicio' => $this->normalizarHora($inicio),
                             'fin' => $this->normalizarHora($fin),
+                            'servicio_id' => $c->service_id ?? null,
+                            'servicio_nombre' => $c->service_name ?? null,
+                            'servicio_categoria' => $c->service_category ?? null,
+                            'duracion_minutos' => $dur,
                         ];
                     }
                 }
@@ -744,6 +787,256 @@ class DisponibilidadService
         }
 
         return $citas;
+    }
+
+    /**
+     * Registra y confirma una cita de manera atómica con prevención rigurosa de condiciones
+     * de carrera y reservaciones simultáneas para un mismo trabajador.
+     *
+     * Estrategia de concurrencia:
+     * 1. Bloqueo pesimista de fila (Pessimistic Locking / SELECT ... FOR UPDATE) sobre el recurso
+     *    garantizado existente: la fila del especialista en la tabla 'trabajadores'.
+     *    Esto serializa las solicitudes concurrentes para un mismo especialista a nivel de base de datos.
+     * 2. Comprobación idempotente dentro de la sección crítica para evitar duplicación por reintentos.
+     * 3. Re-validación atómica de reglas de negocio y horarios de atención dentro de la transacción.
+     * 4. Bloqueo y verificación de todas las citas activas para esa fecha e intervalo, garantizando
+     *    que ninguna cita con duración traslapada sea registrada concurrentemente.
+     * 5. Inserción atómica y confirmación únicamente tras commit exitoso en la base de datos.
+     *
+     * @param Trabajador $trabajador
+     * @param Service $servicio
+     * @param User $cliente
+     * @param string|Carbon $fecha
+     * @param string $hora
+     * @param string|null $notas
+     * @param string $origen 'cliente' o 'recepcion'
+     * @return array
+     */
+    public function registrarCitaConcurrente(
+        Trabajador $trabajador,
+        Service $servicio,
+        User $cliente,
+        string|Carbon $fecha,
+        string $hora,
+        ?string $notas = null,
+        string $origen = 'cliente'
+    ): array {
+        Cita::ensureTableExists();
+
+        $fechaString = $this->normalizarFechaYmd($fecha);
+        $horaInicio = $this->normalizarHora($hora);
+
+        if (!$horaInicio) {
+            return [
+                'success' => false,
+                'valido' => false,
+                'status' => 422,
+                'mensaje' => 'El horario proporcionado no tiene un formato válido.',
+                'motivo_tipo' => 'formato_invalido',
+            ];
+        }
+
+        $duracionMinutos = (int) ($servicio->duration_minutes ?: 30);
+        $precio = (float) $servicio->price;
+
+        $horaInicioMin = $this->horaAMinutos($horaInicio);
+        $horaFinMin = $horaInicioMin + $duracionMinutos;
+        $horaFin = $this->minutosAHora($horaFinMin);
+
+        // Iniciar transacción protegida para aislamiento atómico
+        DB::beginTransaction();
+
+        try {
+            // 1. Bloqueo pesimista de los recursos exclusivos (Cliente y Especialista)
+            // Se bloquea primero el usuario cliente y luego el especialista con FOR UPDATE
+            // garantizando exclusión mutua tanto para peticiones concurrentes del mismo cliente
+            // (incluso a distintos especialistas) como del mismo especialista, siguiendo un orden determinista.
+            $clienteBloqueado = User::where('id', $cliente->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$clienteBloqueado) {
+                DB::rollBack();
+                return [
+                    'success' => false,
+                    'valido' => false,
+                    'status' => 422,
+                    'mensaje' => 'El cliente no existe o no se encuentra disponible.',
+                    'motivo_tipo' => 'cliente_invalido',
+                ];
+            }
+
+            $trabajadorBloqueado = Trabajador::where('id', $trabajador->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$trabajadorBloqueado || !$trabajadorBloqueado->activo) {
+                DB::rollBack();
+                return [
+                    'success' => false,
+                    'valido' => false,
+                    'status' => 422,
+                    'mensaje' => 'El especialista seleccionado no se encuentra activo o disponible.',
+                    'motivo_tipo' => 'trabajador_inactivo',
+                ];
+            }
+
+            // 2. Prevención idempotente de duplicados exactos (mismo cliente, especialista, servicio, fecha y hora)
+            $citaDuplicada = Cita::where('user_id', $cliente->id)
+                ->where('trabajador_id', $trabajador->id)
+                ->where('service_id', $servicio->id)
+                ->where(function ($q) use ($fechaString) {
+                    $q->where('fecha', $fechaString)
+                      ->orWhereDate('fecha', $fechaString);
+                })
+                ->where('hora_inicio', $horaInicio)
+                ->whereNotIn('estado', ['cancelada', 'cancelled', 'anulada', 'rechazada'])
+                ->first();
+
+            if ($citaDuplicada) {
+                DB::rollBack();
+                $mensajeYaExiste = ($origen === 'recepcion')
+                    ? 'Esta cita ya había sido registrada exitosamente para este cliente.'
+                    : 'Esta cita ya había sido registrada exitosamente.';
+
+                return [
+                    'success' => true,
+                    'valido' => true,
+                    'ya_existia' => true,
+                    'status' => 200,
+                    'mensaje' => $mensajeYaExiste,
+                    'cita' => $citaDuplicada->load(['service', 'trabajador.user', 'cliente']),
+                ];
+            }
+
+            // 3. Validación atómica de disponibilidad del horario (jornada, sucursal, descansos, bloqueos)
+            $validacion = $this->validarHorarioSeleccionado(
+                $trabajadorBloqueado,
+                $fechaString,
+                $horaInicio,
+                $servicio
+            );
+
+            if (!$validacion['disponible']) {
+                DB::rollBack();
+                return [
+                    'success' => false,
+                    'valido' => false,
+                    'status' => 422,
+                    'mensaje' => $validacion['mensaje'] ?: 'El horario seleccionado ya no está disponible. Por favor elige otro horario.',
+                    'motivo_tipo' => $validacion['motivo_tipo'] ?? 'no_disponible',
+                ];
+            }
+
+            // 4. Verificación exhaustiva contra citas existentes del especialista que ocupan horario,
+            // considerando la duración real de cada servicio independientemente de su categoría o id
+            $citasExistentes = Cita::with('service')
+                ->where('trabajador_id', $trabajador->id)
+                ->where(function ($q) use ($fechaString) {
+                    $q->where('fecha', $fechaString)
+                      ->orWhereDate('fecha', $fechaString);
+                })
+                ->whereNotIn('estado', ['cancelada', 'cancelled', 'anulada', 'rechazada'])
+                ->lockForUpdate()
+                ->get();
+
+            foreach ($citasExistentes as $citaPrevia) {
+                $duracionEfectivaPrevia = (int) ($citaPrevia->duracion_minutos ?: ($citaPrevia->service?->duration_minutes ?: 30));
+                if ($duracionEfectivaPrevia <= 0) {
+                    $duracionEfectivaPrevia = 30;
+                }
+                $previaIni = $this->horaAMinutos($citaPrevia->hora_inicio);
+                $previaFin = $citaPrevia->hora_fin
+                    ? $this->horaAMinutos($citaPrevia->hora_fin)
+                    : ($previaIni + $duracionEfectivaPrevia);
+
+                if ($this->solapanIntervalos($horaInicioMin, $horaFinMin, $previaIni, $previaFin)) {
+                    DB::rollBack();
+                    $finIntervalo = $citaPrevia->hora_fin ?: $this->minutosAHora($previaFin);
+                    $srvPreviaNombre = $citaPrevia->service?->name ? " ({$citaPrevia->service->name})" : '';
+                    return [
+                        'success' => false,
+                        'valido' => false,
+                        'status' => 422,
+                        'mensaje' => "El horario seleccionado ya no está disponible debido a otra cita reservada en el mismo intervalo{$srvPreviaNombre} ({$citaPrevia->hora_inicio} a {$finIntervalo} hrs).",
+                        'motivo_tipo' => 'cita_simultanea',
+                    ];
+                }
+            }
+
+            // 4b. Verificación de conflicto de horario para el mismo cliente:
+            // Un mismo cliente no puede tener citas que se traslapen, incluso si son con especialistas o servicios diferentes.
+            $citaConflictoCliente = $this->obtenerCitaConflictoCliente(
+                cliente: $cliente,
+                fecha: $fechaString,
+                horaInicioMin: $horaInicioMin,
+                horaFinMin: $horaFinMin,
+                conBloqueo: true
+            );
+
+            if ($citaConflictoCliente) {
+                DB::rollBack();
+                $servicioNom = $citaConflictoCliente->service?->name ?? 'otro servicio';
+                $finIntervaloCliente = $citaConflictoCliente->hora_fin ?: $this->minutosAHora($this->horaAMinutos($citaConflictoCliente->hora_inicio) + ($citaConflictoCliente->duracion_minutos ?: 30));
+
+                if ($origen === 'recepcion') {
+                    $clienteNombre = trim($cliente->name . ' ' . ($cliente->apellidos ?? ''));
+                    $trabajadorNom = $citaConflictoCliente->trabajador?->nombre_completo ?? 'un especialista';
+                    $mensajeConflicto = "El cliente {$clienteNombre} ya cuenta con una cita en ese horario ({$servicioNom} con {$trabajadorNom} de {$citaConflictoCliente->hora_inicio} a {$finIntervaloCliente} hrs). No es posible agendar citas traslapadas para el mismo cliente.";
+                } else {
+                    $mensajeConflicto = "Ya cuentas con una cita reservada para ese horario ({$servicioNom} de {$citaConflictoCliente->hora_inicio} a {$finIntervaloCliente} hrs). Por favor selecciona otro horario.";
+                }
+
+                return [
+                    'success' => false,
+                    'valido' => false,
+                    'status' => 422,
+                    'mensaje' => $mensajeConflicto,
+                    'motivo_tipo' => 'conflicto_cliente',
+                    'cita_conflicto' => $citaConflictoCliente,
+                ];
+            }
+
+            // 5. Inserción protegida de la nueva cita
+            $cita = Cita::create([
+                'user_id' => $cliente->id,
+                'trabajador_id' => $trabajador->id,
+                'service_id' => $servicio->id,
+                'fecha' => $fechaString,
+                'hora_inicio' => $horaInicio,
+                'hora_fin' => $horaFin,
+                'duracion_minutos' => $duracionMinutos,
+                'precio' => $precio,
+                'estado' => 'confirmada',
+                'notas' => $notas,
+            ]);
+
+            DB::commit();
+
+            $fechaFormateada = Carbon::parse($cita->fecha)->format('d/m/Y');
+            if ($origen === 'recepcion') {
+                $clienteNombre = trim($cliente->name . ' ' . ($cliente->apellidos ?? ''));
+                $mensajeExito = "Cita agendada exitosamente para {$clienteNombre} ({$servicio->name} el {$fechaFormateada} a las {$horaInicio} hrs).";
+            } else {
+                $mensajeExito = "¡Cita confirmada exitosamente! Tu cita para {$servicio->name} con {$trabajador->nombre_completo} ha sido registrada para el {$fechaFormateada} a las {$cita->hora_inicio} hrs.";
+            }
+
+            return [
+                'success' => true,
+                'valido' => true,
+                'status' => 200,
+                'mensaje' => $mensajeExito,
+                'cita' => $cita->load(['service', 'trabajador.user', 'cliente']),
+            ];
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'valido' => false,
+                'status' => 500,
+                'mensaje' => 'No se pudo guardar la cita en la base de datos: ' . $e->getMessage(),
+            ];
+        }
     }
 
     /**
@@ -821,5 +1114,60 @@ class DisponibilidadService
         } catch (\Throwable $e) {
             return $fecha;
         }
+    }
+
+    /**
+     * Verifica si un cliente ya tiene una cita activa en una fecha e intervalo dados.
+     * Retorna el modelo Cita en conflicto con sus relaciones cargadas o null si no existe traslape.
+     *
+     * @param User|int $cliente
+     * @param string|Carbon $fecha
+     * @param int $horaInicioMin
+     * @param int $horaFinMin
+     * @param int|null $excluirCitaId Opcional para ignorar una cita en caso de edición o reagendamiento
+     * @param bool $conBloqueo Si debe ejecutarse con lockForUpdate dentro de una transacción
+     * @return Cita|null
+     */
+    public function obtenerCitaConflictoCliente(
+        User|int $cliente,
+        string|Carbon $fecha,
+        int $horaInicioMin,
+        int $horaFinMin,
+        ?int $excluirCitaId = null,
+        bool $conBloqueo = false
+    ): ?Cita {
+        $clienteId = $cliente instanceof User ? $cliente->id : (int) $cliente;
+        $fechaString = $this->normalizarFechaYmd($fecha);
+
+        $query = Cita::where('user_id', $clienteId)
+            ->where(function ($q) use ($fechaString) {
+                $q->where('fecha', $fechaString)
+                  ->orWhereDate('fecha', $fechaString);
+            })
+            ->whereNotIn('estado', ['cancelada', 'cancelled', 'anulada', 'rechazada'])
+            ->with(['service', 'trabajador.user']);
+
+        if ($excluirCitaId) {
+            $query->where('id', '!=', $excluirCitaId);
+        }
+
+        if ($conBloqueo) {
+            $query->lockForUpdate();
+        }
+
+        $citas = $query->get();
+
+        foreach ($citas as $c) {
+            $cIni = $this->horaAMinutos($c->hora_inicio);
+            $cFin = $c->hora_fin
+                ? $this->horaAMinutos($c->hora_fin)
+                : ($cIni + ($c->duracion_minutos ?: 30));
+
+            if ($this->solapanIntervalos($horaInicioMin, $horaFinMin, $cIni, $cFin)) {
+                return $c;
+            }
+        }
+
+        return null;
     }
 }

@@ -185,14 +185,14 @@ class ClienteConsultaCancelacionCitaTest extends TestCase
     public function test_se_puede_cancelar_cita_cuando_faltan_mas_de_30_minutos(): void
     {
         // Programamos una cita con 2 horas de anticipación
-        $fechaHoy = Carbon::now()->format('Y-m-d');
         $horaFutura = Carbon::now()->addHours(2);
+        $fechaCita = $horaFutura->format('Y-m-d');
 
         $cita = Cita::create([
             'user_id' => $this->clienteA->id,
             'trabajador_id' => $this->trabajador->id,
             'service_id' => $this->servicioCorte->id,
-            'fecha' => $fechaHoy,
+            'fecha' => $fechaCita,
             'hora_inicio' => $horaFutura->format('H:i'),
             'hora_fin' => $horaFutura->copy()->addMinutes(30)->format('H:i'),
             'duracion_minutos' => 30,
@@ -225,14 +225,14 @@ class ClienteConsultaCancelacionCitaTest extends TestCase
     public function test_no_se_puede_cancelar_cuando_faltan_30_minutos_o_menos(): void
     {
         // Programamos una cita que inicia en 20 minutos
-        $fechaHoy = Carbon::now()->format('Y-m-d');
         $horaInminente = Carbon::now()->addMinutes(20);
+        $fechaCita = $horaInminente->format('Y-m-d');
 
         $cita = Cita::create([
             'user_id' => $this->clienteA->id,
             'trabajador_id' => $this->trabajador->id,
             'service_id' => $this->servicioCorte->id,
-            'fecha' => $fechaHoy,
+            'fecha' => $fechaCita,
             'hora_inicio' => $horaInminente->format('H:i'),
             'hora_fin' => $horaInminente->copy()->addMinutes(30)->format('H:i'),
             'duracion_minutos' => 30,

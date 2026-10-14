@@ -1902,9 +1902,27 @@
          */
         if (timeSelect) {
             timeSelect.addEventListener('change', function () {
+                const selectedOpt = this.selectedOptions[0];
+                const esBloqueado = selectedOpt ? (selectedOpt.getAttribute('data-bloqueado') === 'true') : false;
+                const mensajeBloqueo = selectedOpt ? selectedOpt.getAttribute('data-mensaje') : '';
+
+                if (esBloqueado) {
+                    mostrarAvisoHorarioNoDisponible(mensajeBloqueo || 'El especialista cuenta con un bloqueo de disponibilidad registrado en este horario.');
+                    if (timeHint) {
+                        timeHint.textContent = mensajeBloqueo;
+                        timeHint.className = 'form-hint text-warning';
+                    }
+                    summaryTimeVal.textContent = `${this.value} hrs (Bloqueado)`;
+                    summaryTimeVal.classList.remove('empty');
+                    return;
+                }
+
                 if (timeSelect.value) {
                     summaryTimeVal.textContent = timeSelect.options[timeSelect.selectedIndex].text;
                     summaryTimeVal.classList.remove('empty');
+                    if (timeHint && timeHint.classList.contains('text-warning')) {
+                        timeHint.className = 'form-hint text-success';
+                    }
                 } else {
                     summaryTimeVal.textContent = 'Selecciona un horario';
                     summaryTimeVal.classList.add('empty');
@@ -1969,18 +1987,40 @@
 
                 const data = await response.json();
 
-                if (response.ok && data.success && Array.isArray(data.horarios) && data.horarios.length > 0) {
+                const horariosLibres = Array.isArray(data.horarios) ? data.horarios : [];
+                const horariosBloqueados = Array.isArray(data.horarios_bloqueados) ? data.horarios_bloqueados : [];
+
+                const bloqueosMap = {};
+                horariosBloqueados.forEach(b => {
+                    bloqueosMap[b.hora] = b;
+                });
+
+                const todosHorarios = Array.from(new Set([...horariosLibres, ...horariosBloqueados.map(b => b.hora)]))
+                    .sort((a, b) => a.localeCompare(b));
+
+                if (response.ok && data.success && todosHorarios.length > 0) {
                     timeSelect.innerHTML = '<option value="" disabled selected>Selecciona un horario</option>';
-                    data.horarios.forEach(h => {
+                    todosHorarios.forEach(h => {
                         const opt = document.createElement('option');
                         opt.value = h;
-                        opt.textContent = `${h} hrs`;
+                        if (bloqueosMap[h]) {
+                            const b = bloqueosMap[h];
+                            opt.textContent = `${h} hrs (Bloqueado)`;
+                            opt.setAttribute('data-bloqueado', 'true');
+                            opt.setAttribute('data-mensaje', b.mensaje);
+                            opt.style.color = '#f87171';
+                        } else {
+                            opt.textContent = `${h} hrs`;
+                        }
                         timeSelect.appendChild(opt);
                     });
                     timeSelect.disabled = false;
 
                     if (timeHint) {
-                        let hintMsg = `${data.horarios.length} horario(s) disponible(s) para el ${dateVal}. Duración estimada: ${data.duracion_minutos} min.`;
+                        let hintMsg = `${horariosLibres.length} horario(s) disponible(s) para el ${dateVal}. Duración estimada: ${data.duracion_minutos} min.`;
+                        if (horariosBloqueados.length > 0) {
+                            hintMsg += ` • ${horariosBloqueados.length} con bloqueo registrado`;
+                        }
                         if (data.aviso_cierre) {
                             hintMsg += ` • ${data.aviso_cierre}`;
                         }
@@ -2038,15 +2078,11 @@
                     unavailableSlotModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
                 }
-                if (timeSelect) {
+                if (timeSelect && timeSelect.selectedOptions[0] && timeSelect.selectedOptions[0].getAttribute('data-bloqueado') === 'true') {
                     timeSelect.value = '';
+                    summaryTimeVal.textContent = 'Selecciona un horario';
+                    summaryTimeVal.classList.add('empty');
                 }
-                summaryTimeVal.textContent = 'Selecciona un horario';
-                summaryTimeVal.classList.add('empty');
-
-                // Vuelve a consultar la disponibilidad fresca del día
-                fetchAvailability();
-                if (timeSelect) timeSelect.focus();
             });
         }
 
@@ -2091,9 +2127,57 @@
                     return;
                 }
 
+                const selectedTimeOpt = timeSelect ? timeSelect.selectedOptions[0] : null;
+                if (selectedTimeOpt && selectedTimeOpt.getAttribute('data-bloqueado') === 'true') {
+                    const msg = selectedTimeOpt.getAttribute('data-mensaje') || 'El horario seleccionado no está disponible debido a un bloqueo registrado para el especialista.';
+                    mostrarAvisoHorarioNoDisponible(msg);
+                    return;
+                }
+
                 const clienteNombre = @json(Auth::user()->name . ' ' . (Auth::user()->apellidos ?? ''));
                 const serviceObj = servicesData.find(s => String(s.id) === String(serviceId));
                 const workerObj = workersData.find(w => String(w.id) === String(workerId));
+
+                // Pre-verificación de disponibilidad del horario antes de solicitar confirmación
+                btnContinue.disabled = true;
+                const originalHtml = btnContinue.innerHTML;
+                btnContinue.innerHTML = `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-animation" style="animation: spin 1s linear infinite;">
+                        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                        <path d="M12 2a10 10 0 0 1 10 10"></path>
+                    </svg>
+                    <span>Verificando disponibilidad...</span>
+                `;
+
+                try {
+                    const valResponse = await fetch(`{{ route('cliente.agendamiento.validar-horario') }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            service_id: serviceId,
+                            worker_id: workerId,
+                            date: dateVal,
+                            time: timeVal
+                        })
+                    });
+
+                    const valData = await valResponse.json();
+                    btnContinue.disabled = false;
+                    btnContinue.innerHTML = originalHtml;
+
+                    if (!valResponse.ok || valData.valido === false) {
+                        mostrarAvisoHorarioNoDisponible(valData.mensaje || 'El horario seleccionado ya no está disponible. Por favor selecciona otro horario.');
+                        return;
+                    }
+                } catch (e) {
+                    btnContinue.disabled = false;
+                    btnContinue.innerHTML = originalHtml;
+                }
 
                 // Formateo de fecha amigable en español
                 let fechaFormateada = dateVal;
@@ -2184,7 +2268,6 @@
 
                 // Evitar registros duplicados bloqueando el botón mientras se procesa
                 btnContinue.disabled = true;
-                const originalHtml = btnContinue.innerHTML;
                 btnContinue.innerHTML = `
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-animation" style="animation: spin 1s linear infinite;">
                         <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
@@ -2210,12 +2293,18 @@
                         })
                     });
 
-                    const data = await response.json();
+                    let data = null;
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        data = null;
+                    }
+
                     btnContinue.disabled = false;
                     btnContinue.innerHTML = originalHtml;
 
-                    if (response.ok && data.success) {
-                        // 1. Confirmar únicamente cuando el registro en BD fue exitoso con SweetAlert2
+                    // 1. Mostrar mensaje de éxito ÚNICAMENTE si el servidor confirmó que la cita se guardó correctamente
+                    if (response.ok && data && data.success && data.cita && data.cita.id) {
                         if (typeof Swal !== 'undefined') {
                             Swal.fire({
                                 icon: 'success',
@@ -2228,26 +2317,45 @@
                                 timer: 3500,
                                 timerProgressBar: true
                             });
+                        } else {
+                            alert(data.mensaje || 'Tu cita ha sido registrada exitosamente.');
                         }
 
-                        // 2. Limpiar selector de horario y consultar disponibilidad fresca (el turno recién ocupado ya no aparecerá)
+                        // Limpiar selector de horario y consultar disponibilidad fresca (el turno ocupado ya no aparecerá)
                         if (timeSelect) {
                             timeSelect.value = '';
                         }
                         summaryTimeVal.textContent = 'Selecciona un horario';
                         summaryTimeVal.classList.add('empty');
                         fetchAvailability();
-                    } else if (data.valido === false || response.status === 422) {
-                        // 3. Horario ya no disponible: ventana azul con icono blanco
-                        mostrarAvisoHorarioNoDisponible(data.mensaje || 'El horario seleccionado ya no está disponible. Por favor selecciona otro horario.');
+                        return;
+                    }
+
+                    // 2. Extraer mensaje detallado de error o conflicto devuelto por el servidor
+                    let errorMsg = (data && (data.mensaje || data.message)) ? (data.mensaje || data.message) : '';
+                    if (!errorMsg && data && data.errors && typeof data.errors === 'object') {
+                        const errKeys = Object.keys(data.errors);
+                        if (errKeys.length > 0 && Array.isArray(data.errors[errKeys[0]]) && data.errors[errKeys[0]].length > 0) {
+                            errorMsg = data.errors[errKeys[0]][0];
+                        }
+                    }
+
+                    // 3. Si el horario dejó de estar disponible o hay conflicto: ventana azul con icono blanco
+                    const esConflictoHorario = (data && (data.valido === false || data.motivo_tipo)) || 
+                                              (data && data.errors && data.errors.time) ||
+                                              (errorMsg && /horario|disponible|traslap|simultan|conflicto|intervalo|jornada|cerrad/i.test(errorMsg));
+
+                    if (esConflictoHorario) {
+                        mostrarAvisoHorarioNoDisponible(errorMsg || 'El horario seleccionado ya no está disponible debido a un conflicto de reservación. Por favor selecciona otro horario.');
+                    } else if (response.status === 422 || (data && data.errors)) {
+                        mostrarAvisoCampoFaltante(errorMsg || 'Por favor revisa los datos ingresados para la cita.');
                     } else {
-                        // Error de validación o del servidor: no mostrar confirmación falsa
-                        mostrarAvisoCampoFaltante(data.mensaje || 'No fue posible registrar la cita. Por favor intenta de nuevo.');
+                        mostrarAvisoCampoFaltante(errorMsg || 'No fue posible registrar la cita. Por favor intenta de nuevo.');
                     }
                 } catch (err) {
                     btnContinue.disabled = false;
                     btnContinue.innerHTML = originalHtml;
-                    mostrarAvisoCampoFaltante('Error de conexión al procesar la cita. Por favor intenta nuevamente.');
+                    mostrarAvisoCampoFaltante('Error de conexión al procesar la cita. La cita NO fue registrada; por favor intenta nuevamente.');
                 }
             });
         }

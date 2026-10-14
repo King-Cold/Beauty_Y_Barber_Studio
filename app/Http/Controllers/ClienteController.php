@@ -212,6 +212,8 @@ class ClienteController extends Controller
             'success' => true,
             'disponible' => count($horarios) > 0,
             'horarios' => $horarios,
+            'horarios_bloqueados' => $disponibilidad['horarios_bloqueados'] ?? [],
+            'bloqueos' => $disponibilidad['bloqueos_detalle'] ?? [],
             'mensaje' => $disponibilidad['mensaje'] ?? '',
             'aviso_cierre' => $disponibilidad['aviso_cierre'] ?? null,
             'hora_cierre_efectiva' => $disponibilidad['hora_cierre_efectiva'] ?? null,
@@ -243,22 +245,53 @@ class ClienteController extends Controller
         $servicio = \App\Models\Service::findOrFail($validated['service_id']);
         $trabajador = \App\Models\Trabajador::findOrFail($validated['worker_id']);
 
-        $resultado = app(\App\Services\DisponibilidadService::class)
+        $disponibilidadService = app(\App\Services\DisponibilidadService::class);
+        $resultado = $disponibilidadService
             ->validarHorarioSeleccionado($trabajador, $validated['date'], $validated['time'], $servicio);
 
-        if ($resultado['disponible']) {
+        if (!$resultado['disponible']) {
             return response()->json([
-                'success' => true,
-                'valido' => true,
-                'mensaje' => 'Horario verificado y disponible.',
-            ]);
+                'success' => false,
+                'valido' => false,
+                'motivo_tipo' => $resultado['motivo_tipo'] ?? 'no_disponible',
+                'mensaje' => $resultado['mensaje'] ?: 'El horario seleccionado ya no está disponible. Por favor elige otro horario.',
+            ], 422);
+        }
+
+        // Validación de conflicto de horario para el cliente autenticado
+        $cliente = Auth::user();
+        if ($cliente) {
+            $horaInicio = $disponibilidadService->normalizarHora($validated['time']);
+            $duracion = (int) ($servicio->duration_minutes ?: 30);
+            $horaInicioMin = $disponibilidadService->horaAMinutos($horaInicio);
+            $horaFinMin = $horaInicioMin + $duracion;
+
+            $citaConflicto = $disponibilidadService->obtenerCitaConflictoCliente(
+                cliente: $cliente,
+                fecha: $validated['date'],
+                horaInicioMin: $horaInicioMin,
+                horaFinMin: $horaFinMin
+            );
+
+            if ($citaConflicto) {
+                $servicioNom = $citaConflicto->service?->name ?? 'otro servicio';
+                $finIntervalo = $citaConflicto->hora_fin ?: $disponibilidadService->minutosAHora($disponibilidadService->horaAMinutos($citaConflicto->hora_inicio) + ($citaConflicto->duracion_minutos ?: 30));
+
+                return response()->json([
+                    'success' => false,
+                    'valido' => false,
+                    'mensaje' => "Ya cuentas con una cita reservada para ese horario ({$servicioNom} de {$citaConflicto->hora_inicio} a {$finIntervalo} hrs). Por favor selecciona otro horario.",
+                    'motivo_tipo' => 'conflicto_cliente',
+                    'cita_conflicto' => $citaConflicto,
+                ], 422);
+            }
         }
 
         return response()->json([
-            'success' => false,
-            'valido' => false,
-            'mensaje' => $resultado['mensaje'] ?: 'El horario seleccionado ya no está disponible. Por favor elige otro horario.',
-        ], 422);
+            'success' => true,
+            'valido' => true,
+            'mensaje' => 'Horario verificado y disponible.',
+        ]);
     }
 
     /**
@@ -284,109 +317,24 @@ class ClienteController extends Controller
 
         $servicio = Service::findOrFail($validated['service_id']);
         $trabajador = Trabajador::findOrFail($validated['worker_id']);
+        $cliente = Auth::user();
+
         $disponibilidadService = app(DisponibilidadService::class);
 
-        $duracionMinutos = (int) ($servicio->duration_minutes ?: 30);
-        $precio = (float) $servicio->price;
-
-        $horaInicio = $disponibilidadService->normalizarHora($validated['time']);
-        $horaInicioMin = $disponibilidadService->horaAMinutos($horaInicio);
-        $horaFinMin = $horaInicioMin + $duracionMinutos;
-        $horaFin = $disponibilidadService->minutosAHora($horaFinMin);
-
-        // 1. Prevención idempotente de duplicados por reenvío o doble clic del mismo cliente
-        $citaDuplicada = Cita::where('user_id', Auth::id())
-            ->where('trabajador_id', $trabajador->id)
-            ->where('service_id', $servicio->id)
-            ->whereDate('fecha', $validated['date'])
-            ->where('hora_inicio', $horaInicio)
-            ->whereNotIn('estado', ['cancelada', 'cancelled', 'anulada'])
-            ->first();
-
-        if ($citaDuplicada) {
-            return response()->json([
-                'success' => true,
-                'valido' => true,
-                'ya_existia' => true,
-                'mensaje' => 'Esta cita ya había sido registrada exitosamente.',
-                'cita' => $citaDuplicada->load(['service', 'trabajador.user']),
-            ]);
-        }
-
-        // 2. Re-validación estricta de disponibilidad del horario en el servidor
-        $resultado = $disponibilidadService->validarHorarioSeleccionado(
-            $trabajador,
-            $validated['date'],
-            $validated['time'],
-            $servicio
+        $resultado = $disponibilidadService->registrarCitaConcurrente(
+            trabajador: $trabajador,
+            servicio: $servicio,
+            cliente: $cliente,
+            fecha: $validated['date'],
+            hora: $validated['time'],
+            notas: $validated['notas'] ?? null,
+            origen: 'cliente'
         );
 
-        if (!$resultado['disponible']) {
-            return response()->json([
-                'success' => false,
-                'valido' => false,
-                'mensaje' => $resultado['mensaje'] ?: 'El horario seleccionado ya no está disponible. Por favor selecciona otro horario.',
-                'motivo_tipo' => $resultado['motivo_tipo'] ?? 'no_disponible',
-            ], 422);
-        }
+        $status = $resultado['status'] ?? ($resultado['success'] ? 200 : 422);
+        unset($resultado['status']);
 
-        // 3. Persistencia atómica protegida contra citas simultáneas y duplicadas
-        DB::beginTransaction();
-        try {
-            // Protección contra colisión simultánea de citas para el mismo especialista
-            $citasExistentes = Cita::where('trabajador_id', $trabajador->id)
-                ->whereDate('fecha', $validated['date'])
-                ->whereNotIn('estado', ['cancelada', 'cancelled', 'anulada'])
-                ->lockForUpdate()
-                ->get();
-
-            foreach ($citasExistentes as $citaPrevia) {
-                $previaIni = $disponibilidadService->horaAMinutos($citaPrevia->hora_inicio);
-                $previaFin = $disponibilidadService->horaAMinutos($citaPrevia->hora_fin);
-
-                if ($disponibilidadService->solapanIntervalos($horaInicioMin, $horaFinMin, $previaIni, $previaFin)) {
-                    DB::rollBack();
-                    return response()->json([
-                        'success' => false,
-                        'valido' => false,
-                        'mensaje' => "El horario seleccionado ya no está disponible debido a otra cita reservada en el mismo intervalo ({$citaPrevia->hora_inicio} a {$citaPrevia->hora_fin} hrs).",
-                        'motivo_tipo' => 'cita_simultanea',
-                    ], 422);
-                }
-            }
-
-            // Registro real en la base de datos
-            $cita = Cita::create([
-                'user_id' => Auth::id(),
-                'trabajador_id' => $trabajador->id,
-                'service_id' => $servicio->id,
-                'fecha' => $validated['date'],
-                'hora_inicio' => $horaInicio,
-                'hora_fin' => $horaFin,
-                'duracion_minutos' => $duracionMinutos,
-                'precio' => $precio,
-                'estado' => 'confirmada',
-                'notas' => $validated['notas'] ?? null,
-            ]);
-
-            DB::commit();
-
-            $fechaFormateada = \Carbon\Carbon::parse($cita->fecha)->format('d/m/Y');
-
-            return response()->json([
-                'success' => true,
-                'valido' => true,
-                'mensaje' => "¡Cita confirmada exitosamente! Tu cita para {$servicio->name} con {$trabajador->nombre_completo} ha sido registrada para el {$fechaFormateada} a las {$cita->hora_inicio} hrs.",
-                'cita' => $cita->load(['service', 'trabajador.user']),
-            ]);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'valido' => false,
-                'mensaje' => 'No se pudo guardar la cita en la base de datos: ' . $e->getMessage(),
-            ], 500);
-        }
+        return response()->json($resultado, $status);
     }
 
     /**
