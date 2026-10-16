@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name'); // Nombre
             $table->string('apellidos'); // Agregado según RF-11
             $table->string('telefono')->unique(); // Obligatorio y único según RF-11 y RF-12
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->date('fecha_nacimiento')->nullable(); // Opcional según RF-11
             
             // Relación usuario-rol (Subtarea 5)

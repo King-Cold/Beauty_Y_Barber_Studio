@@ -13,15 +13,90 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 class RecepcionController extends Controller
 {
     /**
      * Página principal (Dashboard) del panel de la recepcionista.
+     * Integra la captura de datos del cliente, turnos inmediatos y agendamiento interactivo.
      */
     public function index()
     {
         $user = Auth::user();
-        return view('recepcion.dashboard', compact('user'));
+
+        // 1. Catálogo de servicios activos clasificados
+        $servicios = Schema::hasTable('services')
+            ? Service::where('is_active', true)->with('trabajadoresActivos')->orderBy('name', 'asc')->get()
+            : collect();
+
+        $serviciosEstetica = $servicios->filter(fn($s) => strtolower($s->category ?? '') === 'estetica');
+        $serviciosBarberia = $servicios->filter(fn($s) => strtolower($s->category ?? '') === 'barberia');
+
+        // 2. Especialistas activos
+        $trabajadores = Schema::hasTable('trabajadores')
+            ? Trabajador::where('activo', true)->with(['user', 'serviciosActivos'])->get()
+            : collect();
+
+        // 3. Clientes registrados para autocompletado y búsqueda en tiempo real
+        $clientes = User::where('role_id', 4)
+            ->select('id', 'name', 'apellidos', 'telefono', 'email')
+            ->orderBy('name', 'asc')
+            ->take(50)
+            ->get();
+
+        // 4. Fecha de hoy y formato amigable
+        $today = now()->format('Y-m-d');
+        $diasEsp = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        $mesesEsp = [1 => 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        $now = now();
+        $todayFormatted = $diasEsp[$now->dayOfWeek] . ', ' . $now->day . ' de ' . $mesesEsp[$now->month] . ' de ' . $now->year;
+
+        // 5. Turnos inmediatos disponibles para el día de hoy
+        $disponibilidadService = app(DisponibilidadService::class);
+        $turnosInmediatosHoy = [];
+
+        foreach ($trabajadores as $trabajador) {
+            try {
+                $slots = $disponibilidadService->calcularHorariosDisponibles($trabajador, $today, 30);
+                $turnosInmediatosHoy[$trabajador->id] = $slots;
+            } catch (\Throwable $e) {
+                $turnosInmediatosHoy[$trabajador->id] = [];
+            }
+        }
+
+        // 6. Citas del día para monitoreo de ocupación
+        $citasHoy = Schema::hasTable('citas')
+            ? Cita::whereDate('fecha', $today)
+                ->whereNotIn('estado', ['cancelada'])
+                ->with(['trabajador', 'service', 'user'])
+                ->orderBy('hora_inicio', 'asc')
+                ->get()
+            : collect();
+
+        // 7. Estadísticas rápidas para el encabezado del panel
+        $stats = [
+            'total_especialistas' => $trabajadores->count(),
+            'total_servicios' => $servicios->count(),
+            'citas_hoy_count' => $citasHoy->count(),
+            'clientes_count' => User::where('role_id', 4)->count(),
+        ];
+
+        return view('recepcion.dashboard', compact(
+            'user',
+            'servicios',
+            'serviciosEstetica',
+            'serviciosBarberia',
+            'trabajadores',
+            'clientes',
+            'turnosInmediatosHoy',
+            'citasHoy',
+            'today',
+            'todayFormatted',
+            'stats'
+        ));
     }
 
     /**
@@ -110,16 +185,21 @@ class RecepcionController extends Controller
     public function buscarClientes(Request $request)
     {
         $term = trim($request->input('q', ''));
+        $cleanPhone = preg_replace('/[^0-9]/', '', $term);
 
         $query = User::where('role_id', 4);
 
         if ($term !== '') {
             $words = array_filter(explode(' ', $term));
-            $query->where(function ($q) use ($term, $words) {
+            $query->where(function ($q) use ($term, $cleanPhone, $words) {
                 $q->where('name', 'like', "%{$term}%")
                   ->orWhere('apellidos', 'like', "%{$term}%")
                   ->orWhere('email', 'like', "%{$term}%")
                   ->orWhere('telefono', 'like', "%{$term}%");
+
+                if (!empty($cleanPhone)) {
+                    $q->orWhere('telefono', 'like', "%{$cleanPhone}%");
+                }
 
                 if (count($words) > 1) {
                     $q->orWhere(function ($sub) use ($words) {
@@ -148,10 +228,110 @@ class RecepcionController extends Controller
                 'name' => $c->name,
                 'apellidos' => $c->apellidos ?? '',
                 'email' => $c->email,
+                'tiene_cuenta' => !empty($c->email),
                 'telefono' => $c->telefono ?? '',
                 'iniciales' => strtoupper(substr($c->name, 0, 1) . substr($c->apellidos ?? '', 0, 1)),
             ]),
         ]);
+    }
+
+    /**
+     * Registro simplificado de clientes desde recepción.
+     * Únicamente solicita nombre, apellidos y número telefónico sin exigir correo ni generar cuenta de usuario.
+     */
+    public function registrarClienteRapido(Request $request)
+    {
+        $validated = $request->validate([
+            'nombre' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u'],
+            'apellidos' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u'],
+            'telefono' => 'required|string',
+        ], [
+            'nombre.required' => 'El nombre del cliente es obligatorio.',
+            'nombre.min' => 'El nombre debe contener al menos 2 caracteres.',
+            'nombre.regex' => 'El nombre no puede incluir números ni caracteres especiales.',
+            'apellidos.required' => 'Los apellidos del cliente son obligatorios.',
+            'apellidos.min' => 'Los apellidos deben contener al menos 2 caracteres.',
+            'apellidos.regex' => 'Los apellidos no pueden incluir números ni caracteres especiales.',
+            'telefono.required' => 'El número telefónico es obligatorio.',
+        ]);
+
+        // 1. Validación de la estructura del número telefónico: exactamente 10 dígitos numéricos
+        $cleanPhone = preg_replace('/[^0-9]/', '', $validated['telefono']);
+        if (strlen($cleanPhone) !== 10) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'El número telefónico no es válido. Debe contener exactamente 10 dígitos numéricos.',
+                'errors' => [
+                    'telefono' => ['El número telefónico debe contener exactamente 10 dígitos numéricos.']
+                ]
+            ], 422);
+        }
+
+        // 2. Control de duplicidad de registros (Criterio 4)
+        $clienteExistente = User::where('role_id', 4)
+            ->where(function ($q) use ($validated, $cleanPhone) {
+                $q->where('telefono', $validated['telefono'])
+                  ->orWhere('telefono', $cleanPhone);
+            })
+            ->first();
+
+        if ($clienteExistente) {
+            return response()->json([
+                'success' => false,
+                'duplicado' => true,
+                'mensaje' => "El número telefónico {$cleanPhone} ya se encuentra registrado a nombre de {$clienteExistente->name} {$clienteExistente->apellidos}. Se ha seleccionado automáticamente.",
+                'cliente' => [
+                    'id' => $clienteExistente->id,
+                    'nombre' => $clienteExistente->name,
+                    'apellidos' => $clienteExistente->apellidos ?? '',
+                    'nombre_completo' => trim("{$clienteExistente->name} " . ($clienteExistente->apellidos ?? '')),
+                    'telefono' => $clienteExistente->telefono,
+                    'iniciales' => strtoupper(substr($clienteExistente->name, 0, 1) . substr($clienteExistente->apellidos ?? '', 0, 1)),
+                    'es_nuevo' => false,
+                ]
+            ], 409);
+        }
+
+        // 3. Creación sin cuenta de usuario ni credenciales de portal (Criterio 3)
+        self::ensureUsersColumnsNullable();
+
+        $cliente = null;
+        try {
+            $cliente = User::create([
+                'name' => trim($validated['nombre']),
+                'apellidos' => trim($validated['apellidos']),
+                'telefono' => $cleanPhone,
+                'email' => null,
+                'password' => null,
+                'role_id' => 4,
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            self::ensureUsersColumnsNullable();
+            $cliente = User::create([
+                'name' => trim($validated['nombre']),
+                'apellidos' => trim($validated['apellidos']),
+                'telefono' => $cleanPhone,
+                'email' => null,
+                'password' => null,
+                'role_id' => 4,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Cliente registrado sin cuenta de usuario. Perfil guardado y listo para continuar agendamiento.',
+            'cliente' => [
+                'id' => $cliente->id,
+                'nombre' => $cliente->name,
+                'apellidos' => $cliente->apellidos ?? '',
+                'nombre_completo' => trim("{$cliente->name} " . ($cliente->apellidos ?? '')),
+                'telefono' => $cliente->telefono,
+                'email' => null,
+                'tiene_cuenta' => false,
+                'iniciales' => strtoupper(substr($cliente->name, 0, 1) . substr($cliente->apellidos ?? '', 0, 1)),
+                'es_nuevo' => true,
+            ]
+        ], 201);
     }
 
     /**
@@ -324,6 +504,143 @@ class RecepcionController extends Controller
 
         $status = $resultado['status'] ?? ($resultado['success'] ? 200 : 422);
         unset($resultado['status']);
+
+        return response()->json($resultado, $status);
+    }
+
+    /**
+     * Registra un turno de atención inmediata o cita programada desde el panel principal de recepción.
+     * Permite asociar o crear clientes automáticamente a partir de Nombre, Apellidos y Teléfono.
+     */
+    public function registrarTurnoRecepcion(Request $request)
+    {
+        Cita::ensureTableExists();
+
+        $validated = $request->validate([
+            'client_id' => 'nullable|integer|exists:users,id',
+            'nombre' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u'],
+            'apellidos' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/u'],
+            'telefono' => 'required|string',
+            'modalidad' => 'required|in:momento,posterior',
+            'service_id' => 'required|integer|exists:services,id',
+            'worker_id' => 'required|integer|exists:trabajadores,id',
+            'date' => 'required|date|after_or_equal:today',
+            'time' => 'required|string',
+            'notas' => 'nullable|string|max:500',
+        ], [
+            'nombre.required' => 'El nombre del cliente es obligatorio.',
+            'nombre.min' => 'El nombre debe contener al menos 2 caracteres.',
+            'nombre.regex' => 'El nombre no puede incluir números ni caracteres especiales.',
+            'apellidos.required' => 'Los apellidos del cliente son obligatorios.',
+            'apellidos.min' => 'Los apellidos deben contener al menos 2 caracteres.',
+            'apellidos.regex' => 'Los apellidos no pueden incluir números ni caracteres especiales.',
+            'telefono.required' => 'El número telefónico es obligatorio.',
+            'service_id.required' => 'Debe seleccionar un servicio del catálogo.',
+            'worker_id.required' => 'Debe seleccionar un especialista.',
+            'date.required' => 'Debe seleccionar una fecha.',
+            'time.required' => 'Debe seleccionar un turno u horario de atención.',
+        ]);
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', $validated['telefono']);
+        if (strlen($cleanPhone) !== 10) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'El número telefónico no es válido. Debe contener exactamente 10 dígitos numéricos.',
+                'errors' => [
+                    'telefono' => ['El número telefónico debe contener exactamente 10 dígitos numéricos.']
+                ]
+            ], 422);
+        }
+
+        // 1. Asociar cliente previamente seleccionado o buscar por teléfono
+        $cliente = null;
+        if (!empty($validated['client_id'])) {
+            $cliente = User::where('role_id', 4)->find($validated['client_id']);
+        }
+
+        if (!$cliente && !empty($cleanPhone)) {
+            $cliente = User::where('role_id', 4)
+                ->where(function ($q) use ($cleanPhone, $validated) {
+                    $q->where('telefono', $validated['telefono'])
+                      ->orWhere('telefono', $cleanPhone);
+                })
+                ->first();
+        }
+
+        // 2. Si no existe, crear perfil simplificado sin requerir correo ni generar credenciales de acceso (Criterio 3)
+        if (!$cliente) {
+            self::ensureUsersColumnsNullable();
+            try {
+                $cliente = User::create([
+                    'name' => trim($validated['nombre']),
+                    'apellidos' => trim($validated['apellidos']),
+                    'telefono' => $cleanPhone ?: trim($validated['telefono']),
+                    'email' => null,
+                    'password' => null,
+                    'role_id' => 4,
+                ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+                self::ensureUsersColumnsNullable();
+                $cliente = User::create([
+                    'name' => trim($validated['nombre']),
+                    'apellidos' => trim($validated['apellidos']),
+                    'telefono' => $cleanPhone ?: trim($validated['telefono']),
+                    'email' => null,
+                    'password' => null,
+                    'role_id' => 4,
+                ]);
+            }
+        } else {
+            if (empty($cliente->apellidos) && !empty($validated['apellidos'])) {
+                $cliente->update(['apellidos' => trim($validated['apellidos'])]);
+            }
+        }
+
+        $servicio = Service::findOrFail($validated['service_id']);
+        $trabajador = Trabajador::findOrFail($validated['worker_id']);
+
+        $disponibilidadService = app(DisponibilidadService::class);
+
+        $prefijoNota = $validated['modalidad'] === 'momento' ? '[Atención Inmediata - Turno Sala] ' : '[Cita Programada - Recepción] ';
+        $notasFinales = $prefijoNota . ($validated['notas'] ?? '');
+
+        $resultado = $disponibilidadService->registrarCitaConcurrente(
+            trabajador: $trabajador,
+            servicio: $servicio,
+            cliente: $cliente,
+            fecha: $validated['date'],
+            hora: $validated['time'],
+            notas: $notasFinales,
+            origen: 'recepcion'
+        );
+
+        $status = $resultado['status'] ?? ($resultado['success'] ? 200 : 422);
+        unset($resultado['status']);
+
+        if (!empty($resultado['success'])) {
+            $citaId = $resultado['cita']['id'] ?? ($resultado['cita']->id ?? rand(100, 999));
+            $resultado['cliente'] = [
+                'id' => $cliente->id,
+                'nombre' => $cliente->name,
+                'apellidos' => $cliente->apellidos ?? '',
+                'nombre_completo' => trim($cliente->name . ' ' . ($cliente->apellidos ?? '')),
+                'telefono' => $cliente->telefono ?? '',
+            ];
+            $resultado['modalidad'] = $validated['modalidad'];
+            $resultado['servicio'] = [
+                'id' => $servicio->id,
+                'name' => $servicio->name,
+                'price' => number_format((float)$servicio->price, 2),
+                'duration_minutes' => $servicio->duration_minutes,
+            ];
+            $resultado['especialista'] = [
+                'id' => $trabajador->id,
+                'nombre' => $trabajador->nombre_completo,
+            ];
+            $resultado['fecha'] = $validated['date'];
+            $resultado['hora'] = $validated['time'];
+            $resultado['folio_turno'] = ($validated['modalidad'] === 'momento' ? 'TURNO-' : 'CITA-') . str_pad($citaId, 4, '0', STR_PAD_LEFT);
+        }
 
         return response()->json($resultado, $status);
     }
@@ -608,6 +925,25 @@ class RecepcionController extends Controller
                 ], 500);
             }
             return back()->withErrors(['error' => 'Error al registrar el check-in.']);
+        }
+    }
+
+    /**
+     * Asegura que las columnas email y password de users admitan NULL en la base de datos
+     * para permitir el registro de clientes sin cuenta de usuario ni credenciales.
+     */
+    public static function ensureUsersColumnsNullable(): void
+    {
+        try {
+            if (Schema::hasTable('users')) {
+                $driver = DB::getDriverName();
+                if ($driver === 'mysql' || $driver === 'mariadb') {
+                    DB::statement('ALTER TABLE `users` MODIFY `email` VARCHAR(255) NULL');
+                    DB::statement('ALTER TABLE `users` MODIFY `password` VARCHAR(255) NULL');
+                }
+            }
+        } catch (\Throwable $e) {
+            // Silencioso si ya están modificadas o no hay permisos DDL
         }
     }
 }

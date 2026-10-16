@@ -860,15 +860,23 @@
             <h1 class="page-title">Agendamiento de Citas</h1>
             <p class="page-subtitle">Registra una nueva cita para un cliente seleccionando el cliente, servicio, fecha y especialista disponible.</p>
         </div>
-        <a href="{{ route('recepcion.citas') }}" class="btn btn-secondary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <span>Ver listado de citas</span>
-        </a>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <a href="{{ route('recepcion.dashboard') }}" class="btn btn-secondary" style="border-color: rgba(0, 85, 255, 0.35); color: #60a5fa;" title="Ir al panel de turnos de recepción">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>Panel de Recepción & Turnos</span>
+            </a>
+            <a href="{{ route('recepcion.citas') }}" class="btn btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Ver listado de citas</span>
+            </a>
+        </div>
     </header>
 
     <!-- GRID PRINCIPAL DE RESERVA -->
@@ -1203,7 +1211,7 @@
                                     {{ $preName ?: 'Cliente #' . $preId }}
                                 </div>
                                 <div id="selectedClientMetaText" style="font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    {{ $preEmail }} {{ $prePhone ? '• ' . $prePhone : '' }}
+                                    {{ $preEmail ?: 'Sin cuenta de usuario' }} {{ $prePhone ? '• Tel: ' . $prePhone : '' }}
                                 </div>
                             </div>
                         </div>
@@ -1607,7 +1615,7 @@
                             ${escapeHtml(c.nombre_completo)}
                         </div>
                         <div style="font-size: 10.5px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            ${escapeHtml(c.email)} ${c.telefono ? '• ' + escapeHtml(c.telefono) : ''}
+                            ${c.email ? escapeHtml(c.email) : '<span style="color:#60a5fa; font-weight:600;">Sin cuenta de usuario</span>'} ${c.telefono ? '• Tel: ' + escapeHtml(c.telefono) : ''}
                         </div>
                     </div>
                 `;
@@ -1630,7 +1638,7 @@
             clientSelect.setAttribute('data-phone', c.telefono || '');
 
             if (selectedClientNameText) selectedClientNameText.textContent = c.nombre_completo;
-            if (selectedClientMetaText) selectedClientMetaText.textContent = `${c.email || ''} ${c.telefono ? '• ' + c.telefono : ''}`;
+            if (selectedClientMetaText) selectedClientMetaText.textContent = `${c.email || 'Sin cuenta de usuario'} ${c.telefono ? '• Tel: ' + c.telefono : ''}`;
             if (selectedClientAvatar) selectedClientAvatar.textContent = c.iniciales || 'CL';
 
             if (selectedClientCard) selectedClientCard.style.display = 'flex';
