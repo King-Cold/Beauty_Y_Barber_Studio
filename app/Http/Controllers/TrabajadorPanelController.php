@@ -7,7 +7,9 @@ use App\Models\Service;
 use App\Models\Trabajador;
 use App\Models\User;
 use App\Services\CitaCalendarioService;
+use App\Services\ProfileService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
@@ -400,5 +402,112 @@ class TrabajadorPanelController extends Controller
         }
 
         return view('trabajador.configuracion', compact('user', 'trabajador', 'serviciosAsignados'));
+    }
+
+    /**
+     * Actualiza los datos personales del trabajador (nombre, apellidos, teléfono en User y dirección en Trabajador).
+     */
+    public function actualizarDatos(Request $request, ProfileService $profileService)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $trabajador = $this->getOrCreateTrabajador($user);
+
+        try {
+            $validated = $profileService->validateProfileData($user, $request->all(), [
+                'direccion' => ['nullable', 'string', 'max:255'],
+            ]);
+
+            $user->name = $validated['name'];
+            $user->apellidos = $validated['apellidos'];
+            if (array_key_exists('telefono', $validated)) {
+                $user->telefono = $validated['telefono'];
+            }
+            $user->save();
+
+            if ($trabajador && array_key_exists('direccion', $validated)) {
+                $trabajador->direccion = $validated['direccion'];
+                $trabajador->save();
+            }
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => '¡Datos personales actualizados correctamente!',
+                    'user' => [
+                        'name' => $user->name,
+                        'apellidos' => $user->apellidos,
+                        'telefono' => $user->telefono,
+                        'direccion' => $trabajador ? $trabajador->direccion : null,
+                    ],
+                ]);
+            }
+
+            return back()->with('success', '¡Datos personales actualizados correctamente!');
+        } catch (ValidationException $e) {
+            $primerError = collect($e->errors())->flatten()->first() ?? 'Por favor verifica los datos ingresados.';
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $primerError,
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error inesperado al actualizar los datos: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', 'Ocurrió un error al actualizar los datos.');
+        }
+    }
+
+    /**
+     * Actualiza la contraseña del trabajador validando su contraseña actual y las reglas de seguridad.
+     */
+    public function actualizarPassword(Request $request, ProfileService $profileService)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        try {
+            $resultado = $profileService->changePassword($user, $request->all());
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $resultado['message'] ?? '¡Tu contraseña ha sido actualizada con éxito!',
+                ]);
+            }
+
+            return back()->with('success', $resultado['message'] ?? '¡Tu contraseña ha sido actualizada con éxito!');
+        } catch (ValidationException $e) {
+            $primerError = collect($e->errors())->flatten()->first() ?? 'Error al actualizar la contraseña.';
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $primerError,
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            return back()->withErrors($e->errors());
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar la contraseña: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', 'Ocurrió un error al actualizar la contraseña.');
+        }
     }
 }

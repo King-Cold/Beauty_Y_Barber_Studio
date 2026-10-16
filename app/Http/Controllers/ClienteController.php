@@ -6,7 +6,9 @@ use App\Models\Cita;
 use App\Models\Service;
 use App\Models\Trabajador;
 use App\Services\DisponibilidadService;
+use App\Services\ProfileService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -335,6 +337,139 @@ class ClienteController extends Controller
         unset($resultado['status']);
 
         return response()->json($resultado, $status);
+    }
+
+    /**
+     * Muestra la interfaz de perfil y configuración de cuenta del cliente autenticado.
+     */
+    public function perfil()
+    {
+        $user = Auth::user();
+
+        if ($user->role_id !== 4 && $user->role_id !== 1) {
+            return $this->redirectByRole($user->role_id);
+        }
+
+        Cita::ensureTableExists();
+
+        $citas = Cita::where('user_id', $user->id)->get();
+        $totalCitas = $citas->count();
+        $citasCompletadas = $citas->where('estado', 'completada')->count();
+        $proximaCita = $citas->filter(fn($c) => $c->esProxima())->sortBy('fecha')->sortBy('hora_inicio')->first();
+
+        return view('cliente.perfil', compact('user', 'totalCitas', 'citasCompletadas', 'proximaCita'));
+    }
+
+    /**
+     * Actualiza los datos personales del cliente (nombre, apellidos, teléfono y correo).
+     */
+    public function actualizarDatos(Request $request, ProfileService $profileService)
+    {
+        $user = Auth::user();
+
+        if ($user->role_id !== 4 && $user->role_id !== 1) {
+            return response()->json(['success' => false, 'message' => 'Acceso no autorizado.'], 403);
+        }
+
+        try {
+            $validated = $profileService->validateProfileData($user, $request->all());
+
+            $user->name = $validated['name'];
+            $user->apellidos = $validated['apellidos'];
+            $user->email = $validated['email'];
+
+            if (array_key_exists('telefono', $validated)) {
+                $user->telefono = $validated['telefono'];
+            }
+
+            if (array_key_exists('fecha_nacimiento', $validated)) {
+                $user->fecha_nacimiento = $validated['fecha_nacimiento'];
+            }
+
+            $user->save();
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => '¡Tus datos personales se han actualizado correctamente!',
+                    'user' => [
+                        'name' => $user->name,
+                        'apellidos' => $user->apellidos,
+                        'email' => $user->email,
+                        'telefono' => $user->telefono,
+                    ],
+                ]);
+            }
+
+            return back()->with('success', '¡Tus datos personales se han actualizado correctamente!');
+        } catch (ValidationException $e) {
+            $primerError = collect($e->errors())->flatten()->first() ?? 'Por favor verifica la información ingresada.';
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $primerError,
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error inesperado al actualizar tus datos: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', 'Ocurrió un error al actualizar los datos.');
+        }
+    }
+
+    /**
+     * Actualiza la contraseña del cliente validando su contraseña actual y las reglas de seguridad.
+     */
+    public function actualizarPassword(Request $request, ProfileService $profileService)
+    {
+        $user = Auth::user();
+
+        if ($user->role_id !== 4 && $user->role_id !== 1) {
+            return response()->json(['success' => false, 'message' => 'Acceso no autorizado.'], 403);
+        }
+
+        try {
+            $resultado = $profileService->changePassword($user, $request->all());
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $resultado['message'] ?? '¡Tu contraseña ha sido actualizada con éxito!',
+                ]);
+            }
+
+            return back()->with('success', $resultado['message'] ?? '¡Tu contraseña ha sido actualizada con éxito!');
+        } catch (ValidationException $e) {
+            $primerError = collect($e->errors())->flatten()->first() ?? 'Error al actualizar la contraseña.';
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $primerError,
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            return back()->withErrors($e->errors());
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar la contraseña: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', 'Ocurrió un error al actualizar la contraseña.');
+        }
     }
 
     /**

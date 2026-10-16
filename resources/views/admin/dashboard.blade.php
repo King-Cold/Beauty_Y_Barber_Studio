@@ -961,13 +961,13 @@
                         id="profileBtn" 
                         aria-expanded="false" 
                         aria-haspopup="true" 
-                        aria-controls="profileMenu"
+                        aria-controls="profileMenu" 
                         aria-label="Menú de perfil del administrador"
                     >
-                        <div class="user-avatar" aria-hidden="true">AD</div>
+                        <div class="user-avatar" aria-hidden="true">{{ strtoupper(substr(Auth::user()->name ?? 'AD', 0, 2)) }}</div>
                         <div class="user-meta">
-                            <span class="user-name">Administrador</span>
-                            <span class="user-role">admin@barberstudio.com</span>
+                            <span class="user-name">{{ Auth::user()->name ?? 'Administrador' }}</span>
+                            <span class="user-role">{{ Auth::user()->email ?? 'admin@barberstudio.com' }}</span>
                         </div>
                         <svg class="dropdown-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
@@ -976,7 +976,7 @@
 
                     <!-- Opciones de perfil accesibles con iconos temáticos -->
                     <div class="profile-menu" id="profileMenu" role="menu" aria-labelledby="profileBtn">
-                        <a href="#perfil" class="menu-item profile-item" role="menuitem">
+                        <a href="{{ route('admin.perfil') }}" class="menu-item profile-item" role="menuitem">
                             <div class="menu-item-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -985,7 +985,7 @@
                             </div>
                             <span>Mi Perfil</span>
                         </a>
-                        <a href="#configuracion" class="menu-item settings-item" role="menuitem">
+                        <a href="{{ route('admin.configuracion') }}" class="menu-item settings-item" role="menuitem">
                             <div class="menu-item-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                     <circle cx="12" cy="12" r="3"></circle>

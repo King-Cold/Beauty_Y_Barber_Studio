@@ -70,6 +70,11 @@ Route::middleware('auth')->group(function () {
         Route::match(['post', 'patch'], '/admin/citas/{cita}/cancelar', [\App\Http\Controllers\Admin\CitaAdminController::class, 'cancelarCita'])->name('admin.citas.cancelar');
         Route::match(['post', 'patch'], '/admin/citas/{cita}/confirmar', [\App\Http\Controllers\Admin\CitaAdminController::class, 'confirmarCita'])->name('admin.citas.confirmar');
         Route::post('/admin/citas/{cita}/checkin', [\App\Http\Controllers\Admin\CitaAdminController::class, 'checkInCita'])->name('admin.citas.checkin');
+
+        // Perfil y credenciales del Administrador
+        Route::get('/admin/perfil', [\App\Http\Controllers\Admin\AdminProfileController::class, 'perfil'])->name('admin.perfil');
+        Route::put('/admin/perfil/datos', [\App\Http\Controllers\Admin\AdminProfileController::class, 'actualizarDatos'])->name('admin.perfil.datos');
+        Route::put('/admin/perfil/password', [\App\Http\Controllers\Admin\AdminProfileController::class, 'actualizarPassword'])->name('admin.perfil.password');
     });
 
     // ==========================================
@@ -93,6 +98,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/citas/{cita}/checkin', [\App\Http\Controllers\RecepcionController::class, 'checkInCita'])->name('citas.checkin');
         Route::get('/clientes', [\App\Http\Controllers\RecepcionController::class, 'clientes'])->name('clientes');
         Route::get('/clientes/buscar', [\App\Http\Controllers\RecepcionController::class, 'buscarClientes'])->name('clientes.buscar');
+
+        // Gestión de Perfil y Seguridad de Recepción (Rol 2)
+        Route::get('/perfil', [\App\Http\Controllers\RecepcionController::class, 'perfil'])->name('perfil');
+        Route::put('/perfil/datos', [\App\Http\Controllers\RecepcionController::class, 'actualizarDatos'])->name('perfil.datos');
+        Route::put('/perfil/password', [\App\Http\Controllers\RecepcionController::class, 'actualizarPassword'])->name('perfil.password');
     });
 
     // ==========================================
@@ -102,6 +112,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [\App\Http\Controllers\TrabajadorPanelController::class, 'dashboard'])->name('dashboard');
         Route::get('/agenda', [\App\Http\Controllers\TrabajadorPanelController::class, 'agenda'])->name('agenda');
         Route::get('/configuracion', [\App\Http\Controllers\TrabajadorPanelController::class, 'configuracion'])->name('configuracion');
+        Route::put('/configuracion/datos', [\App\Http\Controllers\TrabajadorPanelController::class, 'actualizarDatos'])->name('configuracion.datos');
+        Route::put('/configuracion/password', [\App\Http\Controllers\TrabajadorPanelController::class, 'actualizarPassword'])->name('configuracion.password');
         Route::get('/citas/{cita}', [\App\Http\Controllers\TrabajadorPanelController::class, 'showCita'])->name('citas.show');
         Route::patch('/citas/{cita}/estado', [\App\Http\Controllers\TrabajadorPanelController::class, 'actualizarEstado'])->name('citas.actualizar_estado');
         Route::post('/citas/{cita}/observaciones', [\App\Http\Controllers\TrabajadorPanelController::class, 'guardarObservaciones'])->name('citas.observaciones');
@@ -121,5 +133,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/citas', [\App\Http\Controllers\ClienteController::class, 'historial'])->name('citas.index');
         Route::get('/citas/{cita}', [\App\Http\Controllers\ClienteController::class, 'showCita'])->name('citas.show');
         Route::match(['post', 'patch'], '/citas/{cita}/cancelar', [\App\Http\Controllers\ClienteController::class, 'cancelarCita'])->name('citas.cancelar');
+
+        // Rutas de gestión de Perfil y Seguridad del Cliente
+        Route::get('/perfil', [\App\Http\Controllers\ClienteController::class, 'perfil'])->name('perfil');
+        Route::put('/perfil/datos', [\App\Http\Controllers\ClienteController::class, 'actualizarDatos'])->name('perfil.datos');
+        Route::put('/perfil/password', [\App\Http\Controllers\ClienteController::class, 'actualizarPassword'])->name('perfil.password');
     });
 });

@@ -8,10 +8,13 @@ use App\Models\Trabajador;
 use App\Models\User;
 use App\Services\DisponibilidadService;
 use App\Services\CitaCalendarioService;
+use App\Services\ProfileService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\ValidationException;
 
 class RecepcionController extends Controller
 {
@@ -608,6 +611,132 @@ class RecepcionController extends Controller
                 ], 500);
             }
             return back()->withErrors(['error' => 'Error al registrar el check-in.']);
+        }
+    }
+
+    /**
+     * Muestra la vista de perfil para el personal de recepción.
+     */
+    public function perfil()
+    {
+        $user = Auth::user();
+
+        if (!$user || !in_array((int)$user->role_id, [1, 2])) {
+            abort(403, 'Acceso denegado al perfil de recepción.');
+        }
+
+        $hoy = Carbon::today()->toDateString();
+
+        // Métricas de recepción
+        $citasHoy = Schema::hasTable('citas') ? Cita::whereDate('fecha', $hoy)->count() : 0;
+        $citasConfirmadas = Schema::hasTable('citas') ? Cita::where('estado', 'confirmada')->count() : 0;
+        $totalClientes = User::where('role_id', 4)->count();
+
+        return view('recepcion.perfil', compact('user', 'citasHoy', 'citasConfirmadas', 'totalClientes'));
+    }
+
+    /**
+     * Actualiza los datos personales del personal de recepción.
+     */
+    public function actualizarDatos(Request $request, ProfileService $profileService)
+    {
+        $user = Auth::user();
+
+        if (!$user || !in_array((int)$user->role_id, [1, 2])) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Acceso no autorizado.'], 403);
+            }
+            abort(403, 'Acceso no autorizado.');
+        }
+
+        try {
+            $profileService->updateProfile($user, $request->all());
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Tus datos de recepción se han actualizado correctamente.',
+                    'user' => [
+                        'name' => $user->name,
+                        'apellidos' => $user->apellidos,
+                        'email' => $user->email,
+                        'telefono' => $user->telefono,
+                        'fecha_nacimiento' => $user->fecha_nacimiento,
+                    ],
+                ]);
+            }
+
+            return back()->with('success', 'Tus datos de recepción se han actualizado correctamente.');
+        } catch (ValidationException $e) {
+            $primerError = collect($e->errors())->flatten()->first() ?? 'Por favor verifica la información ingresada.';
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $primerError,
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error inesperado al actualizar tus datos: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', 'Ocurrió un error al actualizar los datos.');
+        }
+    }
+
+    /**
+     * Actualiza la contraseña del personal de recepción validando la actual y las reglas de seguridad.
+     */
+    public function actualizarPassword(Request $request, ProfileService $profileService)
+    {
+        $user = Auth::user();
+
+        if (!$user || !in_array((int)$user->role_id, [1, 2])) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Acceso no autorizado.'], 403);
+            }
+            abort(403, 'Acceso no autorizado.');
+        }
+
+        try {
+            $resultado = $profileService->changePassword($user, $request->all());
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $resultado['message'] ?? 'Tu contraseña ha sido actualizada con éxito.',
+                ]);
+            }
+
+            return back()->with('success', $resultado['message'] ?? 'Tu contraseña ha sido actualizada con éxito.');
+        } catch (ValidationException $e) {
+            $primerError = collect($e->errors())->flatten()->first() ?? 'Error al actualizar la contraseña.';
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $primerError,
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            return back()->withErrors($e->errors());
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar la contraseña: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', 'Ocurrió un error al actualizar la contraseña.');
         }
     }
 }

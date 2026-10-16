@@ -1,6 +1,6 @@
 @extends('trabajador.layout')
 
-@section('title', 'Beauty & Barber Studio - Configuración de Cuenta')
+@section('title', 'Beauty & Barber Studio - Mi Perfil')
 
 @push('styles')
 <style>
@@ -382,36 +382,39 @@
                 </div>
             </div>
 
-            <form onsubmit="event.preventDefault(); Swal.fire({toast:true,position:'top-end',icon:'info',title:'Modo de diseño: cambios guardados temporalmente',showConfirmButton:false,timer:3000,background:'#0a1124',color:'#fff'});" style="display: flex; flex-direction: column; gap: 16px;">
+            <form id="formDatosPersonales" action="{{ route('trabajador.configuracion.datos') }}" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+                @csrf
+                @method('PUT')
+
                 <div class="form-group-grid">
                     <div class="form-group">
-                        <label class="form-label" for="inputName">Nombre(s)</label>
-                        <input type="text" id="inputName" class="form-input" value="{{ $user->name }}" placeholder="Nombre">
+                        <label class="form-label" for="inputName">Nombre(s) <span style="color: var(--barber-red);">*</span></label>
+                        <input type="text" id="inputName" name="name" class="form-input" value="{{ old('name', $user->name) }}" placeholder="Nombre" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="inputApellidos">Apellidos</label>
-                        <input type="text" id="inputApellidos" class="form-input" value="{{ $user->apellidos }}" placeholder="Apellidos">
+                        <label class="form-label" for="inputApellidos">Apellidos <span style="color: var(--barber-red);">*</span></label>
+                        <input type="text" id="inputApellidos" name="apellidos" class="form-input" value="{{ old('apellidos', $user->apellidos) }}" placeholder="Apellidos" required>
                     </div>
                 </div>
 
                 <div class="form-group-grid">
                     <div class="form-group">
-                        <label class="form-label" for="inputEmail">Correo Electrónico</label>
-                        <input type="email" id="inputEmail" class="form-input" value="{{ $user->email }}" readonly>
+                        <label class="form-label" for="inputEmail">Correo Electrónico (No modificable)</label>
+                        <input type="email" id="inputEmail" class="form-input" value="{{ $user->email }}" readonly style="opacity: 0.7; cursor: not-allowed;">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="inputTelefono">Teléfono de Contacto</label>
-                        <input type="tel" id="inputTelefono" class="form-input" value="{{ $user->telefono ?? '555-123-4567' }}" placeholder="Número telefónico">
+                        <input type="tel" id="inputTelefono" name="telefono" class="form-input" value="{{ old('telefono', $user->telefono) }}" placeholder="Número telefónico de 10 dígitos">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="inputDireccion">Dirección de Trabajo / Residencia</label>
-                    <input type="text" id="inputDireccion" class="form-input" value="{{ $trabajador->direccion ?? 'Av. Principal #102, Barber Studio' }}" placeholder="Dirección">
+                    <input type="text" id="inputDireccion" name="direccion" class="form-input" value="{{ old('direccion', $trabajador->direccion ?? '') }}" placeholder="Dirección completa">
                 </div>
 
                 <div style="margin-top: 8px;">
-                    <button type="submit" class="btn-submit-premium">
+                    <button type="submit" id="btnGuardarDatos" class="btn-submit-premium">
                         <span>Guardar Datos Personales</span>
                     </button>
                 </div>
@@ -432,7 +435,7 @@
                 </div>
                 <div>
                     <h2 class="config-card-title">Mis Servicios & Especialidades</h2>
-                    <span class="config-card-subtitle">Servicios que tienes habilitados para atención a clientes</span>
+                    <span class="config-card-subtitle">Servicios habilitados en tu agenda para los clientes</span>
                 </div>
             </div>
 
@@ -441,26 +444,16 @@
             </p>
 
             <div class="services-tag-cloud">
-                <div class="service-tag">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>Corte de Cabello Clásico</span>
-                </div>
-                <div class="service-tag">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>Perfilado y Diseño de Barba</span>
-                </div>
-                <div class="service-tag">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>Ritual Toalla Caliente (Spa)</span>
-                </div>
-                <div class="service-tag">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>Corte Fade / Degradado</span>
-                </div>
-                <div class="service-tag">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>Tinte y Camuflaje de Canas</span>
-                </div>
+                @forelse($serviciosAsignados as $servicio)
+                    <div class="service-tag">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>{{ $servicio->name }}</span>
+                    </div>
+                @empty
+                    <div style="font-size: 13px; color: var(--text-muted); font-style: italic; padding: 12px 4px;">
+                        No tienes servicios asignados actualmente en tu perfil. Comunícate con la administración para habilitar tus especialidades.
+                    </div>
+                @endforelse
             </div>
 
             <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 10px; margin-top: auto;">
@@ -551,24 +544,27 @@
                 </div>
             </div>
 
-            <form onsubmit="event.preventDefault(); Swal.fire({toast:true,position:'top-end',icon:'success',title:'Diseño validado: contraseña actualizada (simulado)',showConfirmButton:false,timer:3000,background:'#10b981',color:'#fff'});" style="display: flex; flex-direction: column; gap: 16px;">
+            <form id="formPassword" action="{{ route('trabajador.configuracion.password') }}" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+                @csrf
+                @method('PUT')
+
                 <div class="form-group">
-                    <label class="form-label" for="currentPass">Contraseña Actual</label>
-                    <input type="password" id="currentPass" class="form-input" placeholder="••••••••••••">
+                    <label class="form-label" for="currentPass">Contraseña Actual <span style="color: var(--barber-red);">*</span></label>
+                    <input type="password" id="currentPass" name="current_password" class="form-input" placeholder="••••••••••••" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="newPass">Nueva Contraseña</label>
-                    <input type="password" id="newPass" class="form-input" placeholder="Nueva contraseña segura">
+                    <label class="form-label" for="newPass">Nueva Contraseña <span style="color: var(--barber-red);">*</span></label>
+                    <input type="password" id="newPass" name="password" class="form-input" placeholder="Mínimo 8 caracteres (letras y números)" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="confirmPass">Confirmar Nueva Contraseña</label>
-                    <input type="password" id="confirmPass" class="form-input" placeholder="Repite la nueva contraseña">
+                    <label class="form-label" for="confirmPass">Confirmar Nueva Contraseña <span style="color: var(--barber-red);">*</span></label>
+                    <input type="password" id="confirmPass" name="password_confirmation" class="form-input" placeholder="Repite la nueva contraseña" required>
                 </div>
 
                 <div style="margin-top: 8px;">
-                    <button type="submit" class="btn-submit-premium">
+                    <button type="submit" id="btnGuardarPassword" class="btn-submit-premium">
                         <span>Actualizar Contraseña</span>
                     </button>
                 </div>
@@ -578,4 +574,198 @@
     </div>
 
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    // 1. Envío Asíncrono de Datos Personales
+    const formDatos = document.getElementById('formDatosPersonales');
+    const btnGuardarDatos = document.getElementById('btnGuardarDatos');
+
+    if (formDatos) {
+        formDatos.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('inputName').value.trim();
+            const apellidos = document.getElementById('inputApellidos').value.trim();
+            const telefono = document.getElementById('inputTelefono').value.trim();
+            const direccion = document.getElementById('inputDireccion').value.trim();
+
+            if (!name || !apellidos) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos requeridos',
+                    text: 'El nombre y los apellidos son obligatorios.',
+                    background: '#0a1124',
+                    color: '#fff',
+                    confirmButtonColor: '#0055ff'
+                });
+                return;
+            }
+
+            const originalBtnHtml = btnGuardarDatos.innerHTML;
+            btnGuardarDatos.disabled = true;
+            btnGuardarDatos.innerHTML = '<span>Guardando...</span>';
+
+            try {
+                const response = await fetch("{{ route('trabajador.configuracion.datos') }}", {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        apellidos: apellidos,
+                        telefono: telefono,
+                        direccion: direccion
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message || 'Datos actualizados con éxito',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        background: '#10b981',
+                        color: '#fff'
+                    });
+
+                    // Actualizar el nombre en el encabezado del perfil
+                    const heroName = document.querySelector('.profile-name');
+                    if (heroName && data.user) {
+                        heroName.textContent = data.user.name + ' ' + (data.user.apellidos || '');
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de validación',
+                        text: data.message || 'No se pudieron guardar los datos.',
+                        background: '#0a1124',
+                        color: '#fff',
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'Ocurrió un fallo al comunicarse con el servidor.',
+                    background: '#0a1124',
+                    color: '#fff',
+                    confirmButtonColor: '#ef4444'
+                });
+            } finally {
+                btnGuardarDatos.disabled = false;
+                btnGuardarDatos.innerHTML = originalBtnHtml;
+            }
+        });
+    }
+
+    // 2. Envío Asíncrono de Cambio de Contraseña
+    const formPassword = document.getElementById('formPassword');
+    const btnGuardarPassword = document.getElementById('btnGuardarPassword');
+
+    if (formPassword) {
+        formPassword.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPass').value;
+            const newPassword = document.getElementById('newPass').value;
+            const confirmPassword = document.getElementById('confirmPass').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Formulario incompleto',
+                    text: 'Debes completar todos los campos de contraseña.',
+                    background: '#0a1124',
+                    color: '#fff',
+                    confirmButtonColor: '#0055ff'
+                });
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Contraseñas no coinciden',
+                    text: 'La confirmación de la contraseña no coincide con la nueva contraseña.',
+                    background: '#0a1124',
+                    color: '#fff',
+                    confirmButtonColor: '#ef4444'
+                });
+                return;
+            }
+
+            const originalBtnHtml = btnGuardarPassword.innerHTML;
+            btnGuardarPassword.disabled = true;
+            btnGuardarPassword.innerHTML = '<span>Verificando...</span>';
+
+            try {
+                const response = await fetch("{{ route('trabajador.configuracion.password') }}", {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        password: newPassword,
+                        password_confirmation: confirmPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message || 'Contraseña actualizada con éxito',
+                        showConfirmButton: false,
+                        timer: 3500,
+                        background: '#10b981',
+                        color: '#fff'
+                    });
+
+                    formPassword.reset();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No se pudo actualizar',
+                        text: data.message || 'La contraseña actual no es correcta o la nueva clave no cumple las reglas.',
+                        background: '#0a1124',
+                        color: '#fff',
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'Ocurrió un problema de comunicación con el servidor.',
+                    background: '#0a1124',
+                    color: '#fff',
+                    confirmButtonColor: '#ef4444'
+                });
+            } finally {
+                btnGuardarPassword.disabled = false;
+                btnGuardarPassword.innerHTML = originalBtnHtml;
+            }
+        });
+    }
+});
+</script>
+@endpush
 @endsection
