@@ -47,11 +47,15 @@ class RecepcionController extends Controller
             ->take(50)
             ->get();
 
-        // 4. Fecha de hoy y formato amigable
-        $today = now()->format('Y-m-d');
+        // 4. Fecha de hoy y formato amigable respetando la zona horaria del negocio
+        $tz = config('app.timezone') ?: 'America/Mexico_City';
+        if ($tz === 'UTC') {
+            $tz = env('APP_TIMEZONE', 'America/Mexico_City');
+        }
+        $now = \Carbon\Carbon::now($tz);
+        $today = $now->format('Y-m-d');
         $diasEsp = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         $mesesEsp = [1 => 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-        $now = now();
         $todayFormatted = $diasEsp[$now->dayOfWeek] . ', ' . $now->day . ' de ' . $mesesEsp[$now->month] . ' de ' . $now->year;
 
         // 5. Turnos inmediatos disponibles para el día de hoy

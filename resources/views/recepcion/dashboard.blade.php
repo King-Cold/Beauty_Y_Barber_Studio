@@ -2175,6 +2175,16 @@
                             $fotoTrabajador = $trabajador->foto_url;
                             $inicialesTrabajador = strtoupper(substr($trabajador->nombre ?? 'E', 0, 1) . substr($trabajador->apellidos ?? 'S', 0, 1));
                             $slotsHoy = $turnosInmediatosHoy[$trabajador->id] ?? [];
+                            $tzNegocio = config('app.timezone') ?: 'America/Mexico_City';
+                            if ($tzNegocio === 'UTC') $tzNegocio = env('APP_TIMEZONE', 'America/Mexico_City');
+                            $ahoraCarbon = \Carbon\Carbon::now($tzNegocio);
+                            $minutosAhora = ($ahoraCarbon->hour * 60) + $ahoraCarbon->minute;
+                            $slotsHoy = array_values(array_filter($slotsHoy, function($s) use ($minutosAhora) {
+                                if (preg_match('/^(\d{1,2}):(\d{2})/', $s, $m)) {
+                                    return (((int)$m[1] * 60) + (int)$m[2]) > $minutosAhora;
+                                }
+                                return false;
+                            }));
                             $serviciosDelTrabajador = $trabajador->serviciosActivos ? $trabajador->serviciosActivos->pluck('id')->toArray() : [];
                         @endphp
                         <div 
@@ -2489,7 +2499,7 @@ document.addEventListener('DOMContentLoaded', function () {
         workerId: null,
         workerName: '',
         selectedDate: '{{ $today }}',
-        selectedTime: '11:00',
+        selectedTime: '',
         notas: '',
     };
 
@@ -2561,6 +2571,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Los trabajadores se mantendrán ocultos hasta que se elija un servicio.
     filterWorkersByService(null);
     updateSummary();
+
+    // Consultar inmediatamente la hora y turnos actualizados del servidor al iniciar
+    refreshAllTodayAvailability(true);
 
     // Helper para escapar HTML en cadenas de texto
     function escapeHtml(text) {
@@ -3589,6 +3602,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         state.selectedDate = ymd;
         syncQuickDateButtons(ymd);
+        fetchPosteriorAvailableSlots();
         updateSummary();
         return true;
     }
@@ -3638,8 +3652,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (nativeDatePicker) {
-        // Asegurar que el atributo min sea dinámico al día actual
-        const todayIso = new Date().toISOString().split('T')[0];
+        // Asegurar que el atributo min sea dinámico al día actual local
+        const _nowLocal = new Date();
+        const todayIso = `${_nowLocal.getFullYear()}-${String(_nowLocal.getMonth() + 1).padStart(2, '0')}-${String(_nowLocal.getDate()).padStart(2, '0')}`;
         nativeDatePicker.min = todayIso;
 
         const handleNativeDateChange = function () {
@@ -3768,8 +3783,23 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(res => res.json())
         .then(data => {
             if (spinner) spinner.style.display = 'none';
+            const rawHorarios = Array.isArray(data.horarios) ? data.horarios : [];
+            const _nowLocal = new Date();
+            const todayIso = `${_nowLocal.getFullYear()}-${String(_nowLocal.getMonth() + 1).padStart(2, '0')}-${String(_nowLocal.getDate()).padStart(2, '0')}`;
+            const currentMinutesNow = (_nowLocal.getHours() * 60) + _nowLocal.getMinutes();
 
-            const horariosLibres = Array.isArray(data.horarios) ? data.horarios : [];
+            // Si la fecha seleccionada es hoy, descartar horarios pasados
+            const horariosLibres = rawHorarios.filter(timeStr => {
+                if (state.selectedDate === todayIso) {
+                    const match = timeStr.match(/^(\d{1,2}):(\d{2})/);
+                    if (match) {
+                        const slotMinutes = (parseInt(match[1], 10) * 60) + parseInt(match[2], 10);
+                        return slotMinutes > currentMinutesNow;
+                    }
+                    return false;
+                }
+                return true;
+            });
             const hayDisponibles = Boolean(data.success && horariosLibres.length > 0);
 
             if (!hayDisponibles) {
@@ -3877,6 +3907,176 @@ document.addEventListener('DOMContentLoaded', function () {
             if (spinner) spinner.style.display = 'none';
         });
     }
+
+    // ===================================================
+    // ACTUALIZACIÓN AUTOMÁTICA EN TIEMPO REAL (SIN RECARGAR LA PÁGINA)
+    // ===================================================
+
+    // Actualiza los turnos inmediatos de hoy para todos los especialistas consultando la disponibilidad real
+    function refreshAllTodayAvailability(silent = true) {
+        const workerCards = document.querySelectorAll('.worker-immediate-card');
+        if (!workerCards || workerCards.length === 0) return;
+
+        const serviceIdToUse = state.serviceId || null;
+        const _nowLocal = new Date();
+        const todayIso = `${_nowLocal.getFullYear()}-${String(_nowLocal.getMonth() + 1).padStart(2, '0')}-${String(_nowLocal.getDate()).padStart(2, '0')}`;
+        const currentMinutesNow = (_nowLocal.getHours() * 60) + _nowLocal.getMinutes();
+
+        workerCards.forEach(card => {
+            const workerId = card.dataset.workerId;
+            if (!workerId) return;
+
+            // Identificar los servicios del trabajador
+            const rawServices = card.dataset.services || '';
+            const servicesList = rawServices.split(',').map(s => s.trim()).filter(Boolean);
+            
+            // Si hay un servicio seleccionado y el trabajador lo ofrece, usar ese; de lo contrario su primer servicio disponible
+            let svcId = serviceIdToUse;
+            if (!svcId || !servicesList.includes(String(svcId))) {
+                svcId = servicesList[0] || null;
+            }
+
+            if (!svcId) return;
+
+            const url = `{{ route('recepcion.agendamiento.disponibilidad') }}?service_id=${encodeURIComponent(svcId)}&worker_id=${encodeURIComponent(workerId)}&date=${encodeURIComponent(todayIso)}`;
+
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const slotsContainer = document.getElementById(`workerImmediateSlots_${workerId}`);
+                const statusBadge = card.querySelector('.worker-status-badge');
+                if (!slotsContainer) return;
+
+                // Filtrar asegurando estrictamente que ningún horario sea del pasado (ej. si son las 20:00, no permitir antes de las 20:00)
+                const rawHorarios = Array.isArray(data.horarios) ? data.horarios : [];
+                const horariosLibres = rawHorarios.filter(slot => {
+                    const match = slot.match(/^(\d{1,2}):(\d{2})/);
+                    if (match) {
+                        const slotMinutes = (parseInt(match[1], 10) * 60) + parseInt(match[2], 10);
+                        return slotMinutes > currentMinutesNow;
+                    }
+                    return false;
+                });
+                const countLibres = horariosLibres.length;
+
+                // Actualizar badge de disponibilidad
+                if (statusBadge) {
+                    if (countLibres > 0) {
+                        statusBadge.innerHTML = `
+                            <span class="pulse-dot" style="width: 5px; height: 5px;"></span>
+                            <span>Disponible hoy (${countLibres} turnos)</span>
+                        `;
+                    } else {
+                        statusBadge.innerHTML = `
+                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                            <span style="color: #ef4444;">Sin turnos libres hoy</span>
+                        `;
+                    }
+                }
+
+                // Si no hay turnos libres
+                if (countLibres === 0) {
+                    slotsContainer.innerHTML = `
+                        <div style="font-size: 11.5px; color: #f87171; grid-column: 1 / -1; padding: 6px 4px; display: flex; align-items: center; gap: 5px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                            </svg>
+                            <span>Horarios ocupados por citas o bloqueos para hoy</span>
+                        </div>
+                    `;
+                    // Si este era el trabajador seleccionado en Atención al Momento y el horario quedó ocupado
+                    if (state.modalidad === 'momento' && String(state.workerId) === String(workerId)) {
+                        state.selectedTime = '';
+                        updateSummary();
+                    }
+                    return;
+                }
+
+                // Reconstruir botones de turnos libres
+                slotsContainer.innerHTML = '';
+                const previouslySelectedTime = (String(state.workerId) === String(workerId)) ? state.selectedTime : null;
+                let activeBtnFound = false;
+
+                horariosLibres.forEach((slot, idx) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `shift-pill-btn ${idx === 0 ? 'immediate-badge' : ''}`;
+                    btn.dataset.slotTime = slot;
+                    btn.dataset.workerId = workerId;
+                    btn.title = `Turno de las ${slot} hrs`;
+
+                    if (previouslySelectedTime && previouslySelectedTime === slot) {
+                        btn.classList.add('active');
+                        activeBtnFound = true;
+                    }
+
+                    if (idx === 0) {
+                        btn.innerHTML = `<span>Inmediato ${slot}</span>`;
+                    } else {
+                        btn.innerHTML = `<span>${slot}</span>`;
+                    }
+
+                    btn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        document.querySelectorAll('.worker-immediate-card').forEach(c => c.classList.remove('selected-worker'));
+                        card.classList.add('selected-worker');
+                        state.workerId = card.dataset.workerId;
+                        state.workerName = card.dataset.workerName;
+
+                        document.querySelectorAll('.shift-pill-btn').forEach(s => s.classList.remove('active'));
+                        this.classList.add('active');
+                        state.selectedTime = this.dataset.slotTime;
+
+                        updateSummary();
+                    });
+
+                    slotsContainer.appendChild(btn);
+                });
+
+                // Si estaba seleccionado este trabajador pero su horario anterior ya no está disponible
+                if (String(state.workerId) === String(workerId)) {
+                    if (!activeBtnFound) {
+                        const firstBtn = slotsContainer.querySelector('.shift-pill-btn');
+                        if (firstBtn) {
+                            firstBtn.classList.add('active');
+                            state.selectedTime = firstBtn.dataset.slotTime;
+                        } else {
+                            state.selectedTime = '';
+                        }
+                        updateSummary();
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(`Error refrescando turnos de especialista ${workerId}:`, err);
+            });
+        });
+    }
+
+    // Intervalo de auto-actualización periódica (cada 25 segundos)
+    const autoRefreshInterval = setInterval(() => {
+        // Refrescar según la pestaña activa
+        if (state.modalidad === 'momento') {
+            refreshAllTodayAvailability(true);
+        } else if (state.modalidad === 'posterior' && state.serviceId && state.workerId) {
+            fetchPosteriorAvailableSlots();
+        }
+    }, 25000);
+
+    // Refrescar automáticamente al volver a enfocar la ventana del navegador
+    window.addEventListener('focus', () => {
+        if (state.modalidad === 'momento') {
+            refreshAllTodayAvailability(true);
+        } else if (state.modalidad === 'posterior') {
+            fetchPosteriorAvailableSlots();
+        }
+    });
 
     // ===================================================
     // 7. ACTUALIZACIÓN DEL RESUMEN
@@ -4117,6 +4317,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 ticketFechaHora.textContent = `${state.selectedDate} a las ${state.selectedTime} hrs`;
 
                 ticketModalOverlay.style.display = 'flex';
+
+                // Actualizar inmediatamente la disponibilidad de turnos sin recargar la página
+                refreshAllTodayAvailability(true);
+                fetchPosteriorAvailableSlots();
             } else {
                 Swal.fire({
                     icon: 'error',
