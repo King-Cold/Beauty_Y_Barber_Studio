@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/agendamiento/disponibilidad', [\App\Http\Controllers\RecepcionController::class, 'consultarDisponibilidad'])->name('agendamiento.disponibilidad');
         Route::post('/agendamiento/validar-horario', [\App\Http\Controllers\RecepcionController::class, 'validarHorario'])->name('agendamiento.validar-horario');
         Route::post('/agendamiento/confirmar', [\App\Http\Controllers\RecepcionController::class, 'confirmarCita'])->name('agendamiento.confirmar');
+        Route::post('/turnos/registrar', [\App\Http\Controllers\RecepcionController::class, 'registrarTurnoRecepcion'])->name('turnos.registrar');
         Route::get('/calendario', [\App\Http\Controllers\RecepcionController::class, 'calendario'])->name('calendario');
         Route::get('/calendario/eventos', [\App\Http\Controllers\RecepcionController::class, 'obtenerCitasCalendario'])->name('calendario.eventos');
         Route::get('/citas/{cita}/detalle', [\App\Http\Controllers\RecepcionController::class, 'detalleCita'])->name('citas.detalle');
@@ -98,6 +99,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/citas/{cita}/checkin', [\App\Http\Controllers\RecepcionController::class, 'checkInCita'])->name('citas.checkin');
         Route::get('/clientes', [\App\Http\Controllers\RecepcionController::class, 'clientes'])->name('clientes');
         Route::get('/clientes/buscar', [\App\Http\Controllers\RecepcionController::class, 'buscarClientes'])->name('clientes.buscar');
+        Route::post('/clientes/registrar-rapido', [\App\Http\Controllers\RecepcionController::class, 'registrarClienteRapido'])->name('clientes.registrar-rapido');
 
         // Gestión de Perfil y Seguridad de Recepción (Rol 2)
         Route::get('/perfil', [\App\Http\Controllers\RecepcionController::class, 'perfil'])->name('perfil');

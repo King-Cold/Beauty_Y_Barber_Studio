@@ -544,6 +544,12 @@
             <p class="section-subtitle">Consulta de citas registradas, filtros avanzados y acceso a información detallada.</p>
         </div>
         <div class="header-actions">
+            <a href="{{ route('recepcion.dashboard') }}" class="btn-calendario-link" style="border-color: rgba(0, 85, 255, 0.35); color: #60a5fa;" title="Ir al panel de turnos de recepción">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                Turnos en Recepción
+            </a>
             <a href="{{ route('recepcion.calendario') }}" class="btn-calendario-link" title="Ver en vista de calendario interactivo">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                     <rect x="3" y="4" width="18" height="18" rx="2"></rect>

@@ -874,6 +874,7 @@
                                 </svg>
                             </div>
                             <span class="nav-label">Inicio</span>
+                            <span class="nav-badge badge-primary" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);">Turnos</span>
                         </a>
 
                         <!-- 2. Gestión de citas -->
