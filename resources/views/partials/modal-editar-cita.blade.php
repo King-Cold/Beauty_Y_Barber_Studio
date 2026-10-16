@@ -72,7 +72,7 @@
                     {{-- 2. Servicio --}}
                     <div class="edit-form-group">
                         <label class="edit-label" for="editSelectServicio">Servicio *</label>
-                        <select id="editSelectServicio" name="service_id" class="edit-select" required onchange="onEditServicioOrWorkerChange()">
+                        <select id="editSelectServicio" name="service_id" class="edit-select" required onchange="onEditServicioChange()">
                             <option value="">Seleccione un servicio...</option>
                             @isset($servicios)
                                 @foreach($servicios as $s)
@@ -86,26 +86,35 @@
 
                     {{-- 3. Especialista --}}
                     <div class="edit-form-group">
-                        <label class="edit-label" for="editSelectTrabajador">
-                            Especialista Asignado *
-                            <span id="editWorkerCountHint" style="font-size: 11px; font-weight: 500; color: #94a3b8; margin-left: 6px;"></span>
+                        <label class="edit-label" for="editSelectTrabajador" style="display: flex; align-items: center; gap: 6px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color: #60a5fa;">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span>Trabajador o especialista *</span>
                         </label>
-                        <select id="editSelectTrabajador" name="trabajador_id" class="edit-select" required onchange="onEditServicioOrWorkerChange()">
-                            <option value="">Seleccione especialista...</option>
+                        <select id="editSelectTrabajador" name="trabajador_id" class="edit-select" required>
+                            <option value="">Selecciona un trabajador</option>
                             @isset($trabajadores)
                                 @foreach($trabajadores as $t)
-                                    <option value="{{ $t->id }}" data-servicios="{{ ($t->serviciosActivos ?? $t->servicios)?->pluck('id')->implode(',') ?? '' }}">
+                                    @php
+                                        $serviciosIds = ($t->serviciosActivos && $t->serviciosActivos->isNotEmpty())
+                                            ? $t->serviciosActivos->pluck('id')->values()->all()
+                                            : ($t->servicios ? $t->servicios->pluck('id')->values()->all() : []);
+                                    @endphp
+                                    <option value="{{ $t->id }}" data-servicios="{{ implode(',', $serviciosIds) }}">
                                         {{ $t->nombre_completo ?? ($t->user->name . ' ' . ($t->user->apellidos ?? '')) }}
                                     </option>
                                 @endforeach
                             @endisset
                         </select>
+                        <p class="edit-hint-text" id="editWorkerHint" style="font-size: 11px; margin-top: 4px; color: #94a3b8;"></p>
                     </div>
 
                     {{-- 4. Fecha --}}
                     <div class="edit-form-group">
                         <label class="edit-label" for="editInputFecha">Fecha de la Cita *</label>
-                        <input type="date" id="editInputFecha" name="fecha" class="edit-input" required min="{{ date('Y-m-d') }}" onchange="onEditServicioOrWorkerChange()">
+                        <input type="date" id="editInputFecha" name="fecha" class="edit-input" required min="{{ date('Y-m-d') }}">
                     </div>
 
                     {{-- 5. Horario de Inicio --}}
@@ -564,59 +573,135 @@
             }
         });
 
+        // Catálogo maestro de especialistas activos y sus servicios asignados
+        window.CATALOGO_TRABAJADORES = [
+            @isset($trabajadores)
+                @foreach($trabajadores as $t)
+                    @php
+                        $serviciosIds = ($t->serviciosActivos && $t->serviciosActivos->isNotEmpty())
+                            ? $t->serviciosActivos->pluck('id')->values()->all()
+                            : ($t->servicios ? $t->servicios->pluck('id')->values()->all() : []);
+                    @endphp
+                    {
+                        id: {{ (int)$t->id }},
+                        nombre: @json($t->nombre_completo ?: trim(($t->user->name ?? '') . ' ' . ($t->user->apellidos ?? ''))),
+                        servicios: @json(array_values(array_map('intval', $serviciosIds)))
+                    }@if(!$loop->last),@endif
+                @endforeach
+            @endisset
+        ];
+
         // Filtrar especialistas dinámicamente según el servicio seleccionado
+        // Maneja exactamente la misma lógica de visualización que en el agendamiento del cliente:
+        // - Si no hay especialistas asignados: select deshabilitado, texto "Sin especialistas para este servicio" y aviso
+        // - Si hay 1 solo especialista: auto-selección inmediata
+        // - Si hay varios: preserva el seleccionado o pide elegir
         window.filtrarEspecialistasPorServicio = function (serviceId, preselectedWorkerId = null) {
             const selTrabajador = document.getElementById('editSelectTrabajador');
-            const hintCount = document.getElementById('editWorkerCountHint');
+            const hintCount = document.getElementById('editWorkerHint') || document.getElementById('editWorkerCountHint');
             if (!selTrabajador) return;
 
-            const sid = serviceId ? String(serviceId).trim() : '';
-            const currentWorkerVal = preselectedWorkerId ? String(preselectedWorkerId) : String(selTrabajador.value);
-            let compatibleCount = 0;
-            let currentStillValid = false;
+            const sid = serviceId ? parseInt(serviceId, 10) : null;
+            const targetWorkerVal = (preselectedWorkerId !== null && preselectedWorkerId !== undefined && preselectedWorkerId !== '')
+                ? String(preselectedWorkerId)
+                : String(selTrabajador.value || '');
 
-            for (let i = 0; i < selTrabajador.options.length; i++) {
-                const opt = selTrabajador.options[i];
-                if (!opt.value) continue; // Primera opción vacía
+            // Asegurar catálogo de trabajadores
+            let catalogo = window.CATALOGO_TRABAJADORES;
+            if (!Array.isArray(catalogo) || catalogo.length === 0) {
+                catalogo = [];
+                const existingOptions = selTrabajador.querySelectorAll('option[data-servicios]');
+                existingOptions.forEach(opt => {
+                    const raw = opt.getAttribute('data-servicios') || '';
+                    catalogo.push({
+                        id: parseInt(opt.value, 10),
+                        nombre: opt.textContent.trim(),
+                        servicios: raw.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n))
+                    });
+                });
+                window.CATALOGO_TRABAJADORES = catalogo;
+            }
 
-                const rawServicios = opt.getAttribute('data-servicios') || '';
-                const servList = rawServicios.split(',').map(s => s.trim()).filter(Boolean);
+            // Limpiar opciones actuales del select
+            selTrabajador.innerHTML = '';
 
-                // Si hay lista de servicios configurada para el especialista, verificar pertenencia
-                const esCompatible = !sid || servList.length === 0 || servList.includes(sid);
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = 'Selecciona un trabajador';
+            selTrabajador.appendChild(defaultOpt);
 
-                if (esCompatible) {
-                    opt.hidden = false;
-                    opt.disabled = false;
-                    opt.style.display = '';
-                    compatibleCount++;
-                    if (String(opt.value) === currentWorkerVal) {
-                        currentStillValid = true;
+            // Caso 1: No hay servicio seleccionado
+            if (!sid) {
+                selTrabajador.disabled = true;
+                defaultOpt.selected = true;
+                selTrabajador.value = '';
+                if (hintCount) {
+                    hintCount.textContent = 'Primero selecciona un servicio en el catálogo para ver los especialistas disponibles.';
+                    hintCount.style.color = '#94a3b8';
+                }
+                return;
+            }
+
+            // Caso 2: Filtrar ÚNICAMENTE especialistas que realizan este servicio seleccionado
+            const matchingWorkers = catalogo.filter(t => {
+                return Array.isArray(t.servicios) && t.servicios.includes(sid);
+            });
+
+            if (matchingWorkers.length > 0) {
+                selTrabajador.disabled = false;
+
+                let foundSelected = false;
+                matchingWorkers.forEach(w => {
+                    const opt = document.createElement('option');
+                    opt.value = String(w.id);
+                    opt.textContent = w.nombre;
+                    opt.setAttribute('data-name', w.nombre);
+                    opt.setAttribute('data-servicios', Array.isArray(w.servicios) ? w.servicios.join(',') : '');
+
+                    if (targetWorkerVal && String(w.id) === targetWorkerVal) {
+                        opt.selected = true;
+                        foundSelected = true;
+                    }
+                    selTrabajador.appendChild(opt);
+                });
+
+                if (matchingWorkers.length === 1) {
+                    // Si el servicio tiene un único especialista disponible, auto-seleccionarlo de inmediato
+                    const singleWorker = matchingWorkers[0];
+                    selTrabajador.value = String(singleWorker.id);
+                    if (hintCount) {
+                        hintCount.textContent = `Especialista asignado: ${singleWorker.nombre}`;
+                        hintCount.style.color = '#34d399';
+                    }
+                } else if (foundSelected) {
+                    selTrabajador.value = targetWorkerVal;
+                    if (hintCount) {
+                        hintCount.textContent = `Mostrando ${matchingWorkers.length} especialista(s) disponibles para este servicio.`;
+                        hintCount.style.color = '#38bdf8';
                     }
                 } else {
-                    opt.hidden = true;
-                    opt.disabled = true;
-                    opt.style.display = 'none';
+                    defaultOpt.selected = true;
+                    selTrabajador.value = '';
+                    if (hintCount) {
+                        hintCount.textContent = `Mostrando ${matchingWorkers.length} especialistas. Por favor selecciona al especialista preferido.`;
+                        hintCount.style.color = '#cbd5e1';
+                    }
                 }
-            }
-
-            if (hintCount) {
-                if (sid) {
-                    hintCount.textContent = `(${compatibleCount} disponible${compatibleCount === 1 ? '' : 's'} para este servicio)`;
-                } else {
-                    hintCount.textContent = '';
-                }
-            }
-
-            if (preselectedWorkerId && currentStillValid) {
-                selTrabajador.value = String(preselectedWorkerId);
-            } else if (!currentStillValid) {
+            } else {
+                // NO hay especialistas asignados a este servicio en el sistema (IGUAL QUE EN EL CLIENTE)
+                selTrabajador.disabled = true;
+                defaultOpt.textContent = 'Sin especialistas para este servicio';
+                defaultOpt.selected = true;
                 selTrabajador.value = '';
+                if (hintCount) {
+                    hintCount.textContent = 'Aviso: Actualmente no hay especialistas asignados a este servicio en el estudio.';
+                    hintCount.style.color = '#f59e0b';
+                }
             }
         };
 
-        // Actualizar estimación de duración y filtrar especialistas en cambio de servicio
-        window.onEditServicioOrWorkerChange = function() {
+        // Evento disparado cuando la recepcionista cambia manualmente el servicio en el selector
+        window.onEditServicioChange = function() {
             const selServicio = document.getElementById('editSelectServicio');
             const duracionHint = document.getElementById('editDuracionCalculada');
             if (selServicio && selServicio.selectedIndex >= 0) {
@@ -627,10 +712,14 @@
                 }
             }
 
-            if (selServicio) {
-                window.filtrarEspecialistasPorServicio(selServicio.value);
-            }
+            const sid = selServicio ? selServicio.value : '';
+            // Al cambiar de servicio deliberadamente, preselectedWorkerId es null
+            // para que se mantenga el especialista anterior solo si está asignado al nuevo servicio
+            window.filtrarEspecialistasPorServicio(sid, null);
         };
+
+        // Alias para compatibilidad
+        window.onEditServicioOrWorkerChange = window.onEditServicioChange;
 
         // Función global para abrir el modal con datos
         window.abrirModalEditarCita = function (citaId, updateUrl, detalleUrl) {
@@ -716,11 +805,16 @@
                 if (selServicio && c.servicio?.id) {
                     selServicio.value = c.servicio.id;
                     window.filtrarEspecialistasPorServicio(c.servicio.id, c.trabajador?.id);
+                } else if (selServicio) {
+                    selServicio.value = '';
+                    window.filtrarEspecialistasPorServicio('', null);
                 }
 
                 const selTrabajador = document.getElementById('editSelectTrabajador');
                 if (selTrabajador && c.trabajador?.id) {
-                    selTrabajador.value = c.trabajador.id;
+                    if (selTrabajador.querySelector(`option[value="${c.trabajador.id}"]`)) {
+                        selTrabajador.value = String(c.trabajador.id);
+                    }
                 }
 
                 const inputFecha = document.getElementById('editInputFecha');
@@ -748,7 +842,12 @@
                 document.getElementById('editInputNotas').value = c.notas || '';
                 document.getElementById('editInputObservaciones').value = c.observaciones || '';
 
-                window.onEditServicioOrWorkerChange();
+                // Actualizar estimación de duración sin alterar la selección del especialista
+                const duracionHint = document.getElementById('editDuracionCalculada');
+                const duracion = c.servicio?.duracion_minutos || 30;
+                if (duracionHint) {
+                    duracionHint.textContent = `Duración estimada: ${duracion} min`;
+                }
             })
             .catch(err => {
                 console.error('Error al cargar datos en edición:', err);
@@ -799,6 +898,36 @@
                 notas: document.getElementById('editInputNotas').value,
                 observaciones: document.getElementById('editInputObservaciones').value,
             };
+
+            // Validar que se haya seleccionado un servicio y un especialista asignado
+            if (!payload.service_id) {
+                if (errorBanner && errorText) {
+                    errorText.textContent = 'Debes seleccionar un servicio para la cita.';
+                    errorBanner.style.display = 'flex';
+                }
+                return;
+            }
+
+            if (!payload.trabajador_id) {
+                const selTrab = document.getElementById('editSelectTrabajador');
+                const msg = (selTrab && selTrab.disabled)
+                    ? 'Aviso: Actualmente no hay especialistas asignados a este servicio en el estudio.'
+                    : 'Por favor selecciona al especialista que atenderá el servicio.';
+
+                if (errorBanner && errorText) {
+                    errorText.textContent = msg;
+                    errorBanner.style.display = 'flex';
+                }
+                if (window.Swal) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Especialista requerido',
+                        text: msg,
+                        confirmButtonColor: '#0055ff'
+                    });
+                }
+                return;
+            }
 
             if (submitBtn) {
                 submitBtn.disabled = true;

@@ -125,7 +125,7 @@ class RecepcionController extends Controller
         $citas = $calendarioService->consultarListadoCitas($filtros);
 
         $trabajadores = Schema::hasTable('trabajadores')
-            ? Trabajador::where('activo', true)->with(['user', 'servicios'])->get()
+            ? Trabajador::where('activo', true)->with(['user', 'servicios', 'serviciosActivos'])->get()
             : collect();
 
         $servicios = Schema::hasTable('services')
@@ -161,17 +161,17 @@ class RecepcionController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        // Servicios activos
+        // Servicios activos con sus especialistas asignados
         $servicios = Schema::hasTable('services')
-            ? Service::where('is_active', true)->with('trabajadoresActivos')->get()
+            ? Service::where('is_active', true)->with(['trabajadoresActivos', 'trabajadores'])->get()
             : collect();
 
         $serviciosEstetica = $servicios->filter(fn($s) => strtolower($s->category ?? '') === 'estetica');
         $serviciosBarberia = $servicios->filter(fn($s) => strtolower($s->category ?? '') === 'barberia');
 
-        // Trabajadores activos
+        // Trabajadores activos con sus servicios asignados
         $trabajadores = Schema::hasTable('trabajadores')
-            ? Trabajador::where('activo', true)->with(['user', 'serviciosActivos'])->get()
+            ? Trabajador::where('activo', true)->with(['user', 'serviciosActivos', 'servicios'])->get()
             : collect();
 
         return view('recepcion.agendamiento', compact(
@@ -660,7 +660,7 @@ class RecepcionController extends Controller
         Cita::ensureTableExists();
 
         $trabajadores = Schema::hasTable('trabajadores')
-            ? Trabajador::where('activo', true)->with(['user', 'servicios'])->get()
+            ? Trabajador::where('activo', true)->with(['user', 'servicios', 'serviciosActivos'])->get()
             : collect();
 
         $servicios = Schema::hasTable('services')

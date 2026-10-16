@@ -1316,8 +1316,8 @@
                 <div class="form-group">
                     <label for="workerSelect" class="form-label">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="7" width="20" height="14" rx="2"></rect>
-                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
                         </svg>
                         <span>Trabajador o especialista</span>
                     </label>
@@ -1494,30 +1494,40 @@
                 .replace(/'/g, '&#039;');
         }
 
-        // Datos de servicios
+        // Datos de servicios con trabajadores asignados
         const servicesData = [
             @if(isset($servicios) && $servicios->count() > 0)
                 @foreach($servicios as $s)
+                    @php
+                        $trabajadoresIds = ($s->trabajadoresActivos && $s->trabajadoresActivos->isNotEmpty())
+                            ? $s->trabajadoresActivos->pluck('id')->values()->all()
+                            : ($s->trabajadores ? $s->trabajadores->pluck('id')->values()->all() : []);
+                    @endphp
                     {
                         id: {{ $s->id }},
                         name: @json($s->name),
                         category: @json($s->category ?? ''),
                         price: @json(number_format($s->price, 2)),
                         duration: {{ $s->duration_minutes }},
-                        worker_ids: @json($s->trabajadoresActivos ? $s->trabajadoresActivos->pluck('id')->values()->all() : [])
+                        worker_ids: @json(array_values(array_map('intval', $trabajadoresIds)))
                     },
                 @endforeach
             @endif
         ];
 
-        // Datos de trabajadores
+        // Datos de trabajadores con servicios asignados
         const workersData = [
             @if(isset($trabajadores) && $trabajadores->count() > 0)
                 @foreach($trabajadores as $w)
+                    @php
+                        $serviciosIds = ($w->serviciosActivos && $w->serviciosActivos->isNotEmpty())
+                            ? $w->serviciosActivos->pluck('id')->values()->all()
+                            : ($w->servicios ? $w->servicios->pluck('id')->values()->all() : []);
+                    @endphp
                     {
                         id: {{ $w->id }},
                         name: @json(trim(($w->nombre ?? '') . ' ' . ($w->apellidos ?? '')) ?: ('Trabajador #' . $w->id)),
-                        service_ids: @json($w->serviciosActivos ? $w->serviciosActivos->pluck('id')->values()->all() : [])
+                        service_ids: @json(array_values(array_map('intval', $serviciosIds)))
                     },
                 @endforeach
             @endif
@@ -1773,45 +1783,104 @@
             });
         });
 
-        function renderWorkerOptions(serviceId) {
-            workerSelect.innerHTML = '<option value="" selected>Selecciona un trabajador</option>';
-            if (!serviceId) {
+        /**
+         * Renderiza las opciones de trabajadores basándose en el servicio seleccionado.
+         * Sigue exactamente la misma lógica de visualización que en el agendamiento del cliente.
+         */
+        function renderWorkerOptions(selectedServiceId) {
+            const currentWorkerVal = workerSelect.value;
+            workerSelect.innerHTML = '';
+
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = 'Selecciona un trabajador';
+            workerSelect.appendChild(defaultOpt);
+
+            if (!selectedServiceId) {
                 workerSelect.disabled = true;
+                defaultOpt.selected = true;
                 if (workerHint) {
                     workerHint.textContent = 'Primero selecciona un servicio en el catálogo para ver los especialistas disponibles.';
                     workerHint.className = 'form-hint';
                 }
-                summaryWorkerName.textContent = 'Selecciona un servicio primero';
-                summaryWorkerName.classList.add('empty');
+                if (summaryWorkerName) {
+                    summaryWorkerName.textContent = 'Selecciona un servicio primero';
+                    summaryWorkerName.classList.add('empty');
+                }
                 return;
             }
 
-            const currentService = servicesData.find(s => String(s.id) === String(serviceId));
-            const eligibleWorkers = workersData.filter(w => {
-                if (!currentService || !currentService.worker_ids || currentService.worker_ids.length === 0) {
-                    return true;
-                }
-                return currentService.worker_ids.map(String).includes(String(w.id));
+            const sId = parseInt(selectedServiceId, 10);
+            const currentService = servicesData.find(s => s.id === sId);
+            const allowedWorkerIds = (currentService && currentService.worker_ids) ? currentService.worker_ids : [];
+
+            // Filtrar ÚNICAMENTE especialistas que realizan este servicio seleccionado
+            const matchingWorkers = workersData.filter(w => {
+                const inService = allowedWorkerIds.includes(w.id);
+                const inWorker = Array.isArray(w.service_ids) && w.service_ids.includes(sId);
+                return inService || inWorker;
             });
 
-            if (eligibleWorkers.length > 0) {
-                eligibleWorkers.forEach(w => {
+            if (matchingWorkers.length > 0) {
+                workerSelect.disabled = false;
+
+                let foundSelected = false;
+                matchingWorkers.forEach(w => {
                     const opt = document.createElement('option');
                     opt.value = w.id;
                     opt.textContent = w.name;
                     opt.setAttribute('data-name', w.name);
+                    if (currentWorkerVal && parseInt(currentWorkerVal, 10) === w.id) {
+                        opt.selected = true;
+                        foundSelected = true;
+                        if (summaryWorkerName) {
+                            summaryWorkerName.textContent = w.name;
+                            summaryWorkerName.classList.remove('empty');
+                        }
+                    }
                     workerSelect.appendChild(opt);
                 });
-                workerSelect.disabled = false;
-                if (workerHint) {
-                    workerHint.textContent = `${eligibleWorkers.length} especialista(s) disponible(s) para este servicio.`;
-                    workerHint.className = 'form-hint text-success';
+
+                if (matchingWorkers.length === 1) {
+                    // Si el servicio tiene un único especialista disponible, auto-seleccionarlo de inmediato
+                    const singleWorker = matchingWorkers[0];
+                    workerSelect.value = singleWorker.id;
+                    if (summaryWorkerName) {
+                        summaryWorkerName.textContent = singleWorker.name;
+                        summaryWorkerName.classList.remove('empty');
+                    }
+                    if (workerHint) {
+                        workerHint.textContent = `Especialista asignado: ${singleWorker.name}`;
+                        workerHint.className = 'form-hint text-success';
+                    }
+                } else if (foundSelected) {
+                    if (workerHint) {
+                        workerHint.textContent = `Mostrando ${matchingWorkers.length} especialista(s) disponibles para este servicio.`;
+                        workerHint.className = 'form-hint text-success';
+                    }
+                } else {
+                    defaultOpt.selected = true;
+                    if (summaryWorkerName) {
+                        summaryWorkerName.textContent = 'Selecciona un trabajador';
+                        summaryWorkerName.classList.add('empty');
+                    }
+                    if (workerHint) {
+                        workerHint.textContent = `Mostrando ${matchingWorkers.length} especialistas. Por favor selecciona al especialista preferido.`;
+                        workerHint.className = 'form-hint';
+                    }
                 }
             } else {
+                // NO hay especialistas asignados a este servicio en el sistema
                 workerSelect.disabled = true;
+                defaultOpt.textContent = 'Sin especialistas para este servicio';
+                defaultOpt.selected = true;
                 if (workerHint) {
-                    workerHint.textContent = 'No hay especialistas activos asignados a este servicio en este momento.';
+                    workerHint.textContent = 'Aviso: Actualmente no hay especialistas asignados a este servicio en el estudio.';
                     workerHint.className = 'form-hint text-warning';
+                }
+                if (summaryWorkerName) {
+                    summaryWorkerName.textContent = 'Sin especialistas disponibles';
+                    summaryWorkerName.classList.add('empty');
                 }
             }
         }
