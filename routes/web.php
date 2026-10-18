@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/configuracion/fechas-especiales', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'getFechasEspeciales'])->name('admin.configuracion.fechas_especiales.index');
         Route::post('/admin/configuracion/fechas-especiales', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'storeFechaEspecial'])->name('admin.configuracion.fechas_especiales.store');
         Route::put('/admin/configuracion/fechas-especiales/{fechaEspecial}', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'updateFechaEspecial'])->name('admin.configuracion.fechas_especiales.update');
+        Route::delete('/admin/configuracion/fechas-especiales/{fechaEspecial}', [\App\Http\Controllers\Admin\ConfiguracionController::class, 'destroyFechaEspecial'])->name('admin.configuracion.fechas_especiales.destroy');
         // Consulta y Visualización de Citas y Calendario para Administrador (Solo lectura / Auditoría)
         Route::get('/admin/citas', [\App\Http\Controllers\Admin\CitaAdminController::class, 'index'])->name('admin.citas');
         Route::get('/admin/calendario', [\App\Http\Controllers\Admin\CitaAdminController::class, 'calendario'])->name('admin.calendario');

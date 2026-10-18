@@ -184,7 +184,7 @@
         max-height: calc(100vh - 40px);
         display: flex;
         flex-direction: column;
-        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(0, 85, 255, 0.25);
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(37, 99, 235, 0.25);
         overflow: hidden;
         animation: editSlideUp 0.25s cubic-bezier(0.25, 1, 0.5, 1);
         margin: auto;
@@ -222,8 +222,8 @@
         font-size: 11.5px;
         font-weight: 700;
         color: #93c5fd;
-        background: rgba(0, 85, 255, 0.15);
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        background: rgba(37, 99, 235, 0.15);
+        border: 1px solid rgba(37, 99, 235, 0.3);
         padding: 2px 7px;
         border-radius: 5px;
     }
@@ -283,11 +283,11 @@
         border-radius: 4px;
     }
     .edit-modal-body::-webkit-scrollbar-thumb {
-        background: rgba(0, 85, 255, 0.45);
+        background: rgba(37, 99, 235, 0.45);
         border-radius: 4px;
     }
     .edit-modal-body::-webkit-scrollbar-thumb:hover {
-        background: #0055ff;
+        background: #1e40af;
     }
 
     .edit-alert-error {
@@ -295,8 +295,8 @@
         align-items: center;
         gap: 8px;
         padding: 10px 14px;
-        background: rgba(239, 68, 68, 0.15);
-        border: 1px solid rgba(239, 68, 68, 0.4);
+        background: rgba(220, 38, 38, 0.12);
+        border: 1px solid rgba(220, 38, 38, 0.35);
         border-radius: 8px;
         color: #fca5a5;
         font-size: 13px;
@@ -309,8 +309,8 @@
         align-items: center;
         gap: 8px;
         padding: 10px 14px;
-        background: rgba(0, 85, 255, 0.12);
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        background: rgba(37, 99, 235, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.28);
         border-radius: 8px;
         color: #93c5fd;
         font-size: 13px;
@@ -371,9 +371,9 @@
     .edit-input:focus,
     .edit-select:focus,
     .edit-textarea:focus {
-        border-color: #38bdf8;
-        background: rgba(0, 85, 255, 0.08);
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.2);
+        border-color: #1e40af;
+        background: rgba(30, 64, 175, 0.08);
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.2);
     }
 
     .edit-client-preview {
@@ -390,8 +390,8 @@
         width: 32px;
         height: 32px;
         border-radius: 7px;
-        background: rgba(168, 85, 247, 0.15);
-        color: #c084fc;
+        background: rgba(139, 92, 246, 0.12);
+        color: #a78bfa;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -446,21 +446,23 @@
         align-items: center;
         gap: 6px;
         padding: 8px 18px;
-        background: linear-gradient(135deg, #0055ff 0%, #1d4ed8 100%);
+        background: #1e40af;
         color: #ffffff;
-        border: 1px solid rgba(0, 85, 255, 0.5);
+        border: 1px solid rgba(147, 197, 253, 0.28);
         border-radius: 8px;
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0, 85, 255, 0.25);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
         transition: all 0.2s ease;
     }
 
     .btn-edit-guardar:hover {
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(0, 85, 255, 0.4);
-        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        border-color: rgba(147, 197, 253, 0.45);
+        background: #1d4ed8;
+        color: #ffffff;
     }
 
     .btn-edit-guardar:disabled {
@@ -486,8 +488,8 @@
     .edit-spinner {
         width: 32px;
         height: 32px;
-        border: 3px solid rgba(0, 85, 255, 0.2);
-        border-top-color: #38bdf8;
+        border: 3px solid rgba(30, 64, 175, 0.2);
+        border-top-color: #1e40af;
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
     }
@@ -671,13 +673,13 @@
                     selTrabajador.value = String(singleWorker.id);
                     if (hintCount) {
                         hintCount.textContent = `Especialista asignado: ${singleWorker.nombre}`;
-                        hintCount.style.color = '#34d399';
+                        hintCount.style.color = '#10b981';
                     }
                 } else if (foundSelected) {
                     selTrabajador.value = targetWorkerVal;
                     if (hintCount) {
                         hintCount.textContent = `Mostrando ${matchingWorkers.length} especialista(s) disponibles para este servicio.`;
-                        hintCount.style.color = '#38bdf8';
+                        hintCount.style.color = '#60a5fa';
                     }
                 } else {
                     defaultOpt.selected = true;
@@ -768,7 +770,7 @@
                             icon: 'info',
                             title: 'Cita Completada',
                             text: 'Esta cita ya fue completada con éxito. Por motivos de auditoría contable y registro del servicio prestado, su fecha y horario no pueden alterarse.',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                     } else {
                         alert('Esta cita ya fue completada y no permite reprogramación.');
@@ -884,10 +886,34 @@
                         icon: 'warning',
                         title: 'Fecha no válida',
                         text: 'No es posible agendar o reagendar una cita con una fecha anterior al día de hoy.',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                 }
                 return;
+            }
+
+            // Validar que la fecha no corresponda a un día no laborable (ej. domingo)
+            if (inputFecha && inputFecha.value) {
+                const fParts = inputFecha.value.split('-');
+                if (fParts.length === 3) {
+                    const dObj = new Date(parseInt(fParts[0], 10), parseInt(fParts[1], 10) - 1, parseInt(fParts[2], 10));
+                    if (dObj.getDay() === 0) {
+                        const msgCerrado = 'Los domingos son días no laborables de la sucursal (Cerrado, no se labora). Por favor selecciona otra fecha.';
+                        if (errorBanner && errorText) {
+                            errorText.textContent = msgCerrado;
+                            errorBanner.style.display = 'flex';
+                        }
+                        if (window.Swal) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Día no laborable',
+                                text: msgCerrado,
+                                confirmButtonColor: '#1e40af'
+                            });
+                        }
+                        return;
+                    }
+                }
             }
 
             const payload = {
@@ -923,7 +949,7 @@
                         icon: 'warning',
                         title: 'Especialista requerido',
                         text: msg,
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                 }
                 return;
@@ -957,7 +983,7 @@
                             icon: 'error',
                             title: 'No disponible',
                             text: mensaje,
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                     }
                     return;
@@ -971,7 +997,7 @@
                         icon: 'success',
                         title: '¡Cita Actualizada!',
                         text: data.mensaje || 'La cita fue modificada exitosamente.',
-                        confirmButtonColor: '#0055ff',
+                        confirmButtonColor: '#1e40af',
                         timer: 2000
                     }).then(() => {
                         window.recargarPreservandoVista();
@@ -1051,7 +1077,7 @@
                 if (!ok || !data.success) {
                     const msg = data.mensaje || data.error || 'No se pudo cancelar la cita.';
                     if (window.Swal) {
-                        Swal.fire({ icon: 'error', title: 'Error', text: msg, confirmButtonColor: '#0055ff' });
+                        Swal.fire({ icon: 'error', title: 'Error', text: msg, confirmButtonColor: '#1e40af' });
                     } else {
                         alert(msg);
                     }
@@ -1063,7 +1089,7 @@
                         icon: 'success',
                         title: 'Cita Cancelada',
                         text: data.mensaje || 'La cita fue cancelada exitosamente.',
-                        confirmButtonColor: '#0055ff',
+                        confirmButtonColor: '#1e40af',
                         timer: 2000
                     }).then(() => {
                         window.recargarPreservandoVista();
@@ -1123,7 +1149,7 @@
                 if (!ok || !data.success) {
                     const msg = data.mensaje || data.error || 'No se pudo confirmar la cita.';
                     if (window.Swal) {
-                        Swal.fire({ icon: 'error', title: 'Error', text: msg, confirmButtonColor: '#0055ff' });
+                        Swal.fire({ icon: 'error', title: 'Error', text: msg, confirmButtonColor: '#1e40af' });
                     } else {
                         alert(msg);
                     }

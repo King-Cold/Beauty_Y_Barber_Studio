@@ -49,8 +49,8 @@
     }
 
     .btn-calendario-link:hover {
-        background: rgba(0, 85, 255, 0.15);
-        border-color: rgba(0, 85, 255, 0.4);
+        background: rgba(37, 99, 235, 0.15);
+        border-color: rgba(37, 99, 235, 0.4);
         color: #60a5fa;
         transform: translateY(-2px);
     }
@@ -60,21 +60,23 @@
         align-items: center;
         gap: 8px;
         padding: 11px 22px;
-        background: linear-gradient(135deg, var(--barber-blue) 0%, #1d4ed8 100%);
-        color: var(--text-white);
+        background: #1e40af;
+        color: #ffffff;
         font-size: 13.5px;
         font-weight: 700;
         border-radius: 10px;
         text-decoration: none;
         transition: all 0.25s var(--ease-fluid);
-        border: 1px solid rgba(0, 85, 255, 0.4);
-        box-shadow: 0 4px 14px rgba(0, 85, 255, 0.25);
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-agendar-cta:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 85, 255, 0.4);
-        border-color: #60a5fa;
+        background: #1d4ed8;
+        border-color: rgba(147, 197, 253, 0.45);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        color: #ffffff;
     }
 
     /* BARRA DE FILTROS */
@@ -137,8 +139,8 @@
     .filtro-input:focus,
     .filtro-select:focus {
         border-color: var(--barber-blue-light);
-        background: rgba(0, 85, 255, 0.08);
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.2);
+        background: rgba(37, 99, 235, 0.08);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
 
     .filtro-select option {
@@ -157,19 +159,22 @@
         align-items: center;
         gap: 6px;
         padding: 10px 18px;
-        background: var(--barber-blue);
+        background: #1e40af;
         color: #ffffff;
-        border: 1px solid rgba(0, 85, 255, 0.4);
+        border: 1px solid rgba(147, 197, 253, 0.28);
         border-radius: 8px;
         font-size: 13.5px;
         font-weight: 700;
         cursor: pointer;
         transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-filtrar:hover {
         background: #1d4ed8;
+        border-color: rgba(147, 197, 253, 0.45);
         transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .btn-limpiar {
@@ -259,8 +264,8 @@
         font-size: 12px;
         font-weight: 700;
         color: #93c5fd;
-        background: rgba(0, 85, 255, 0.12);
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        background: rgba(37, 99, 235, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.25);
         padding: 3px 8px;
         border-radius: 6px;
         white-space: nowrap;
@@ -316,7 +321,7 @@
     }
 
     .precio-highlight {
-        color: #38bdf8;
+        color: #60a5fa;
         font-weight: 800;
         font-size: 14px;
         white-space: nowrap;
@@ -345,10 +350,10 @@
 
     .status-badge.confirmada {
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
     }
-    .status-badge.confirmada::before { background: #34d399; }
+    .status-badge.confirmada::before { background: #10b981; }
 
     .status-badge.cancelada {
         background: rgba(239, 68, 68, 0.15);
@@ -359,26 +364,26 @@
 
     .status-badge.completada {
         background: rgba(6, 182, 212, 0.15);
-        color: #22d3ee;
+        color: #2dd4bf;
         border: 1px solid rgba(6, 182, 212, 0.3);
     }
-    .status-badge.completada::before { background: #22d3ee; }
+    .status-badge.completada::before { background: #2dd4bf; }
 
     .status-badge.en_atencion,
     .status-badge.en_proceso {
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(37, 99, 235, 0.15);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
     }
     .status-badge.en_atencion::before,
     .status-badge.en_proceso::before { background: #60a5fa; }
 
     .status-badge.vencida {
         background: rgba(245, 158, 11, 0.15);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.3);
     }
-    .status-badge.vencida::before { background: #fbbf24; }
+    .status-badge.vencida::before { background: #f59e0b; }
 
     /* CONTENEDOR DE ACCIONES ESCORADO Y COMPACTO */
     .table-actions-group {
@@ -396,7 +401,7 @@
         gap: 4px;
         padding: 6px 11px;
         background: rgba(245, 158, 11, 0.14);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.35);
         border-radius: 7px;
         font-size: 11.5px;
@@ -418,7 +423,7 @@
         gap: 4px;
         padding: 6px 11px;
         background: rgba(16, 185, 129, 0.14);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.35);
         border-radius: 7px;
         font-size: 11.5px;
@@ -440,7 +445,7 @@
         gap: 4px;
         padding: 6px 10px;
         background: rgba(16, 185, 129, 0.12);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
         border-radius: 7px;
         font-size: 11.5px;
@@ -461,9 +466,9 @@
         align-items: center;
         gap: 4px;
         padding: 6px 10px;
-        background: rgba(0, 85, 255, 0.12);
+        background: rgba(37, 99, 235, 0.12);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
         border-radius: 7px;
         font-size: 11.5px;
         font-weight: 700;
@@ -472,9 +477,9 @@
         white-space: nowrap;
     }
     .btn-reagendar-table:hover {
-        background: #0055ff;
+        background: #1e3a8a;
         color: #ffffff;
-        border-color: #0055ff;
+        border-color: #1e3a8a;
         transform: translateY(-1px);
     }
 
@@ -507,12 +512,12 @@
         transform: scale(1.08);
     }
     .btn-tool-icon.tool-detalles:hover {
-        background: rgba(0, 85, 255, 0.25);
+        background: rgba(37, 99, 235, 0.25);
         color: #93c5fd;
     }
     .btn-tool-icon.tool-editar:hover {
         background: rgba(56, 189, 248, 0.25);
-        color: #38bdf8;
+        color: #60a5fa;
     }
     .btn-tool-icon.tool-cancelar:hover {
         background: rgba(239, 68, 68, 0.25);
@@ -525,7 +530,7 @@
         gap: 4px;
         padding: 2px 7px;
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
         border-radius: 12px;
         font-size: 10.5px;
@@ -544,7 +549,7 @@
             <p class="section-subtitle">Consulta de citas registradas, filtros avanzados y acceso a información detallada.</p>
         </div>
         <div class="header-actions">
-            <a href="{{ route('recepcion.dashboard') }}" class="btn-calendario-link" style="border-color: rgba(0, 85, 255, 0.35); color: #60a5fa;" title="Ir al panel de turnos de recepción">
+            <a href="{{ route('recepcion.dashboard') }}" class="btn-calendario-link" style="border-color: rgba(37, 99, 235, 0.35); color: #60a5fa;" title="Ir al panel de turnos de recepción">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                 </svg>
@@ -661,7 +666,7 @@
             Mostrando <strong>{{ $citas->count() }}</strong> {{ $citas->count() === 1 ? 'cita encontrada' : 'citas encontradas' }} en el sistema
         </span>
         @if(!empty($filtros['buscar']) || !empty($filtros['trabajador_id']) || (!empty($filtros['estado']) && $filtros['estado'] !== 'todas') || !empty($filtros['fecha_desde']) || !empty($filtros['fecha_hasta']))
-            <span style="font-size: 12px; color: #38bdf8; font-weight: 600;">
+            <span style="font-size: 12px; color: #60a5fa; font-weight: 600;">
                 Filtros activos en el servidor
             </span>
         @endif
@@ -879,8 +884,8 @@
                                                 </button>
                                             @endif
 
-                                            {{-- Cancelar: disponible mientras no esté completada ni cancelada --}}
-                                            @if(!in_array(strtolower($cita->estado), ['cancelada', 'completada']))
+                                            {{-- Cancelar: disponible solo para citas futuras que no estén completadas ni canceladas --}}
+                                            @if(!$cita->esPasada() && !in_array(strtolower($cita->estado), ['cancelada', 'completada']))
                                                 <button 
                                                     type="button" 
                                                     class="btn-tool-icon tool-cancelar" 

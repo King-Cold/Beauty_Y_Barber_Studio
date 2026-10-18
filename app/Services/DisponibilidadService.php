@@ -50,6 +50,23 @@ class DisponibilidadService
             ];
         }
 
+        // Validación estricta de días no laborables de la sucursal (fuente de verdad)
+        $checkLaborable = HorarioSucursal::esFechaLaborable($fecha);
+        if (!$checkLaborable['laborable']) {
+            return [
+                'disponible' => false,
+                'motivo_tipo' => 'dia_no_laborable',
+                'mensaje' => $checkLaborable['mensaje'],
+                'detalle' => [
+                    'fecha' => is_string($fecha) ? $fecha : $fecha->format('Y-m-d'),
+                    'cerrado_todo_el_dia' => true,
+                    'horarios_disponibles' => [],
+                    'mensaje' => $checkLaborable['mensaje'],
+                    'caso' => 'DIA_NO_LABORABLE',
+                ],
+            ];
+        }
+
         $detalle = $this->obtenerDisponibilidadCompleta($trabajador, $fecha, $duracionMinutos, $servicio, $excludeCitaId);
         $horarios = $detalle['horarios_disponibles'] ?? [];
 
@@ -288,7 +305,7 @@ class DisponibilidadService
                     'cerrado_todo_el_dia' => true,
                     'duracion_minutos' => $duracion,
                     'horarios_disponibles' => [],
-                    'mensaje' => "La sucursal permanece cerrada el día de hoy ({$fechaEspecial->motivo}).",
+                    'mensaje' => "La sucursal permanece cerrada el día de hoy ({$fechaEspecial->motivo}) (Cerrado, no se labora).",
                 ];
             }
         } else {
@@ -301,6 +318,11 @@ class DisponibilidadService
             $branchDay = $branchLimits[$diaSemanaKey] ?? null;
 
             if (!$branchDay || empty($branchDay['abierto'])) {
+                $nombreDia = $branchDay['nombre'] ?? ucfirst($diaSemanaKey);
+                $mensajeCerrado = ($diaSemanaKey === 'domingo')
+                    ? 'Los domingos son días no laborables de la sucursal. No se pueden agendar citas en este día (Cerrado, no se labora).'
+                    : "El día {$nombreDia} está configurado como día no laborable en la sucursal. No se pueden agendar citas en este día (Cerrado, no se labora).";
+
                 return [
                     'fecha' => $fechaString,
                     'dia_semana' => $diaSemanaKey,
@@ -310,7 +332,7 @@ class DisponibilidadService
                     'cerrado_todo_el_dia' => true,
                     'duracion_minutos' => $duracion,
                     'horarios_disponibles' => [],
-                    'mensaje' => "La sucursal permanece cerrada los días " . ucfirst($diaSemanaKey) . ".",
+                    'mensaje' => $mensajeCerrado,
                 ];
             }
 
@@ -837,6 +859,18 @@ class DisponibilidadService
                 'status' => 422,
                 'mensaje' => 'El horario proporcionado no tiene un formato válido.',
                 'motivo_tipo' => 'formato_invalido',
+            ];
+        }
+
+        // Validación estricta de días no laborables de la sucursal
+        $checkLaborable = HorarioSucursal::esFechaLaborable($fechaString);
+        if (!$checkLaborable['laborable']) {
+            return [
+                'success' => false,
+                'valido' => false,
+                'status' => 422,
+                'mensaje' => $checkLaborable['mensaje'],
+                'motivo_tipo' => 'dia_no_laborable',
             ];
         }
 

@@ -41,6 +41,9 @@ class Cita extends Model
         'checked_in',
         'check_in_hora',
         'check_in_formateado',
+        'es_pasada',
+        'puede_cancelar',
+        'puede_cancelar_administrativamente',
     ];
 
     /**
@@ -198,8 +201,12 @@ class Cita extends Model
     public function getFechaHoraInicioAttribute(): \Carbon\Carbon
     {
         $tz = config('app.timezone') ?: 'America/Mexico_City';
-        $fechaStr = $this->fecha instanceof \Carbon\Carbon ? $this->fecha->format('Y-m-d') : (string) $this->fecha;
-        return \Carbon\Carbon::parse($fechaStr . ' ' . $this->hora_inicio, $tz);
+        $fechaStr = $this->fecha instanceof \Carbon\Carbon ? $this->fecha->format('Y-m-d') : substr(trim((string) $this->fecha), 0, 10);
+        $hora = trim((string) $this->hora_inicio);
+        if (strlen($hora) === 5) {
+            $hora .= ':00';
+        }
+        return \Carbon\Carbon::parse($fechaStr . ' ' . $hora, $tz);
     }
 
     /**
@@ -215,18 +222,67 @@ class Cita extends Model
     }
 
     /**
-     * Determina si la cita cumple con las condiciones para ser cancelada:
-     * - No estar cancelada ni completada previamente.
+     * Determina si la cita ya ha transcurrido (su fecha y hora son anteriores al momento actual).
+     * La comparación toma en cuenta tanto la fecha como la hora en la zona horaria del sistema.
+     */
+    public function esPasada(): bool
+    {
+        $tz = config('app.timezone') ?: 'America/Mexico_City';
+        $ahora = \Carbon\Carbon::now($tz);
+        return $this->fecha_hora_inicio->lt($ahora);
+    }
+
+    /**
+     * Accesor para es_pasada.
+     */
+    public function getEsPasadaAttribute(): bool
+    {
+        return $this->esPasada();
+    }
+
+    /**
+     * Determina si la cita cumple con las condiciones para ser cancelada administrativamente (Recepción / Personal):
+     * - No estar en estado terminal (cancelada o completada).
+     * - Su fecha y hora no deben haber transcurrido (no ser pasada).
+     */
+    public function puedeCancelarAdministrativamente(): bool
+    {
+        $estado = strtolower(trim((string) $this->estado));
+        if (in_array($estado, ['cancelada', 'cancelled', 'anulada', 'completada', 'completed'], true)) {
+            return false;
+        }
+
+        return !$this->esPasada();
+    }
+
+    /**
+     * Accesor para puede_cancelar_administrativamente.
+     */
+    public function getPuedeCancelarAdministrativamenteAttribute(): bool
+    {
+        return $this->puedeCancelarAdministrativamente();
+    }
+
+    /**
+     * Determina si la cita cumple con las condiciones para ser cancelada por el cliente:
+     * - Cumplir con las condiciones administrativas generales (no terminal, no pasada).
      * - Faltar más de 30 minutos para la hora de inicio.
      */
     public function puedeCancelar(): bool
     {
-        $estado = strtolower((string) $this->estado);
-        if (in_array($estado, ['cancelada', 'cancelled', 'anulada', 'completada', 'completed'])) {
+        if (!$this->puedeCancelarAdministrativamente()) {
             return false;
         }
 
         return $this->minutos_para_inicio > 30;
+    }
+
+    /**
+     * Accesor para puede_cancelar.
+     */
+    public function getPuedeCancelarAttribute(): bool
+    {
+        return $this->puedeCancelar();
     }
 
     /**
@@ -235,17 +291,18 @@ class Cita extends Model
     public function getMotivoNoCancelableAttribute(): ?string
     {
         $estado = strtolower((string) $this->estado);
-        if (in_array($estado, ['cancelada', 'cancelled', 'anulada'])) {
+        if (in_array($estado, ['cancelada', 'cancelled', 'anulada'], true)) {
             return 'La cita ya se encuentra cancelada.';
         }
-        if (in_array($estado, ['completada', 'completed'])) {
+        if (in_array($estado, ['completada', 'completed'], true)) {
             return 'La cita ya ha sido completada.';
         }
 
-        $minutos = $this->minutos_para_inicio;
-        if ($minutos <= 0) {
-            return 'La fecha u hora de la cita ya ha transcurrido.';
+        if ($this->esPasada() || $this->minutos_para_inicio <= 0) {
+            return 'No se puede cancelar una cita cuya fecha u hora ya ha transcurrido.';
         }
+
+        $minutos = $this->minutos_para_inicio;
         if ($minutos <= 30) {
             return "Solo se permite cancelar con más de 30 minutos de anticipación. Faltan {$minutos} minutos o menos para el inicio.";
         }

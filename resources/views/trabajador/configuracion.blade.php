@@ -55,7 +55,7 @@
         justify-content: center;
         font-size: 28px;
         font-weight: 800;
-        box-shadow: 0 0 20px rgba(0, 85, 255, 0.4);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
         border: 2px solid rgba(255, 255, 255, 0.1);
         flex-shrink: 0;
     }
@@ -234,7 +234,7 @@
 
     .form-input:focus {
         border-color: var(--barber-blue);
-        box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
     }
 
     .form-input[readonly],
@@ -306,7 +306,7 @@
     }
 
     .badge-closed {
-        color: #ef4444;
+        color: #dc2626;
         font-weight: 700;
         background: rgba(239, 68, 68, 0.1);
         padding: 2px 8px;
@@ -316,25 +316,29 @@
 
     /* BOTONES DE ACCIÓN */
     .btn-submit-premium {
-        background: linear-gradient(135deg, var(--barber-blue), #2563eb);
-        color: var(--text-white);
-        border: none;
-        padding: 12px 24px;
+        background: #1e40af;
+        color: #ffffff;
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        padding: 11px 22px;
         border-radius: 8px;
-        font-size: 14px;
-        font-weight: 700;
+        font-size: 13.5px;
+        font-weight: 600;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
         width: fit-content;
     }
 
     .btn-submit-premium:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0, 85, 255, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        border-color: rgba(147, 197, 253, 0.45);
+        background: #1d4ed8;
+        color: #ffffff;
     }
 </style>
 @endpush
@@ -600,7 +604,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'El nombre y los apellidos son obligatorios.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -651,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: data.message || 'No se pudieron guardar los datos.',
                         background: '#0a1124',
                         color: '#fff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -661,7 +665,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Ocurrió un fallo al comunicarse con el servidor.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             } finally {
                 btnGuardarDatos.disabled = false;
@@ -689,7 +693,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Debes completar todos los campos de contraseña.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -701,7 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'La confirmación de la contraseña no coincide con la nueva contraseña.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
                 return;
             }
@@ -747,7 +751,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: data.message || 'La contraseña actual no es correcta o la nueva clave no cumple las reglas.',
                         background: '#0a1124',
                         color: '#fff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -757,7 +761,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Ocurrió un problema de comunicación con el servidor.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             } finally {
                 btnGuardarPassword.disabled = false;

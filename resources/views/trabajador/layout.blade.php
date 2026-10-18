@@ -37,13 +37,13 @@
             --border-strong: rgba(255, 255, 255, 0.12);
 
             /* Paleta cromática corporativa (Barber Pole: Red & Blue) */
-            --barber-red: #ef4444;
-            --barber-red-light: rgba(239, 68, 68, 0.12);
-            --barber-red-border: rgba(239, 68, 68, 0.3);
-            --barber-blue: #0055ff;
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
-            --barber-blue-border: rgba(0, 85, 255, 0.3);
+            --barber-red: #7f1d1d;
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-red-border: rgba(255, 255, 255, 0.14);
+            --barber-blue: #1e3a8a;
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
+            --barber-blue-border: rgba(255, 255, 255, 0.14);
 
             /* Acentos de estado */
             --accent-success: #10b981;
@@ -147,7 +147,7 @@
 
         .mobile-toggle-btn:hover {
             color: var(--barber-blue);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             background: var(--barber-blue-pale);
             transform: scale(1.05);
         }
@@ -196,9 +196,9 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            background: rgba(0, 85, 255, 0.15);
+            background: rgba(37, 99, 235, 0.15);
             color: #60a5fa;
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
             padding: 2px 8px;
             border-radius: 4px;
         }
@@ -239,7 +239,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--barber-blue), #2563eb);
+            background: linear-gradient(135deg, var(--barber-blue), #1e40af);
             color: var(--text-white);
             display: flex;
             align-items: center;
@@ -247,7 +247,7 @@
             font-weight: 700;
             font-size: 13px;
             letter-spacing: 0.05em;
-            box-shadow: 0 0 10px rgba(0, 85, 255, 0.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
         }
 
         .user-meta {
@@ -477,7 +477,7 @@
         .trabajador-sidebar.collapsed .nav-item.active {
             background: rgba(255, 255, 255, 0.05);
             border-left: none;
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
         .trabajador-sidebar.collapsed .nav-item.active .nav-icon-box {
@@ -547,7 +547,7 @@
 
         .nav-item.active .nav-icon-box {
             color: var(--barber-blue);
-            filter: drop-shadow(0 0 8px rgba(0, 85, 255, 0.5));
+            
         }
 
         .nav-label {
@@ -567,7 +567,7 @@
         .nav-badge.badge-primary {
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
         /* Sección inferior del sidebar */
@@ -597,7 +597,7 @@
             height: 8px;
             border-radius: 50%;
             background-color: var(--accent-success);
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+            box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25);
             position: relative;
         }
 
@@ -752,7 +752,7 @@
                         <div style="padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 4px;">
                             <p style="font-size: 13px; font-weight: 700; color: var(--text-white); margin-bottom: 2px;">{{ $user->name }} {{ $user->apellidos ?? '' }}</p>
                             <p style="font-size: 11px; color: var(--text-muted); word-break: break-all;">{{ $user->email }}</p>
-                            <span style="display: inline-block; margin-top: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(0, 85, 255, 0.15); color: #60a5fa; border: 1px solid rgba(0, 85, 255, 0.3); padding: 1px 6px; border-radius: 4px;">
+                            <span style="display: inline-block; margin-top: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(37, 99, 235, 0.15); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.3); padding: 1px 6px; border-radius: 4px;">
                                 Especialista
                             </span>
                         </div>
@@ -766,19 +766,6 @@
                                 </svg>
                             </div>
                             <span>Mi Perfil</span>
-                        </a>
-
-                        <!-- Opción: Mi Agenda -->
-                        <a href="{{ route('trabajador.agenda') }}" class="menu-item" role="menuitem">
-                            <div class="menu-item-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                            </div>
-                            <span>Ver mi agenda</span>
                         </a>
 
                         <div class="menu-divider"></div>
@@ -972,7 +959,10 @@
                 timerProgressBar: true,
                 background: '#10b981',
                 color: '#ffffff',
-                iconColor: '#ffffff'
+                iconColor: '#ffffff',
+                customClass: {
+                    popup: 'colored-toast'
+                }
             });
         });
     </script>
@@ -989,7 +979,7 @@
                 showConfirmButton: false,
                 timer: 4000,
                 timerProgressBar: true,
-                background: '#ef4444',
+                background: '#0c142b',
                 color: '#ffffff',
                 iconColor: '#ffffff'
             });

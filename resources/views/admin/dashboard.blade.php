@@ -30,12 +30,12 @@
             --border-subtle: rgba(255, 255, 255, 0.06);
             --border-strong: rgba(255, 255, 255, 0.12);
 
-            /* Paleta cromática estricta (Red, White, Blue) */
-            --barber-red: #ef4444;        /* Rojo vivo y vibrante */
-            --barber-red-light: rgba(239, 68, 68, 0.1);
-            --barber-blue: #0055ff;       /* Azul eléctrico vibrante */
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
+            /* Paleta cromática corporativa (Barber Pole: Red, White, Blue) */
+            --barber-red: #7f1d1d;        /* Borgoña sobrio y elegante */
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-blue: #1e3a8a;       /* Azul marino sobrio */
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
 
             /* Tipografía */
             --text-main: #f8fafc;         /* Blanco roto casi puro para buena legibilidad */
@@ -134,7 +134,7 @@
 
         .mobile-toggle-btn:hover {
             color: var(--barber-blue);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.28);
             background: var(--barber-blue-pale);
             transform: scale(1.05);
         }
@@ -531,7 +531,6 @@
 
         .nav-item.active .nav-icon-box {
             color: var(--barber-blue);
-            filter: drop-shadow(0 0 8px rgba(0, 85, 255, 0.5));
         }
 
         .nav-label {
@@ -653,22 +652,7 @@
         }
 
         /* Indicador decorativo lateral */
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--text-white);
-            opacity: 0.8;
-        }
-        .stat-card.card-blue::before {
-            background: var(--barber-blue);
-        }
-        .stat-card.card-red::before {
-            background: var(--barber-red);
-        }
+        .stat-card::before { display: none; }
 
         .stat-icon {
             width: 56px;
@@ -686,13 +670,13 @@
         .stat-card.card-blue .stat-icon {
             color: var(--barber-blue);
             background: var(--barber-blue-pale);
-            border-color: rgba(0, 85, 255, 0.2);
+            border-color: rgba(37, 99, 235, 0.2);
         }
         
         .stat-card.card-red .stat-icon {
             color: var(--barber-red);
             background: var(--barber-red-light);
-            border-color: rgba(239, 68, 68, 0.2);
+            border-color: rgba(220, 38, 38, 0.2);
         }
 
         .stat-icon svg {
@@ -832,13 +816,13 @@
         .status-confirmed {
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.28);
         }
 
         .status-cancelled {
             background: var(--barber-red-light);
             color: var(--barber-red);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(220, 38, 38, 0.28);
         }
 
         /* Lista de acciones rápidas */
@@ -863,7 +847,7 @@
 
         .action-card:hover {
             background: var(--barber-blue-pale);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.28);
             transform: translateX(4px);
         }
 
@@ -1225,7 +1209,10 @@
                 timerProgressBar: true,
                 background: '#10b981',
                 color: '#ffffff',
-                iconColor: '#ffffff'
+                iconColor: '#ffffff',
+                customClass: {
+                    popup: 'colored-toast'
+                }
             });
         });
     </script>

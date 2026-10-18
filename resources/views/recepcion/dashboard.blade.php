@@ -69,12 +69,12 @@
         border-radius: 50%;
         background-color: #10b981;
         display: inline-block;
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35);
         animation: pulseGreen 2s infinite;
     }
 
     @keyframes pulseGreen {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35); }
         70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
@@ -121,9 +121,9 @@
         flex-shrink: 0;
     }
 
-    .stat-icon.blue { background: rgba(0, 85, 255, 0.15); color: #60a5fa; }
-    .stat-icon.green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .stat-icon.amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .stat-icon.blue { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+    .stat-icon.green { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .stat-icon.amber { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
 
     .stat-value {
         font-size: 16px;
@@ -181,7 +181,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 8px rgba(0, 85, 255, 0.4);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
         flex-shrink: 0;
     }
 
@@ -231,21 +231,21 @@
     .search-input-field {
         width: 100%;
         background: rgba(5, 10, 21, 0.85);
-        border: 1px solid rgba(0, 85, 255, 0.35);
+        border: 1px solid rgba(37, 99, 235, 0.35);
         border-radius: 12px;
         padding: 12px 42px 12px 44px;
         font-size: 13.5px;
         color: var(--text-white);
         outline: none;
         transition: all 0.25s var(--ease-fluid);
-        box-shadow: 0 4px 15px rgba(0, 85, 255, 0.08);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
         font-family: inherit;
     }
 
     .search-input-field:focus {
         border-color: var(--barber-blue-light);
         background: rgba(5, 10, 21, 0.98);
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.25);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
     }
 
     .search-input-field::placeholder {
@@ -314,7 +314,7 @@
     }
 
     .search-result-item:hover {
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(37, 99, 235, 0.15);
     }
 
     .search-result-avatar {
@@ -329,7 +329,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        box-shadow: 0 2px 6px rgba(0, 85, 255, 0.3);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     .search-result-info {
@@ -356,7 +356,7 @@
     }
 
     .search-result-phone-badge {
-        color: #34d399;
+        color: #10b981;
         font-weight: 600;
     }
 
@@ -364,8 +364,8 @@
         font-size: 11px;
         font-weight: 700;
         color: #60a5fa;
-        background: rgba(0, 85, 255, 0.15);
-        border: 1px solid rgba(0, 85, 255, 0.35);
+        background: rgba(37, 99, 235, 0.15);
+        border: 1px solid rgba(37, 99, 235, 0.35);
         padding: 4px 10px;
         border-radius: 6px;
         white-space: nowrap;
@@ -474,7 +474,7 @@
     .input-field-custom:focus {
         border-color: var(--barber-blue-light);
         background: rgba(5, 10, 21, 0.95);
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.25);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
     }
 
     .input-field-custom:focus + .input-icon-custom,
@@ -490,11 +490,11 @@
     /* Botón Guardar Cliente Simplificado */
     .btn-save-client {
         height: 41px;
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
+        background: #1e40af;
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        border-radius: 8px;
         color: #ffffff;
-        font-weight: 800;
+        font-weight: 600;
         font-size: 13px;
         padding: 0 18px;
         display: inline-flex;
@@ -503,15 +503,17 @@
         gap: 8px;
         cursor: pointer;
         white-space: nowrap;
-        box-shadow: 0 3px 12px rgba(16, 185, 129, 0.3);
-        transition: all 0.25s var(--ease-fluid);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+        transition: all 0.2s ease;
         font-family: inherit;
     }
 
     .btn-save-client:hover {
-        background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
         transform: translateY(-1px);
-        box-shadow: 0 5px 16px rgba(16, 185, 129, 0.45);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .btn-save-client:disabled {
@@ -552,7 +554,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
         flex-shrink: 0;
     }
 
@@ -574,7 +576,7 @@
         align-items: center;
         gap: 5px;
         background: rgba(16, 185, 129, 0.2);
-        color: #34d399;
+        color: #10b981;
         font-size: 10.5px;
         font-weight: 800;
         padding: 2px 8px;
@@ -687,9 +689,9 @@
     }
 
     .mode-card.active {
-        background: linear-gradient(135deg, rgba(0, 85, 255, 0.12) 0%, rgba(12, 20, 43, 0.9) 100%);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(12, 20, 43, 0.9) 100%);
         border-color: var(--barber-blue-light);
-        box-shadow: 0 4px 20px rgba(0, 85, 255, 0.25);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     }
 
     .mode-card.active::after {
@@ -725,14 +727,14 @@
     }
 
     .mode-card[data-mode="momento"] .mode-icon-circle {
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(37, 99, 235, 0.15);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
     }
 
     .mode-card[data-mode="posterior"] .mode-icon-circle {
         background: rgba(245, 158, 11, 0.15);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
@@ -761,13 +763,13 @@
 
     .mode-card[data-mode="momento"] .mode-badge {
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .mode-card[data-mode="posterior"] .mode-badge {
         background: rgba(245, 158, 11, 0.15);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
@@ -796,28 +798,60 @@
     }
 
     /* 3. SELECTOR DE SERVICIOS */
-    .services-quick-bar {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
+    .service-filter-select-wrapper {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
     }
 
-    .service-filter-btn {
-        background: transparent;
+    .service-category-select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: rgba(5, 10, 21, 0.75);
         border: 1px solid var(--border-subtle);
-        color: var(--text-muted);
-        font-size: 11.5px;
-        font-weight: 700;
-        padding: 4px 10px;
+        color: var(--text-main);
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 600;
+        padding: 7px 34px 7px 12px;
         border-radius: 8px;
         cursor: pointer;
+        outline: none;
         transition: all 0.2s ease;
+        min-width: 140px;
     }
 
-    .service-filter-btn.active, .service-filter-btn:hover {
-        background: var(--barber-blue-pale);
+    .service-category-select:hover {
         border-color: var(--barber-blue-border);
+        background: rgba(10, 17, 36, 0.9);
+    }
+
+    .service-category-select:focus {
+        border-color: var(--barber-blue-light);
+        background: rgba(10, 17, 36, 0.95);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    }
+
+    .service-category-select option {
+        background: #0c142b;
+        color: #f8fafc;
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+
+    .service-select-arrow {
+        position: absolute;
+        right: 10px;
+        pointer-events: none;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .service-filter-select-wrapper:focus-within .service-select-arrow {
         color: var(--barber-blue-light);
     }
 
@@ -849,7 +883,7 @@
 
     .service-chip.active {
         border-color: var(--barber-blue);
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(37, 99, 235, 0.15);
         box-shadow: 0 0 0 1px var(--barber-blue);
     }
 
@@ -871,7 +905,7 @@
 
     .chip-price {
         font-weight: 800;
-        color: #34d399;
+        color: #10b981;
     }
 
     .chip-duration {
@@ -908,8 +942,8 @@
 
     .worker-immediate-card.selected-worker {
         border-color: var(--barber-blue-light);
-        background: rgba(0, 85, 255, 0.08);
-        box-shadow: 0 4px 15px rgba(0, 85, 255, 0.2);
+        background: rgba(37, 99, 235, 0.08);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
 
     /* Estados de selección inicial y filtrado por servicio */
@@ -921,7 +955,7 @@
         text-align: center;
         padding: 42px 24px;
         background: rgba(10, 17, 36, 0.5);
-        border: 1px dashed rgba(0, 85, 255, 0.3);
+        border: 1px dashed rgba(37, 99, 235, 0.3);
         border-radius: 16px;
         margin: 6px 0 16px;
         animation: fadeIn 0.3s ease;
@@ -931,14 +965,14 @@
         width: 56px;
         height: 56px;
         border-radius: 50%;
-        background: rgba(0, 85, 255, 0.12);
+        background: rgba(37, 99, 235, 0.12);
         color: #60a5fa;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 14px;
-        border: 1px solid rgba(0, 85, 255, 0.3);
-        box-shadow: 0 0 16px rgba(0, 85, 255, 0.2);
+        border: 1px solid rgba(37, 99, 235, 0.3);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     }
 
     .no-selection-title {
@@ -964,7 +998,7 @@
         background: rgba(245, 158, 11, 0.08);
         border: 1px solid rgba(245, 158, 11, 0.35);
         border-radius: 14px;
-        color: #fbbf24;
+        color: #f59e0b;
         margin: 6px 0 16px;
         animation: fadeIn 0.3s ease;
     }
@@ -1031,7 +1065,7 @@
         gap: 5px;
         font-size: 11px;
         font-weight: 600;
-        color: #34d399;
+        color: #10b981;
         margin-top: 2px;
     }
 
@@ -1081,12 +1115,12 @@
         background: var(--barber-blue);
         border-color: var(--barber-blue);
         color: #ffffff;
-        box-shadow: 0 2px 8px rgba(0, 85, 255, 0.4);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     .shift-pill-btn.immediate-badge {
         border-color: rgba(16, 185, 129, 0.45);
-        color: #34d399;
+        color: #10b981;
         background: rgba(16, 185, 129, 0.08);
     }
 
@@ -1189,7 +1223,7 @@
         background: var(--barber-blue);
         border-color: var(--barber-blue);
         color: #ffffff;
-        box-shadow: 0 2px 8px rgba(0, 85, 255, 0.4);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     /* 6. CRITERIO 5: RESUMEN Y ACCIONES (COLUMNA IZQUIERDA) */
@@ -1215,7 +1249,7 @@
         width: 30px;
         height: 30px;
         border-radius: 8px;
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(37, 99, 235, 0.15);
         color: #60a5fa;
         display: flex;
         align-items: center;
@@ -1270,13 +1304,13 @@
 
     .summary-tag-modalidad.momento {
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .summary-tag-modalidad.posterior {
         background: rgba(245, 158, 11, 0.15);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
@@ -1302,7 +1336,7 @@
     .total-amount {
         font-size: 19px;
         font-weight: 900;
-        color: #34d399;
+        color: #10b981;
     }
 
     .actions-box {
@@ -1313,27 +1347,29 @@
 
     .btn-confirm-turn {
         width: 100%;
-        background: linear-gradient(135deg, var(--barber-blue) 0%, #0044cc 100%);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: #1e40af;
+        border: 1px solid rgba(147, 197, 253, 0.28);
         color: #ffffff;
         font-size: 14px;
-        font-weight: 800;
+        font-weight: 600;
         padding: 12px 18px;
-        border-radius: 12px;
+        border-radius: 8px;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        box-shadow: 0 4px 14px rgba(0, 85, 255, 0.4);
-        transition: all 0.25s var(--ease-fluid);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+        transition: all 0.2s ease;
         font-family: inherit;
     }
 
     .btn-confirm-turn:hover {
-        background: linear-gradient(135deg, var(--barber-blue-light) 0%, var(--barber-blue) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 85, 255, 0.5);
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .btn-reset-form {
@@ -1379,7 +1415,7 @@
 
     .ticket-modal-card {
         background: #0a1124;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
         border-radius: 20px;
         width: 100%;
         max-width: 440px;
@@ -1461,12 +1497,12 @@
 
     .btn-ticket-done {
         width: 100%;
-        background: var(--barber-blue);
-        border: none;
+        background: #1e40af;
+        border: 1px solid rgba(147, 197, 253, 0.28);
         color: #ffffff;
-        font-weight: 800;
+        font-weight: 600;
         padding: 12px 18px;
-        border-radius: 10px;
+        border-radius: 8px;
         cursor: pointer;
         font-size: 13.5px;
         display: flex;
@@ -1474,13 +1510,15 @@
         justify-content: center;
         gap: 8px;
         transition: all 0.2s ease;
-        box-shadow: 0 4px 14px rgba(0, 85, 255, 0.35);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-ticket-done:hover {
-        background: #0044cc;
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(0, 85, 255, 0.45);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     /* Estilos del selector interactivo de fecha futura con formato DD/MM/AAAA */
@@ -1537,8 +1575,8 @@
         width: 36px;
         height: 36px;
         border-radius: 9px;
-        border: 1px solid rgba(0, 85, 255, 0.35);
-        background: rgba(0, 85, 255, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.35);
+        background: rgba(37, 99, 235, 0.12);
         color: #60a5fa;
         display: flex;
         align-items: center;
@@ -1552,10 +1590,10 @@
     .special-date-input-wrap:hover .btn-calendar-trigger-field,
     .native-date-hidden-picker:hover + .btn-calendar-trigger-field,
     .native-date-hidden-picker:focus + .btn-calendar-trigger-field {
-        background: rgba(0, 85, 255, 0.28);
+        background: rgba(37, 99, 235, 0.28);
         color: #93c5fd;
-        border-color: rgba(0, 85, 255, 0.7);
-        box-shadow: 0 0 14px rgba(0, 85, 255, 0.45);
+        border-color: rgba(37, 99, 235, 0.7);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
         transform: translateY(-50%) scale(1.05);
     }
 
@@ -1933,11 +1971,18 @@
                         </div>
                     </div>
 
-                    <!-- Filtros por categoría -->
-                    <div class="services-quick-bar" role="tablist">
-                        <button type="button" class="service-filter-btn active" data-cat="all">Todos</button>
-                        <button type="button" class="service-filter-btn" data-cat="barberia">Barbería</button>
-                        <button type="button" class="service-filter-btn" data-cat="estetica">Estética</button>
+                    <!-- Filtro por categoría (Selector desplegable) -->
+                    <div class="service-filter-select-wrapper">
+                        <select id="serviceCategoryFilter" class="service-category-select" aria-label="Filtrar servicios por categoría">
+                            <option value="all">Todos</option>
+                            <option value="barberia">Barbería</option>
+                            <option value="estetica">Estética</option>
+                        </select>
+                        <span class="service-select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </span>
                     </div>
                 </div>
 
@@ -2130,7 +2175,7 @@
                             <p class="section-subtitle">Selecciona al especialista disponible y el turno inmediato para atención directa.</p>
                         </div>
                     </div>
-                    <span class="mode-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);">
+                    <span class="mode-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">
                         <span class="pulse-dot" style="width: 5px; height: 5px;"></span>
                         <span>Disponibilidad en vivo</span>
                     </span>
@@ -2619,7 +2664,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 badgeNoPortal.style.color = '#60a5fa';
             } else {
                 badgeNoPortal.textContent = '• Sin cuenta de usuario • Perfil guardado para agendamiento';
-                badgeNoPortal.style.color = '#38bdf8';
+                badgeNoPortal.style.color = '#60a5fa';
             }
         }
 
@@ -2644,7 +2689,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 timer: 2600,
                 background: '#0c142b',
                 color: '#ffffff',
-                iconColor: '#34d399'
+                iconColor: '#10b981'
             });
         }
 
@@ -2941,7 +2986,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Por favor ingresa el nombre del cliente (mínimo 2 letras).',
                     background: '#0c142b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 inputNombre.focus();
                 return;
@@ -2954,7 +2999,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'El nombre solo puede incluir letras y espacios, sin números ni caracteres especiales.',
                     background: '#0c142b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 inputNombre.focus();
                 return;
@@ -2968,7 +3013,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Por favor ingresa los apellidos del cliente (mínimo 2 letras).',
                     background: '#0c142b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 inputApellidos.focus();
                 return;
@@ -2981,7 +3026,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Los apellidos solo pueden incluir letras y espacios, sin números ni caracteres especiales.',
                     background: '#0c142b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 inputApellidos.focus();
                 return;
@@ -2995,7 +3040,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'El número telefónico debe contener exactamente 10 dígitos numéricos (Ej. 5512345678).',
                     background: '#0c142b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 inputTelefono.focus();
                 return;
@@ -3058,7 +3103,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: data.mensaje || 'El número telefónico ya existe en el sistema. Se ha seleccionado automáticamente para continuar.',
                         background: '#0c142b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                 } else {
                     // Error de validación u otro
@@ -3357,12 +3402,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    document.querySelectorAll('.service-filter-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            document.querySelectorAll('.service-filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-
-            const cat = this.dataset.cat;
+    const serviceCategorySelect = document.getElementById('serviceCategoryFilter');
+    if (serviceCategorySelect) {
+        serviceCategorySelect.addEventListener('change', function () {
+            const cat = this.value;
             document.querySelectorAll('.service-chip').forEach(chip => {
                 if (cat === 'all' || chip.dataset.serviceCategory === cat) {
                     chip.style.display = 'flex';
@@ -3371,7 +3414,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         });
-    });
+    }
 
     // ===================================================
     // 5. ATENCIÓN AL MOMENTO: TURNOS Y ESPECIALISTAS (Criterio 3)
@@ -3511,7 +3554,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'Por favor ingresa la fecha completa en formato DD/MM/AAAA (día, mes y año).',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             resetToDefaultPosteriorDate();
             return false;
@@ -3526,7 +3569,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'El formato de fecha debe comenzar por día, mes y año: DD/MM/AAAA.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             resetToDefaultPosteriorDate();
             return false;
@@ -3544,7 +3587,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'El día ingresado debe estar entre 01 y 31.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             resetToDefaultPosteriorDate();
             return false;
@@ -3558,7 +3601,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'El mes ingresado debe estar entre 01 y 12.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             resetToDefaultPosteriorDate();
             return false;
@@ -3573,7 +3616,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'La fecha ingresada no existe en el calendario. Verifica los días del mes.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             resetToDefaultPosteriorDate();
             return false;
@@ -3589,7 +3632,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'No es posible agendar citas en fechas anteriores al día de hoy.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             resetToDefaultPosteriorDate();
             return false;
@@ -3678,7 +3721,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: 'No es posible seleccionar fechas anteriores al día de hoy.',
                         background: '#0c142b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     resetToDefaultPosteriorDate();
                     return;
@@ -4124,8 +4167,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         setModalidad('momento');
 
-        // Deseleccionar servicios
+        // Deseleccionar servicios y reiniciar filtro de categoría
         document.querySelectorAll('.service-chip').forEach(c => c.classList.remove('active'));
+        if (serviceCategorySelect) {
+            serviceCategorySelect.value = 'all';
+            document.querySelectorAll('.service-chip').forEach(chip => {
+                chip.style.display = 'flex';
+            });
+        }
         state.serviceId = null;
         state.serviceName = '';
         state.servicePrice = '0.00';
@@ -4170,7 +4219,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'Por favor ingresa el nombre del cliente (mínimo 2 caracteres).',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             inputNombre.focus();
             return;
@@ -4183,7 +4232,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'El nombre solo puede incluir letras y espacios, sin números ni caracteres especiales.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             inputNombre.focus();
             return;
@@ -4196,7 +4245,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'Por favor ingresa los apellidos del cliente (mínimo 2 caracteres).',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             inputApellidos.focus();
             return;
@@ -4209,7 +4258,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'Los apellidos solo pueden incluir letras y espacios, sin números ni caracteres especiales.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             inputApellidos.focus();
             return;
@@ -4223,7 +4272,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'Por favor ingresa un número telefónico de contacto válido de exactamente 10 dígitos numéricos.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             inputTelefono.focus();
             return;
@@ -4236,7 +4285,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'Por favor selecciona un servicio del catálogo.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             return;
         }
@@ -4248,7 +4297,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'Por favor selecciona un especialista disponible.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             return;
         }
@@ -4260,7 +4309,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'No hay un horario disponible seleccionado. Los horarios para esta fecha y especialista están ocupados por citas o bloqueos de agenda.',
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
             return;
         }

@@ -76,7 +76,7 @@
         }
 
         .barber-stripes-mini .stripe-blue { flex: 1; background: #143b8c; }
-        .barber-stripes-mini .stripe-red { flex: 1; background: #d1121d; }
+        .barber-stripes-mini .stripe-red { flex: 1; background: #991b1b; }
         .barber-stripes-mini .stripe-white { flex: 1; background: #ffffff; }
 
         /* ==========================================
@@ -349,12 +349,12 @@
             height: auto;
             object-fit: contain;
             display: block;
-            filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 20px rgba(209, 18, 29, 0.18));
+            filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.75));
             transition: filter 0.35s ease;
         }
 
         .brand-logo-wrapper:hover .brand-logo-img {
-            filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 30px rgba(209, 18, 29, 0.35));
+            filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.85));
         }
 
         /* Mini postes a los costados del logo */
@@ -606,8 +606,8 @@
             width: 18px;
             height: 18px;
             border-radius: 4px;
-            background: #d1121d;
-            border: 1px solid #d1121d;
+            background: #991b1b;
+            border: 1px solid #991b1b;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -643,7 +643,7 @@
             height: 48px;
             margin-top: 18px;
             padding: 0 20px;
-            background: #d1121d;
+            background: #991b1b;
             color: #ffffff;
             border: none;
             border-radius: 10px;
@@ -656,13 +656,13 @@
             justify-content: center;
             gap: 8px;
             transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 18px rgba(209, 18, 29, 0.45);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .submit-btn:hover {
-            background: #b50f19;
+            background: #7f1d1d;
             transform: translateY(-1px);
-            box-shadow: 0 6px 22px rgba(209, 18, 29, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .submit-btn:active {
@@ -690,7 +690,7 @@
         }
 
         .signup-link {
-            color: #d1121d;
+            color: #fca5a5;
             text-decoration: none;
             font-weight: 600;
             margin-left: 4px;
@@ -698,7 +698,7 @@
         }
 
         .signup-link:hover {
-            color: #ff3b47;
+            color: #fca5a5;
             text-decoration: underline;
         }
 
@@ -822,6 +822,7 @@
                 font-size: 21px;
             }
         }
+
     </style>
 </head>
 <body>
@@ -1015,7 +1016,10 @@
                 timerProgressBar: true,
                 background: '#10b981',
                 color: '#ffffff',
-                iconColor: '#ffffff'
+                iconColor: '#ffffff',
+                customClass: {
+                    popup: 'colored-toast'
+                }
             });
         });
     </script>
@@ -1028,7 +1032,7 @@
                 icon: 'warning',
                 title: 'Sesión finalizada por inactividad',
                 text: '{{ session("warning") }}',
-                confirmButtonColor: '#0055ff',
+                confirmButtonColor: '#1e40af',
                 confirmButtonText: 'Entendido',
                 background: '#0c142b',
                 color: '#ffffff'

@@ -36,13 +36,13 @@
             --border-strong: rgba(255, 255, 255, 0.12);
 
             /* Paleta cromática corporativa (Red, White, Blue) */
-            --barber-red: #ef4444;
-            --barber-red-light: rgba(239, 68, 68, 0.12);
-            --barber-red-border: rgba(239, 68, 68, 0.3);
-            --barber-blue: #0055ff;
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
-            --barber-blue-border: rgba(0, 85, 255, 0.3);
+            --barber-red: #7f1d1d;
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-red-border: rgba(255, 255, 255, 0.14);
+            --barber-blue: #1e3a8a;
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
+            --barber-blue-border: rgba(255, 255, 255, 0.14);
 
             /* Tipografía */
             --text-main: #f8fafc;
@@ -141,7 +141,7 @@
 
         .mobile-toggle-btn:hover {
             color: var(--barber-blue);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.28);
             background: var(--barber-blue-pale);
             transform: scale(1.05);
         }
@@ -191,9 +191,9 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            background: rgba(0, 85, 255, 0.12);
+            background: rgba(37, 99, 235, 0.12);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.25);
+            border: 1px solid rgba(37, 99, 235, 0.28);
             padding: 2px 8px;
             border-radius: 4px;
         }
@@ -234,7 +234,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--barber-blue), #2563eb);
+            background: linear-gradient(135deg, var(--barber-blue), #1e40af);
             color: var(--text-white);
             display: flex;
             align-items: center;
@@ -242,7 +242,7 @@
             font-weight: 700;
             font-size: 13px;
             letter-spacing: 0.05em;
-            box-shadow: 0 0 10px rgba(0, 85, 255, 0.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
         }
 
         .user-meta {
@@ -547,7 +547,6 @@
 
         .nav-item.active .nav-icon-box {
             color: var(--barber-blue);
-            filter: drop-shadow(0 0 8px rgba(0, 85, 255, 0.5));
         }
 
         .nav-label {
@@ -567,7 +566,7 @@
         .nav-badge.badge-primary {
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.28);
         }
 
         /* Fondo difuminado para móvil */
@@ -926,7 +925,10 @@
                     timerProgressBar: true,
                     background: '#10b981',
                     color: '#ffffff',
-                    iconColor: '#ffffff'
+                    iconColor: '#ffffff',
+                    customClass: {
+                        popup: 'colored-toast'
+                    }
                 });
             }
         });
@@ -945,7 +947,7 @@
                     showConfirmButton: false,
                     timer: 4000,
                     timerProgressBar: true,
-                    background: '#ef4444',
+                    background: '#0c142b',
                     color: '#ffffff',
                     iconColor: '#ffffff'
                 });

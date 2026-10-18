@@ -247,6 +247,8 @@ class TrabajadorPanelController extends Controller
                 'duracion_minutos' => $cita->duracion_minutos,
                 'precio' => number_format($cita->precio, 2),
                 'estado' => $cita->estado,
+                'es_pasada' => $cita->esPasada(),
+                'puede_cancelar' => $cita->puedeCancelarAdministrativamente(),
                 'notas' => $cita->notas ?: 'Sin especificaciones o notas adicionales.',
                 'observaciones' => $cita->observaciones ?: '',
                 'cliente' => [

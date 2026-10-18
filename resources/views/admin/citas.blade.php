@@ -32,11 +32,11 @@
             --border-subtle: rgba(255, 255, 255, 0.06);
             --border-strong: rgba(255, 255, 255, 0.12);
 
-            --barber-red: #ef4444;
-            --barber-red-light: rgba(239, 68, 68, 0.1);
-            --barber-blue: #0055ff;
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
+            --barber-red: #7f1d1d;
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-blue: #1e3a8a;
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
 
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -152,7 +152,7 @@
         .user-avatar {
             width: 38px; height: 38px; border-radius: 8px; background: var(--barber-blue-pale);
             color: var(--barber-blue-light); display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 13px; border: 1px solid rgba(0, 85, 255, 0.3);
+            font-weight: 700; font-size: 13px; border: 1px solid rgba(37, 99, 235, 0.3);
         }
         .user-meta { display: flex; flex-direction: column; text-align: left; }
         .user-name { font-size: 13px; font-weight: 700; color: var(--text-white); }
@@ -217,14 +217,21 @@
             font-weight: 600; transition: all 0.2s ease;
         }
         .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text-white); }
-        .nav-item.active { background: var(--barber-blue); color: #ffffff; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3); }
-        .nav-icon-box { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
-        .nav-icon-box svg { width: 18px; height: 18px; }
+        .nav-item.active {
+            color: var(--barber-blue-light);
+            font-weight: 700;
+            background: var(--barber-blue-pale);
+            border-left: 3px solid var(--barber-blue);
+            box-shadow: none;
+        }
+        .nav-item.active .nav-icon-box {
+            color: var(--barber-blue);
+        }
         .nav-badge {
             margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 6px;
             border-radius: 10px; background: rgba(255,255,255,0.08); color: var(--text-muted);
         }
-        .nav-item.active .nav-badge { background: rgba(255,255,255,0.25); color: #ffffff; }
+        .nav-item.active .nav-badge { background: rgba(255,255,255,0.12); color: var(--text-white); }
 
         /* CONTENIDO PRINCIPAL */
         .main-content {
@@ -263,13 +270,13 @@
             border-radius: 10px;
             text-decoration: none;
             transition: all 0.25s var(--ease-fluid);
-            border: 1px solid rgba(0, 85, 255, 0.4);
-            box-shadow: 0 4px 14px rgba(0, 85, 255, 0.25);
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
             white-space: nowrap;
         }
         .btn-admin-agendar-cta:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 85, 255, 0.4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             border-color: #60a5fa;
             color: #ffffff !important;
         }
@@ -305,9 +312,10 @@
         }
 
         .view-tab-btn.active {
-            background: var(--barber-blue);
+            background: #1e3a8a;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .tab-badge {
@@ -378,8 +386,8 @@
         .admin-filtro-input:focus,
         .admin-filtro-select:focus {
             border-color: var(--barber-blue-light);
-            background: rgba(0, 85, 255, 0.08);
-            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.2);
+            background: rgba(37, 99, 235, 0.08);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
         }
 
         .admin-filtro-select option {
@@ -397,20 +405,24 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 10px 18px;
-            background: var(--barber-blue);
+            padding: 9px 18px;
+            background: #1e40af;
             color: #ffffff;
-            border: 1px solid rgba(0, 85, 255, 0.4);
+            border: 1px solid rgba(147, 197, 253, 0.28);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
             border-radius: 8px;
             font-size: 13.5px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .btn-admin-filtrar:hover {
             background: #1d4ed8;
+            color: #ffffff;
+            border-color: rgba(147, 197, 253, 0.45);
             transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         .btn-admin-limpiar {
@@ -481,8 +493,8 @@
             font-size: 12px;
             font-weight: 700;
             color: #93c5fd;
-            background: rgba(0, 85, 255, 0.12);
-            border: 1px solid rgba(0, 85, 255, 0.25);
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.25);
             padding: 3px 8px;
             border-radius: 6px;
             white-space: nowrap;
@@ -538,7 +550,7 @@
         }
 
         .admin-precio-highlight {
-            color: #38bdf8;
+            color: #60a5fa;
             font-weight: 800;
             font-size: 14px;
             white-space: nowrap;
@@ -560,8 +572,8 @@
             white-space: nowrap;
         }
         .admin-btn-ver-detalle:hover {
-            background: rgba(0, 85, 255, 0.2);
-            border-color: rgba(0, 85, 255, 0.4);
+            background: rgba(37, 99, 235, 0.2);
+            border-color: rgba(37, 99, 235, 0.4);
             color: #93c5fa;
             transform: translateY(-1px);
         }
@@ -585,7 +597,7 @@
             gap: 4px;
             padding: 6px 11px;
             background: rgba(245, 158, 11, 0.14);
-            color: #fbbf24;
+            color: #f59e0b;
             border: 1px solid rgba(245, 158, 11, 0.35);
             border-radius: 7px;
             font-size: 11.5px;
@@ -607,7 +619,7 @@
             gap: 4px;
             padding: 6px 11px;
             background: rgba(16, 185, 129, 0.14);
-            color: #34d399;
+            color: #10b981;
             border: 1px solid rgba(16, 185, 129, 0.35);
             border-radius: 7px;
             font-size: 11.5px;
@@ -629,7 +641,7 @@
             gap: 4px;
             padding: 6px 10px;
             background: rgba(16, 185, 129, 0.12);
-            color: #34d399;
+            color: #10b981;
             border: 1px solid rgba(16, 185, 129, 0.3);
             border-radius: 7px;
             font-size: 11.5px;
@@ -650,9 +662,9 @@
             align-items: center;
             gap: 4px;
             padding: 6px 10px;
-            background: rgba(0, 85, 255, 0.12);
+            background: rgba(37, 99, 235, 0.12);
             color: #60a5fa;
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
             border-radius: 7px;
             font-size: 11.5px;
             font-weight: 700;
@@ -661,9 +673,9 @@
             white-space: nowrap;
         }
         .admin-btn-reagendar:hover {
-            background: #0055ff;
+            background: #1e3a8a;
             color: #ffffff;
-            border-color: #0055ff;
+            border-color: #1e3a8a;
             transform: translateY(-1px);
         }
 
@@ -696,15 +708,15 @@
             transform: scale(1.08);
         }
         .admin-btn-tool-icon.tool-detalles:hover {
-            background: rgba(0, 85, 255, 0.25);
+            background: rgba(37, 99, 235, 0.2);
             color: #93c5fd;
         }
         .admin-btn-tool-icon.tool-editar:hover {
-            background: rgba(56, 189, 248, 0.25);
-            color: #38bdf8;
+            background: rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
         }
         .admin-btn-tool-icon.tool-cancelar:hover {
-            background: rgba(239, 68, 68, 0.25);
+            background: rgba(220, 38, 38, 0.25);
             color: #fca5a5;
         }
 
@@ -713,9 +725,9 @@
             align-items: center;
             gap: 4px;
             padding: 2px 7px;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.28);
             border-radius: 12px;
             font-size: 10.5px;
             font-weight: 700;
@@ -745,41 +757,41 @@
         }
 
         .status-badge.confirmada {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.28);
         }
-        .status-badge.confirmada::before { background: #34d399; }
+        .status-badge.confirmada::before { background: #10b981; }
 
         .status-badge.cancelada {
-            background: rgba(239, 68, 68, 0.15);
+            background: rgba(220, 38, 38, 0.12);
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(220, 38, 38, 0.28);
         }
         .status-badge.cancelada::before { background: #f87171; }
 
         .status-badge.completada {
-            background: rgba(6, 182, 212, 0.15);
-            color: #22d3ee;
-            border: 1px solid rgba(6, 182, 212, 0.3);
+            background: rgba(13, 148, 136, 0.12);
+            color: #2dd4bf;
+            border: 1px solid rgba(13, 148, 136, 0.28);
         }
-        .status-badge.completada::before { background: #22d3ee; }
+        .status-badge.completada::before { background: #2dd4bf; }
 
         .status-badge.en_atencion,
         .status-badge.en_proceso {
-            background: rgba(0, 85, 255, 0.15);
+            background: rgba(37, 99, 235, 0.12);
             color: #60a5fa;
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.28);
         }
         .status-badge.en_atencion::before,
         .status-badge.en_proceso::before { background: #60a5fa; }
 
         .status-badge.vencida {
-            background: rgba(245, 158, 11, 0.15);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.12);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.28);
         }
-        .status-badge.vencida::before { background: #fbbf24; }
+        .status-badge.vencida::before { background: #f59e0b; }
     </style>
 
     @stack('styles')
@@ -1114,7 +1126,7 @@
                         Mostrando <strong style="color: #ffffff;">{{ isset($citas) ? $citas->count() : 0 }}</strong> {{ (isset($citas) && $citas->count() === 1) ? 'cita registrada' : 'citas registradas' }} en el sistema
                     </span>
                     @if(!empty($filtros['buscar']) || !empty($filtros['trabajador_id']) || (!empty($filtros['estado']) && $filtros['estado'] !== 'todas') || !empty($filtros['fecha_desde']) || !empty($filtros['fecha_hasta']))
-                        <span style="font-size: 12px; color: #38bdf8; font-weight: 600;">
+                        <span style="font-size: 12px; color: #60a5fa; font-weight: 600;">
                             Filtros de consulta activos
                         </span>
                     @endif

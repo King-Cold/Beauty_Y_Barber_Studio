@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cita;
+use App\Models\FechaEspecial;
+use App\Models\HorarioSucursal;
 use App\Models\Service;
 use App\Models\Trabajador;
 use App\Models\User;
@@ -689,10 +691,23 @@ class RecepcionController extends Controller
             estado: $validated['estado'] ?? null
         );
 
+        $horariosSucursal = HorarioSucursal::getHorariosMap();
+        $fechasEspeciales = [];
+        try {
+            if (Schema::hasTable('fechas_especiales')) {
+                $fechasEspeciales = FechaEspecial::whereDate('fecha', '>=', $validated['start'])
+                    ->whereDate('fecha', '<=', $validated['end'])
+                    ->get(['fecha', 'cerrado_todo_el_dia', 'motivo', 'hora_apertura', 'hora_cierre'])
+                    ->toArray();
+            }
+        } catch (\Throwable $e) {}
+
         return response()->json([
             'success' => true,
             'total' => count($eventos),
             'eventos' => $eventos,
+            'horarios_sucursal' => $horariosSucursal,
+            'fechas_especiales' => $fechasEspeciales,
         ]);
     }
 

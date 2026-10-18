@@ -33,12 +33,12 @@
             --border-subtle: rgba(255, 255, 255, 0.06);
             --border-strong: rgba(255, 255, 255, 0.12);
 
-            /* Paleta cromática estricta (Red, White, Blue) */
-            --barber-red: #ef4444;        /* Rojo vivo y vibrante */
-            --barber-red-light: rgba(239, 68, 68, 0.1);
-            --barber-blue: #0055ff;       /* Azul eléctrico vibrante */
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
+            /* Paleta cromática corporativa (Barber Pole: Red, White, Blue) */
+            --barber-red: #7f1d1d;        /* Borgoña sobrio y elegante */
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-blue: #1e3a8a;       /* Azul marino sobrio */
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
 
             /* Tipografía */
             --text-main: #f8fafc;         /* Blanco roto casi puro para buena legibilidad */
@@ -137,7 +137,7 @@
 
         .mobile-toggle-btn:hover {
             color: var(--barber-blue);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             background: var(--barber-blue-pale);
             transform: scale(1.05);
         }
@@ -534,7 +534,6 @@
 
         .nav-item.active .nav-icon-box {
             color: var(--barber-blue);
-            filter: drop-shadow(0 0 8px rgba(0, 85, 255, 0.5));
         }
 
         .nav-label {
@@ -656,22 +655,7 @@
         }
 
         /* Indicador decorativo lateral */
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--text-white);
-            opacity: 0.8;
-        }
-        .stat-card.card-blue::before {
-            background: var(--barber-blue);
-        }
-        .stat-card.card-red::before {
-            background: var(--barber-red);
-        }
+        .stat-card::before { display: none; }
 
         .stat-icon {
             width: 56px;
@@ -689,7 +673,7 @@
         .stat-card.card-blue .stat-icon {
             color: var(--barber-blue);
             background: var(--barber-blue-pale);
-            border-color: rgba(0, 85, 255, 0.2);
+            border-color: rgba(37, 99, 235, 0.2);
         }
         
         .stat-card.card-red .stat-icon {
@@ -835,7 +819,7 @@
         .status-confirmed {
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
         .status-cancelled {
@@ -866,7 +850,7 @@
 
         .action-card:hover {
             background: var(--barber-blue-pale);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             transform: translateX(4px);
         }
 
@@ -1056,8 +1040,8 @@
         .form-control:focus {
             outline: none;
             border-color: var(--barber-blue);
-            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.15);
-            background: rgba(0, 85, 255, 0.03);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: rgba(37, 99, 235, 0.03);
         }
 
         /* Estilos estrictos para desplegables (evita texto blanco sobre fondo blanco nativo) */
@@ -1090,7 +1074,7 @@
 
         select option:checked,
         select.form-control option:checked {
-            background-color: #0055ff !important;
+            background-color: #1e40af !important;
             color: #ffffff !important;
         }
 
@@ -1157,23 +1141,25 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: linear-gradient(135deg, var(--barber-blue) 0%, var(--barber-blue-light) 100%);
-            color: var(--text-white);
+            background: #1e40af;
+            color: #ffffff;
+            border: 1px solid rgba(147, 197, 253, 0.28);
             padding: 10px 22px;
             border-radius: 8px;
             font-size: 13px;
-            font-weight: 700;
-            border: none;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(0, 85, 255, 0.35);
-            transition: all 0.25s var(--ease-fluid);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s ease;
             font-family: inherit;
         }
 
         .btn-submit-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 85, 255, 0.5);
-            filter: brightness(1.1);
+            background: #1d4ed8;
+            border-color: rgba(147, 197, 253, 0.45);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         .btn-submit-action:disabled {
@@ -1183,17 +1169,22 @@
         }
 
         .btn-submit-action.btn-submit-continue {
-            background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
-            box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+            background: #1e40af;
+            color: #ffffff;
+            border: 1px solid rgba(147, 197, 253, 0.28);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
         }
 
         .btn-submit-action.btn-submit-continue:hover {
-            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+            background: #1d4ed8;
+            border-color: rgba(147, 197, 253, 0.45);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         .role-info-card {
-            background: rgba(0, 85, 255, 0.06);
-            border: 1px solid rgba(0, 85, 255, 0.2);
+            background: rgba(37, 99, 235, 0.06);
+            border: 1px solid rgba(37, 99, 235, 0.2);
             border-radius: 8px;
             padding: 12px 14px;
             display: flex;
@@ -1456,8 +1447,8 @@
                     <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">Administra los usuarios registrados en el sistema y sus roles correspondientes.</p>
                 </div>
                 <div class="page-actions" style="display: flex; gap: 12px;">
-                    <button type="button" class="btn-primary" style="background: var(--barber-blue); color: var(--text-white); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0, 85, 255, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0, 85, 255, 0.3)';" onclick="openModal('modalCreateUser');">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <button type="button" class="btn-primary" style="background: #1e40af; color: #ffffff; border: 1px solid rgba(147, 197, 253, 0.28); padding: 9px 18px; border-radius: 8px; font-weight: 600; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);" onmouseover="this.style.background='#1d4ed8'; this.style.borderColor='rgba(147, 197, 253, 0.45)';" onmouseout="this.style.background='#1e40af'; this.style.borderColor='rgba(147, 197, 253, 0.28)';" onclick="openModal('modalCreateUser');">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         Agregar Usuario
                     </button>
                 </div>
@@ -1466,7 +1457,7 @@
             <!-- Stats Overview Cards -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
                 <div class="panel-card" style="padding: 16px 20px; display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 85, 255, 0.12); color: var(--barber-blue); display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(37, 99, 235, 0.12); color: var(--barber-blue); display: flex; align-items: center; justify-content: center;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     </div>
                     <div>
@@ -1476,7 +1467,7 @@
                 </div>
 
                 <div class="panel-card" style="padding: 16px 20px; display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(56, 189, 248, 0.12); color: #38bdf8; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(37, 99, 235, 0.12); color: #60a5fa; display: flex; align-items: center; justify-content: center;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                     </div>
                     <div>
@@ -1486,7 +1477,7 @@
                 </div>
 
                 <div class="panel-card" style="padding: 16px 20px; display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(52, 211, 153, 0.12); color: #34d399; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
                     </div>
                     <div>
@@ -1496,7 +1487,7 @@
                 </div>
 
                 <div class="panel-card" style="padding: 16px 20px; display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(192, 132, 252, 0.12); color: #c084fc; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(139, 92, 246, 0.12); color: #a78bfa; display: flex; align-items: center; justify-content: center;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                     </div>
                     <div>
@@ -1506,7 +1497,7 @@
                 </div>
 
                 <div class="panel-card" style="padding: 16px 20px; display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(251, 191, 36, 0.12); color: #fbbf24; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: flex; align-items: center; justify-content: center;">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     </div>
                     <div>
@@ -1582,10 +1573,10 @@
                                     $roleId = (int)$user->role_id;
                                     $roleName = $user->role->nombre ?? 'Sin Rol';
                                     $roleColor = match($roleId) {
-                                        1 => ['text' => '#38bdf8', 'bg' => 'rgba(56, 189, 248, 0.12)', 'border' => 'rgba(56, 189, 248, 0.3)'],
-                                        2 => ['text' => '#c084fc', 'bg' => 'rgba(192, 132, 252, 0.12)', 'border' => 'rgba(192, 132, 252, 0.3)'],
-                                        3 => ['text' => '#34d399', 'bg' => 'rgba(52, 211, 153, 0.12)', 'border' => 'rgba(52, 211, 153, 0.3)'],
-                                        4 => ['text' => '#fbbf24', 'bg' => 'rgba(251, 191, 36, 0.12)', 'border' => 'rgba(251, 191, 36, 0.3)'],
+                                        1 => ['text' => '#60a5fa', 'bg' => 'rgba(37, 99, 235, 0.12)', 'border' => 'rgba(37, 99, 235, 0.28)'],
+                                        2 => ['text' => '#a78bfa', 'bg' => 'rgba(139, 92, 246, 0.12)', 'border' => 'rgba(139, 92, 246, 0.28)'],
+                                        3 => ['text' => '#10b981', 'bg' => 'rgba(16, 185, 129, 0.12)', 'border' => 'rgba(16, 185, 129, 0.28)'],
+                                        4 => ['text' => '#f59e0b', 'bg' => 'rgba(245, 158, 11, 0.12)', 'border' => 'rgba(245, 158, 11, 0.28)'],
                                         default => ['text' => '#94a3b8', 'bg' => 'rgba(148, 163, 184, 0.12)', 'border' => 'rgba(148, 163, 184, 0.3)']
                                     };
 
@@ -1728,7 +1719,7 @@
                     </div>
                     <div style="display: flex; gap: 6px;">
                         <button type="button" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: not-allowed; opacity: 0.5;" disabled>Anterior</button>
-                        <button type="button" style="background: var(--barber-blue); border: 1px solid var(--barber-blue); color: var(--text-white); padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 85, 255, 0.3);">1</button>
+                        <button type="button" style="background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.18); color: #f8fafc; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);">1</button>
                         <button type="button" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: not-allowed; opacity: 0.5;" disabled>Siguiente</button>
                     </div>
                 </div>
@@ -2013,7 +2004,7 @@
             <!-- Header -->
             <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 85, 255, 0.1); color: var(--barber-blue); display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(37, 99, 235, 0.1); color: var(--barber-blue); display: flex; align-items: center; justify-content: center;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
@@ -2030,13 +2021,13 @@
             <div style="padding: 24px;">
                 <!-- User Avatar & Primary Title Banner -->
                 <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border-subtle);">
-                    <div id="modalUserAvatar" style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--barber-blue), #1e293b); color: #ffffff; font-weight: 700; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.25); flex-shrink: 0;">
+                    <div id="modalUserAvatar" style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--barber-blue), #1e293b); color: #ffffff; font-weight: 700; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); flex-shrink: 0;">
                         U
                     </div>
                     <div style="flex: 1; min-width: 0;">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
                             <h3 id="modalFullName" style="font-size: 1.35rem; font-weight: 700; color: #ffffff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</h3>
-                            <span id="modalUserIdBadge" style="font-size: 0.75rem; font-weight: 700; color: var(--barber-blue); background: rgba(0, 85, 255, 0.12); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(0, 85, 255, 0.2);">#0</span>
+                            <span id="modalUserIdBadge" style="font-size: 0.75rem; font-weight: 700; color: var(--barber-blue); background: rgba(37, 99, 235, 0.12); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(37, 99, 235, 0.2);">#0</span>
                         </div>
                         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                             <span id="modalRoleBadge" style="font-size: 0.8rem; font-weight: 600; padding: 3px 10px; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-subtle); color: var(--text-white);">Cliente</span>
@@ -2071,7 +2062,7 @@
 
                 <!-- Footer button -->
                 <div style="margin-top: 24px; text-align: right;">
-                    <button type="button" onclick="closeModal('userDetailModal')" style="background: var(--barber-blue); color: white; padding: 10px 28px; border-radius: 8px; border: none; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);" onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">Cerrar</button>
+                    <button type="button" onclick="closeModal('userDetailModal')" style="background: #1e293b; color: #f8fafc; padding: 10px 28px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.18); font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);" onmouseover="this.style.background='#334155';" onmouseout="this.style.background='#1e293b';">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -2088,7 +2079,7 @@
                     text: @json(session('success')),
                     background: '#0c142b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff',
+                    confirmButtonColor: '#1e40af',
                     confirmButtonText: 'Aceptar',
                     timer: 3000,
                     timerProgressBar: true
@@ -2104,7 +2095,7 @@
                     text: @json(session('error')),
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444',
+                    confirmButtonColor: '#dc2626',
                     confirmButtonText: 'Aceptar'
                 });
             });
@@ -2292,10 +2283,10 @@
         function createUserRowHtml(user) {
             const roleId = parseInt(user.role_id, 10);
             const roleColor = {
-                1: { text: '#38bdf8', bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.3)' },
-                2: { text: '#c084fc', bg: 'rgba(192, 132, 252, 0.12)', border: 'rgba(192, 132, 252, 0.3)' },
-                3: { text: '#34d399', bg: 'rgba(52, 211, 153, 0.12)', border: 'rgba(52, 211, 153, 0.3)' },
-                4: { text: '#fbbf24', bg: 'rgba(251, 191, 36, 0.12)', border: 'rgba(251, 191, 36, 0.3)' }
+                1: { text: '#60a5fa', bg: 'rgba(37, 99, 235, 0.12)', border: 'rgba(37, 99, 235, 0.28)' },
+                2: { text: '#a78bfa', bg: 'rgba(139, 92, 246, 0.12)', border: 'rgba(139, 92, 246, 0.28)' },
+                3: { text: '#10b981', bg: 'rgba(16, 185, 129, 0.12)', border: 'rgba(16, 185, 129, 0.28)' },
+                4: { text: '#f59e0b', bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.28)' }
             }[roleId] || { text: '#94a3b8', bg: 'rgba(148, 163, 184, 0.12)', border: 'rgba(148, 163, 184, 0.3)' };
 
             const fullName = escapeHtml(user.nombre_completo || (user.name + ' ' + (user.apellidos || '')));
@@ -2437,7 +2428,7 @@
                 const isActivo = status.toLowerCase().includes('activ');
                 statusBadgeEl.style.background = isActivo ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
                 statusBadgeEl.style.border = isActivo ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)';
-                statusBadgeEl.style.color = isActivo ? '#10b981' : '#ef4444';
+                statusBadgeEl.style.color = isActivo ? '#10b981' : '#dc2626';
             }
 
             openModal('userDetailModal');
@@ -2474,30 +2465,30 @@
 
             if (roleVal === '3' && !hasWorker) {
                 if (banner) {
-                    banner.style.background = 'rgba(168, 85, 247, 0.1)';
-                    banner.style.borderColor = 'rgba(168, 85, 247, 0.3)';
-                    banner.style.color = '#c084fc';
+                    banner.style.background = 'rgba(139, 92, 246, 0.12)';
+                    banner.style.borderColor = 'rgba(139, 92, 246, 0.28)';
+                    banner.style.color = '#a78bfa';
                 }
                 if (bannerText) {
                     bannerText.textContent = 'Al convertir este usuario a Barbero o Estilista, se reutilizará esta misma cuenta sin crear duplicados y serás redirigido para completar la información laboral.';
                 }
                 if (submitBtn) {
-                    submitBtn.style.background = 'linear-gradient(135deg, #a855f7, #0055ff)';
+                    submitBtn.style.background = '#1e40af';
                 }
                 if (submitText) {
                     submitText.textContent = 'Continuar con Datos Laborales →';
                 }
             } else {
                 if (banner) {
-                    banner.style.background = 'rgba(0, 85, 255, 0.08)';
-                    banner.style.borderColor = 'rgba(0, 85, 255, 0.2)';
+                    banner.style.background = 'rgba(30, 64, 175, 0.12)';
+                    banner.style.borderColor = 'rgba(147, 197, 253, 0.28)';
                     banner.style.color = 'var(--text-main)';
                 }
                 if (bannerText) {
                     bannerText.textContent = 'Los cambios se aplicarán inmediatamente a la cuenta del usuario.';
                 }
                 if (submitBtn) {
-                    submitBtn.style.background = 'var(--barber-blue)';
+                    submitBtn.style.background = '#1e40af';
                 }
                 if (submitText) {
                     submitText.textContent = 'Guardar Cambios';
@@ -2514,7 +2505,7 @@
                 html: `¿Estás seguro de que deseas eliminar permanentemente la cuenta de <strong>"${fullName}"</strong>?<br><span style="font-size: 13px; color: #ef4444; margin-top: 6px; display: inline-block;">Esta acción no se puede deshacer y eliminará todos sus datos asociados.</span>`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ef4444',
+                confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: 'Sí, eliminar definitivamente',
                 cancelButtonText: 'Cancelar',
@@ -2572,7 +2563,7 @@
                         showConfirmButton: false,
                         timer: 2500,
                         timerProgressBar: true,
-                        background: '#10b981',
+                        background: '#0c142b',
                         color: '#ffffff',
                         iconColor: '#ffffff'
                     });
@@ -2583,7 +2574,7 @@
                         text: data.message || 'No se pudo eliminar la cuenta.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -2594,7 +2585,7 @@
                     text: 'No se pudo comunicar con el servidor.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             }
         }
@@ -2610,10 +2601,10 @@
             row.setAttribute('data-status', user.activo ? 'activo' : 'inactivo');
 
             const roleColorMap = {
-                1: { text: '#38bdf8', bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.3)' },
-                2: { text: '#c084fc', bg: 'rgba(192, 132, 252, 0.12)', border: 'rgba(192, 132, 252, 0.3)' },
-                3: { text: '#34d399', bg: 'rgba(52, 211, 153, 0.12)', border: 'rgba(52, 211, 153, 0.3)' },
-                4: { text: '#fbbf24', bg: 'rgba(251, 191, 36, 0.12)', border: 'rgba(251, 191, 36, 0.3)' }
+                1: { text: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.3)' },
+                2: { text: '#a78bfa', bg: 'rgba(167, 139, 250, 0.12)', border: 'rgba(167, 139, 250, 0.3)' },
+                3: { text: '#10b981', bg: 'rgba(16, 185, 129, 0.12)', border: 'rgba(16, 185, 129, 0.3)' },
+                4: { text: '#f59e0b', bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.3)' }
             };
             const roleStyle = roleColorMap[user.role_id] || roleColorMap[4];
 
@@ -2854,7 +2845,7 @@
                             text: 'El campo Nombre únicamente debe contener letras del abecedario.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         nameInput.focus();
                         return;
@@ -2867,7 +2858,7 @@
                             text: 'El campo Apellidos únicamente debe contener letras del abecedario.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         lastNameInput.focus();
                         return;
@@ -2880,7 +2871,7 @@
                             text: 'El número de teléfono debe contener exactamente 10 dígitos numéricos.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         phoneInput.focus();
                         return;
@@ -2894,7 +2885,7 @@
                             text: 'Introduce un correo electrónico válido (ejemplo: usuario@dominio.com).',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         emailInput.focus();
                         return;
@@ -2907,7 +2898,7 @@
                             text: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         passwordInput.focus();
                         return;
@@ -2920,7 +2911,7 @@
                             text: 'Por favor selecciona el rol para el usuario.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         roleSelect.focus();
                         return;
@@ -3022,7 +3013,7 @@
                                 showConfirmButton: false,
                                 timer: 3500,
                                 timerProgressBar: true,
-                                background: '#10b981',
+                                background: '#0c142b',
                                 color: '#ffffff',
                                 iconColor: '#ffffff'
                             });
@@ -3066,7 +3057,7 @@
                                 html: errorHtml,
                                 background: '#1e293b',
                                 color: '#ffffff',
-                                confirmButtonColor: '#ef4444'
+                                confirmButtonColor: '#dc2626'
                             });
                         }
                     } catch (error) {
@@ -3076,7 +3067,7 @@
                             text: 'No se pudo comunicar con el servidor para registrar el usuario.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     } finally {
                         if (submitBtn) {
@@ -3160,7 +3151,7 @@
                                 text: 'Tu sesión o token de seguridad ha expirado. Haz clic en el botón para recargar la página e iniciar sesión nuevamente.',
                                 background: '#1e293b',
                                 color: '#ffffff',
-                                confirmButtonColor: '#0055ff',
+                                confirmButtonColor: '#1e40af',
                                 confirmButtonText: 'Recargar página'
                             }).then(() => {
                                 window.location.reload();
@@ -3210,7 +3201,7 @@
                                 text: data.message || 'Usuario actualizado exitosamente.',
                                 background: '#0c142b',
                                 color: '#ffffff',
-                                confirmButtonColor: '#0055ff',
+                                confirmButtonColor: '#1e40af',
                                 confirmButtonText: 'Aceptar',
                                 timer: 3000,
                                 timerProgressBar: true
@@ -3226,7 +3217,7 @@
                                 html: errorHtml,
                                 background: '#1e293b',
                                 color: '#ffffff',
-                                confirmButtonColor: '#ef4444',
+                                confirmButtonColor: '#dc2626',
                                 confirmButtonText: 'Entendido'
                             });
                         }
@@ -3238,7 +3229,7 @@
                             text: error.message || 'No se pudo comunicar con el servidor para actualizar el usuario.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     } finally {
                         if (submitBtn) {

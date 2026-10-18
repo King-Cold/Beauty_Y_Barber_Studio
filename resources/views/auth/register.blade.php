@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -77,7 +77,7 @@
         }
 
         .barber-stripes-mini .stripe-blue { flex: 1; background: #143b8c; }
-        .barber-stripes-mini .stripe-red { flex: 1; background: #d1121d; }
+        .barber-stripes-mini .stripe-red { flex: 1; background: #991b1b; }
         .barber-stripes-mini .stripe-white { flex: 1; background: #ffffff; }
 
         /* ==========================================
@@ -296,8 +296,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.75))
-                    drop-shadow(0 0 8px rgba(20, 59, 140, 0.35));
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.75));
         }
 
         .mini-cap {
@@ -462,7 +461,7 @@
         }
 
         .field-label .required-mark {
-            color: #ff3b47;
+            color: #fca5a5;
             font-weight: 700;
         }
 
@@ -613,8 +612,8 @@
             height: 15px;
             min-width: 15px;
             border-radius: 3px;
-            background: #d1121d;
-            border: 1px solid #d1121d;
+            background: #991b1b;
+            border: 1px solid #991b1b;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -645,7 +644,7 @@
         }
 
         .legal-link {
-            color: #ff3b47;
+            color: #fca5a5;
             text-decoration: underline;
             text-underline-offset: 2px;
             transition: color 0.2s ease;
@@ -663,7 +662,7 @@
             height: 38px;
             margin-top: 8px;
             padding: 0 18px;
-            background: #d1121d;
+            background: #991b1b;
             color: #ffffff;
             border: none;
             border-radius: 8px;
@@ -676,13 +675,13 @@
             justify-content: center;
             gap: 8px;
             transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 18px rgba(209, 18, 29, 0.45);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .submit-btn:hover {
-            background: #b50f19;
+            background: #7f1d1d;
             transform: translateY(-1px);
-            box-shadow: 0 6px 22px rgba(209, 18, 29, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .submit-btn:active {
@@ -710,7 +709,7 @@
         }
 
         .login-link {
-            color: #d1121d;
+            color: #fca5a5;
             text-decoration: none;
             font-weight: 600;
             margin-left: 4px;
@@ -718,7 +717,7 @@
         }
 
         .login-link:hover {
-            color: #ff3b47;
+            color: #fca5a5;
             text-decoration: underline;
         }
 
@@ -759,8 +758,7 @@
             height: 180px;
             pointer-events: none;
             z-index: 10;
-            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85))
-                    drop-shadow(0 0 35px rgba(20, 59, 140, 0.25));
+            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85));
         }
 
         .bottom-right-swoosh svg {
@@ -1155,7 +1153,7 @@
                                 </svg>
                             </span>
                             <span class="legal-text">
-                                Acepto los <a href="#" id="linkTerms" class="legal-link">Términos y Condiciones</a> del estudio <span class="required-mark" style="color: #ff3b47; font-weight: 700;" title="Obligatorio">*</span>
+                                Acepto los <a href="#" id="linkTerms" class="legal-link">Términos y Condiciones</a> del estudio <span class="required-mark" style="color: #fca5a5; font-weight: 700;" title="Obligatorio">*</span>
                             </span>
                         </label>
                     </div>
@@ -1170,7 +1168,7 @@
                                 </svg>
                             </span>
                             <span class="legal-text">
-                                He leído y acepto el <a href="#" id="linkPrivacy" class="legal-link">Aviso de Privacidad</a> <span class="required-mark" style="color: #ff3b47; font-weight: 700;" title="Obligatorio">*</span>
+                                He leído y acepto el <a href="#" id="linkPrivacy" class="legal-link">Aviso de Privacidad</a> <span class="required-mark" style="color: #fca5a5; font-weight: 700;" title="Obligatorio">*</span>
                             </span>
                         </label>
                     </div>
@@ -1226,7 +1224,7 @@
                     text: '{{ $errors->first() }}',
                     background: '#0b0e14',
                     color: '#fff',
-                    confirmButtonColor: '#d1121d'
+                    confirmButtonColor: '#991b1b'
                 });
             @endif
 
@@ -1245,7 +1243,7 @@
                             text: 'Por favor, asegúrate de aceptar los Términos y Condiciones y el Aviso de Privacidad para continuar.',
                             background: '#0b0e14',
                             color: '#fff',
-                            confirmButtonColor: '#d1121d'
+                            confirmButtonColor: '#991b1b'
                         });
                     }
                 });
@@ -1269,7 +1267,7 @@
                         background: 'rgba(14, 18, 24, 0.95)',
                         color: '#ffffff',
                         confirmButtonText: 'Entendido',
-                        confirmButtonColor: '#d1121d',
+                        confirmButtonColor: '#991b1b',
                         width: '550px',
                         backdrop: `rgba(0,0,0,0.6) backdrop-filter: blur(4px)`
                     });
@@ -1294,7 +1292,7 @@
                         background: 'rgba(14, 18, 24, 0.95)',
                         color: '#ffffff',
                         confirmButtonText: 'Entendido',
-                        confirmButtonColor: '#d1121d',
+                        confirmButtonColor: '#991b1b',
                         width: '550px',
                         backdrop: `rgba(0,0,0,0.6) backdrop-filter: blur(4px)`
                     });

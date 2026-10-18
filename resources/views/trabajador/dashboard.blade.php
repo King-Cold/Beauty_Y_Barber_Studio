@@ -1,4 +1,4 @@
-@extends('trabajador.layout')
+﻿@extends('trabajador.layout')
 
 @section('title', 'Beauty & Barber Studio - Panel Principal')
 
@@ -149,7 +149,7 @@
     .stat-icon.blue {
         background: var(--barber-blue-pale);
         color: var(--barber-blue-light);
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
     }
 
     .stat-icon.red {
@@ -345,7 +345,7 @@
     .status-badge.confirmada {
         background: var(--barber-blue-pale);
         color: var(--barber-blue-light);
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
     }
 
     .status-badge.en-curso {
@@ -465,7 +465,7 @@
 
     /* HORARIO ASIGNADO HOY */
     .schedule-info-box {
-        background: rgba(0, 85, 255, 0.04);
+        background: rgba(37, 99, 235, 0.04);
         border: 1px dashed var(--barber-blue-border);
         border-radius: 12px;
         padding: 18px;

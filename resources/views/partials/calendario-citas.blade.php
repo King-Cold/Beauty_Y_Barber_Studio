@@ -139,7 +139,7 @@
                 </div>
             </div>
 
-            {{-- Leyenda interactiva de estados con contadores --}}
+            {{-- Leyenda informativa de estados con contadores (Subtarea 5) --}}
             <div class="cal-status-legend" aria-label="Leyenda de estados">
                 <span class="legend-chip legend-confirmada" title="Citas agendadas y activas">
                     <span class="legend-dot"></span> Confirmada (<strong id="cntConfirmada">0</strong>)
@@ -431,9 +431,9 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: rgba(0, 85, 255, 0.12);
+        background: rgba(37, 99, 235, 0.12);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.28);
         padding: 3px 12px;
         border-radius: 20px;
         font-size: 11px;
@@ -447,8 +447,8 @@
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background-color: #34d399;
-        box-shadow: 0 0 8px #34d399;
+        background-color: #10b981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
     }
 
     .cal-main-title {
@@ -496,22 +496,24 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 20px;
-        background: linear-gradient(135deg, var(--barber-blue, #0055ff) 0%, #1d4ed8 100%);
+        padding: 9px 18px;
+        background: #1e40af;
         color: #ffffff;
         font-size: 13.5px;
-        font-weight: 700;
-        border-radius: 10px;
+        font-weight: 600;
+        border-radius: 8px;
         text-decoration: none;
-        transition: all 0.25s var(--ease-fluid, cubic-bezier(0.25, 1, 0.5, 1));
-        border: 1px solid rgba(0, 85, 255, 0.4);
-        box-shadow: 0 4px 14px rgba(0, 85, 255, 0.25);
+        transition: all 0.2s ease;
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-cal-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 85, 255, 0.4);
-        border-color: #60a5fa;
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     /* BARRA DE CONTROLES PRINCIPAL */
@@ -558,8 +560,8 @@
     }
 
     .cal-nav-btn:hover {
-        background: var(--barber-blue-pale, rgba(0, 85, 255, 0.15));
-        border-color: rgba(0, 85, 255, 0.3);
+        background: var(--barber-blue-pale, rgba(37, 99, 235, 0.12));
+        border-color: rgba(37, 99, 235, 0.28);
         color: #60a5fa;
         transform: scale(1.05);
     }
@@ -598,8 +600,8 @@
     }
 
     .cal-date-input:focus {
-        border-color: var(--barber-blue, #0055ff);
-        box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.25);
+        border-color: var(--barber-blue, #1e40af);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
     }
 
     /* Título del Periodo */
@@ -654,9 +656,10 @@
     }
 
     .cal-view-btn.active {
-        background: var(--barber-blue, #0055ff);
+        background: #1e3a8a;
         color: #ffffff;
-        box-shadow: 0 2px 8px rgba(0, 85, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
     }
 
     /* Filtros y Leyenda */
@@ -704,8 +707,8 @@
     }
 
     .cal-filter-select:focus {
-        border-color: var(--barber-blue, #0055ff);
-        box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.25);
+        border-color: var(--barber-blue, #1e40af);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
     }
 
     .cal-filter-select option {
@@ -742,8 +745,8 @@
 
     .cal-search-input:focus {
         width: 260px;
-        border-color: var(--barber-blue, #0055ff);
-        box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.25);
+        border-color: var(--barber-blue, #1e40af);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
     }
 
     /* Leyenda de Estados */
@@ -763,11 +766,7 @@
         font-size: 11.5px;
         font-weight: 600;
         cursor: default;
-        transition: transform 0.15s ease;
-    }
-
-    .legend-chip:hover {
-        transform: translateY(-1px);
+        user-select: none;
     }
 
     .legend-dot {
@@ -778,38 +777,38 @@
 
     .legend-confirmada {
         background: rgba(16, 185, 129, 0.12);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.25);
     }
-    .legend-confirmada .legend-dot { background-color: #34d399; }
+    .legend-confirmada .legend-dot { background-color: #10b981; }
 
     .legend-en_proceso {
-        background: rgba(0, 85, 255, 0.12);
+        background: rgba(37, 99, 235, 0.12);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        border: 1px solid rgba(37, 99, 235, 0.25);
     }
     .legend-en_proceso .legend-dot { background-color: #60a5fa; }
 
     .legend-completada {
-        background: rgba(6, 182, 212, 0.12);
-        color: #22d3ee;
-        border: 1px solid rgba(6, 182, 212, 0.25);
+        background: rgba(13, 148, 136, 0.12);
+        color: #2dd4bf;
+        border: 1px solid rgba(13, 148, 136, 0.25);
     }
-    .legend-completada .legend-dot { background-color: #22d3ee; }
+    .legend-completada .legend-dot { background-color: #2dd4bf; }
 
     .legend-cancelada {
-        background: rgba(239, 68, 68, 0.12);
+        background: rgba(220, 38, 38, 0.12);
         color: #f87171;
-        border: 1px solid rgba(239, 68, 68, 0.25);
+        border: 1px solid rgba(220, 38, 38, 0.25);
     }
     .legend-cancelada .legend-dot { background-color: #f87171; }
 
     .legend-vencida {
         background: rgba(245, 158, 11, 0.12);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.25);
     }
-    .legend-vencida .legend-dot { background-color: #fbbf24; }
+    .legend-vencida .legend-dot { background-color: #f59e0b; }
 
     /* TABLERO PRINCIPAL */
     .cal-main-board {
@@ -844,8 +843,8 @@
     .cal-spinner {
         width: 38px;
         height: 38px;
-        border: 3px solid rgba(0, 85, 255, 0.2);
-        border-top-color: var(--barber-blue, #0055ff);
+        border: 3px solid rgba(37, 99, 235, 0.2);
+        border-top-color: var(--barber-blue, #1e40af);
         border-radius: 50%;
         animation: calSpin 0.7s linear infinite;
     }
@@ -907,8 +906,8 @@
     }
 
     .cal-month-cell.is-today {
-        border-color: rgba(0, 85, 255, 0.5);
-        background: rgba(0, 85, 255, 0.06);
+        border-color: rgba(37, 99, 235, 0.5);
+        background: rgba(37, 99, 235, 0.06);
     }
 
     .cal-month-cell-header {
@@ -931,7 +930,7 @@
     }
 
     .cal-month-cell.is-today .cal-day-num {
-        background: var(--barber-blue, #0055ff);
+        background: var(--barber-blue, #1e40af);
         color: #ffffff;
     }
 
@@ -997,32 +996,32 @@
     /* Clases de estado para eventos */
     .status-bg-confirmada {
         background: rgba(16, 185, 129, 0.18);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.35);
     }
 
     .status-bg-en_proceso {
-        background: rgba(0, 85, 255, 0.18);
+        background: rgba(37, 99, 235, 0.18);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.35);
+        border: 1px solid rgba(37, 99, 235, 0.35);
     }
 
     .status-bg-completada {
-        background: rgba(6, 182, 212, 0.18);
-        color: #22d3ee;
-        border: 1px solid rgba(6, 182, 212, 0.35);
+        background: rgba(13, 148, 136, 0.18);
+        color: #2dd4bf;
+        border: 1px solid rgba(13, 148, 136, 0.35);
     }
 
     .status-bg-cancelada {
-        background: rgba(239, 68, 68, 0.18);
+        background: rgba(220, 38, 38, 0.18);
         color: #f87171;
-        border: 1px solid rgba(239, 68, 68, 0.35);
+        border: 1px solid rgba(220, 38, 38, 0.35);
         text-decoration: line-through;
     }
 
     .status-bg-vencida {
         background: rgba(245, 158, 11, 0.18);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.35);
     }
 
@@ -1030,8 +1029,8 @@
         font-size: 10.5px;
         font-weight: 700;
         color: #93c5fd;
-        background: rgba(0, 85, 255, 0.12);
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        background: rgba(37, 99, 235, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.25);
         border-radius: 4px;
         cursor: pointer;
         text-align: center;
@@ -1043,9 +1042,9 @@
     }
 
     .cal-more-events-btn:hover {
-        background: rgba(0, 85, 255, 0.3);
+        background: rgba(37, 99, 235, 0.25);
         color: #ffffff;
-        border-color: rgba(0, 85, 255, 0.5);
+        border-color: rgba(37, 99, 235, 0.5);
     }
 
     /* Scrollbars oscuros y estilizados para todo el calendario */
@@ -1062,7 +1061,7 @@
         border-radius: 10px;
     }
     #calendarioInteractivoApp *::-webkit-scrollbar-thumb:hover {
-        background: rgba(0, 85, 255, 0.5);
+        background: rgba(37, 99, 235, 0.5);
     }
     #calendarioInteractivoApp * {
         scrollbar-width: thin;
@@ -1096,8 +1095,8 @@
     }
 
     .cal-week-col-header.is-today {
-        background: rgba(0, 85, 255, 0.15);
-        border-bottom-color: rgba(0, 85, 255, 0.3);
+        background: rgba(37, 99, 235, 0.15);
+        border-bottom-color: rgba(37, 99, 235, 0.3);
     }
 
     .cal-week-day-name {
@@ -1265,7 +1264,7 @@
 
     .cal-day-event-card:hover {
         background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(0, 85, 255, 0.3);
+        border-color: rgba(37, 99, 235, 0.3);
         transform: translateX(4px);
     }
 
@@ -1317,7 +1316,7 @@
     .cal-day-price-tag {
         font-size: 16px;
         font-weight: 800;
-        color: #38bdf8;
+        color: #60a5fa;
     }
 
     .cal-hour-empty-slot {
@@ -1325,6 +1324,170 @@
         color: rgba(255, 255, 255, 0.2);
         font-size: 12.5px;
         font-style: italic;
+    }
+
+    /* ESTILOS PARA DÍAS NO LABORABLES (SUBTAREA 6) */
+    .cal-month-cell.is-closed {
+        background: repeating-linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75) 12px, rgba(30, 41, 59, 0.4) 12px, rgba(30, 41, 59, 0.4) 24px) !important;
+        border-color: rgba(239, 68, 68, 0.22) !important;
+        cursor: not-allowed !important;
+    }
+
+    .cal-month-cell.is-closed:hover {
+        background: repeating-linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85) 12px, rgba(30, 41, 59, 0.5) 12px, rgba(30, 41, 59, 0.5) 24px) !important;
+        border-color: rgba(239, 68, 68, 0.38) !important;
+    }
+
+    .cal-month-closed-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 6px;
+        padding: 1px 6px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .cal-month-closed-banner {
+        padding: 6px 8px;
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px dashed rgba(239, 68, 68, 0.25);
+        border-radius: 8px;
+        color: #fca5a5;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        margin-top: auto;
+    }
+
+    .cal-week-column.is-closed {
+        background: repeating-linear-gradient(135deg, rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65) 14px, rgba(30, 41, 59, 0.3) 14px, rgba(30, 41, 59, 0.3) 28px) !important;
+        border-color: rgba(239, 68, 68, 0.25) !important;
+        cursor: not-allowed !important;
+    }
+
+    .cal-week-col-header.is-closed {
+        background: rgba(239, 68, 68, 0.08) !important;
+        border-bottom-color: rgba(239, 68, 68, 0.25) !important;
+    }
+
+    .cal-week-closed-header-badge {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #fca5a5;
+        background: rgba(239, 68, 68, 0.14);
+        border: 1px solid rgba(239, 68, 68, 0.28);
+        border-radius: 10px;
+        padding: 2px 8px;
+        margin-top: 6px;
+        display: inline-block;
+        letter-spacing: 0.02em;
+    }
+
+    .cal-week-closed-notice {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 32px 14px;
+        background: rgba(239, 68, 68, 0.05);
+        border: 1px dashed rgba(239, 68, 68, 0.25);
+        border-radius: 10px;
+        margin-top: 10px;
+        gap: 8px;
+    }
+
+    .cal-closed-lock-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cal-closed-notice-title {
+        font-size: 13.5px;
+        font-weight: 800;
+        color: #fca5a5;
+        letter-spacing: 0.01em;
+    }
+
+    .cal-closed-notice-sub {
+        font-size: 11.5px;
+        color: var(--text-muted, #94a3b8);
+    }
+
+    .cal-badge-closed {
+        background: rgba(239, 68, 68, 0.15) !important;
+        color: #fca5a5 !important;
+        border-color: rgba(239, 68, 68, 0.35) !important;
+    }
+
+    .cal-day-closed-card {
+        padding: 48px 24px;
+        background: rgba(239, 68, 68, 0.04);
+        border: 1px dashed rgba(239, 68, 68, 0.28);
+        border-radius: 14px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .cal-day-closed-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: rgba(239, 68, 68, 0.12);
+        color: #f87171;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cal-day-closed-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .cal-day-closed-desc {
+        font-size: 13.5px;
+        color: #94a3b8;
+        max-width: 520px;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .cal-day-closed-warning {
+        color: #fca5a5 !important;
+    }
+
+    .btn-cal-primary.is-disabled-closed {
+        opacity: 0.45 !important;
+        cursor: not-allowed !important;
+        filter: grayscale(0.85) !important;
+    }
+
+    .cal-hour-empty-slot.is-outside-hours {
+        color: rgba(148, 163, 184, 0.4);
+        background: rgba(255, 255, 255, 0.01);
+        border-radius: 6px;
     }
 
     /* ESTADO VACÍO */
@@ -1342,7 +1505,7 @@
         width: 72px;
         height: 72px;
         border-radius: 20px;
-        background: var(--barber-blue-pale, rgba(0, 85, 255, 0.15));
+        background: var(--barber-blue-pale, rgba(37, 99, 235, 0.15));
         color: #60a5fa;
         display: flex;
         align-items: center;
@@ -1487,10 +1650,10 @@
         flex-shrink: 0;
     }
 
-    .cal-icon-blue { background: rgba(0, 85, 255, 0.15); color: #60a5fa; }
-    .cal-icon-purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
-    .cal-icon-cyan { background: rgba(6, 182, 212, 0.15); color: #22d3ee; }
-    .cal-icon-amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .cal-icon-blue { background: rgba(37, 99, 235, 0.12); color: #60a5fa; }
+    .cal-icon-purple { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
+    .cal-icon-cyan { background: rgba(13, 148, 136, 0.12); color: #2dd4bf; }
+    .cal-icon-amber { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
 
     .cal-info-content {
         display: flex;
@@ -1531,7 +1694,7 @@
     .cal-info-price {
         font-size: 15px;
         font-weight: 800;
-        color: #38bdf8;
+        color: #60a5fa;
         margin-top: 4px;
     }
 
@@ -1562,7 +1725,7 @@
         align-items: center;
         justify-content: center;
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
         flex-shrink: 0;
     }
@@ -1595,20 +1758,23 @@
         align-items: center;
         gap: 6px;
         padding: 8px 16px;
-        background: #059669;
+        background: #1e40af;
         color: #ffffff;
-        border: 1px solid rgba(16, 185, 129, 0.4);
+        border: 1px solid rgba(147, 197, 253, 0.28);
         border-radius: 8px;
         font-size: 12.5px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-cal-checkin-action:hover {
-        background: #10b981;
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     /* Notas */
@@ -1658,14 +1824,14 @@
     }
 
     .cal-textarea-obs:focus {
-        border-color: var(--barber-blue, #0055ff);
-        box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.25);
+        border-color: var(--barber-blue, #1e40af);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
     }
 
     /* Cuadro de Actualización de Estado (Criterio 5) */
     .cal-status-change-box {
-        background: rgba(0, 85, 255, 0.06);
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        background: rgba(37, 99, 235, 0.06);
+        border: 1px solid rgba(37, 99, 235, 0.25);
         border-radius: 12px;
         padding: 16px;
         display: flex;
@@ -1695,7 +1861,7 @@
         height: 38px;
         padding: 0 12px;
         background: #0a1124;
-        border: 1px solid rgba(0, 85, 255, 0.4);
+        border: 1px solid rgba(37, 99, 235, 0.4);
         border-radius: 8px;
         color: var(--text-white, #ffffff);
         font-size: 13.5px;
@@ -1713,21 +1879,24 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 18px;
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        padding: 9px 18px;
+        background: #1e40af;
         color: #ffffff;
-        border: 1px solid rgba(16, 185, 129, 0.4);
+        border: 1px solid rgba(147, 197, 253, 0.28);
         border-radius: 8px;
         font-size: 13.5px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-cal-save-status:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .btn-cal-save-status:disabled {
@@ -1742,10 +1911,11 @@
 (function() {
     'use strict';
 
-    // CONFIGURACIÓN DE ENDPOINTS
+    // CONFIGURACIÓN DE ENDPOINTS Y HORARIOS
     const API_EVENTOS_URL = @json($apiEventos);
     const API_DETALLE_BASE = @json($apiDetalleBase);
     const API_ESTADO_BASE = @json($apiEstadoBase);
+    const HORARIOS_SUCURSAL_INICIAL = @json(\App\Models\HorarioSucursal::getHorariosMap());
 
     // ESTADO LOCAL DEL CALENDARIO
     const state = {
@@ -1755,6 +1925,8 @@
         filtroEstado: 'todas',
         terminoBusqueda: '',
         citas: [],
+        horariosSucursal: HORARIOS_SUCURSAL_INICIAL,
+        fechasEspeciales: [],
         citaSeleccionadaId: null,
         cargando: false
     };
@@ -1769,6 +1941,7 @@
         btnToday: document.getElementById('btnCalToday'),
         inputFechaDirecta: document.getElementById('calInputFechaDirecta'),
         btnRefresh: document.getElementById('btnCalRefresh'),
+        btnAgendarCita: document.getElementById('btnCalAgendarCita'),
         btnViewMes: document.getElementById('btnViewMes'),
         btnViewSemana: document.getElementById('btnViewSemana'),
         btnViewDia: document.getElementById('btnViewDia'),
@@ -1823,6 +1996,13 @@
     const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     const nombresDiasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     const nombresDiasCortos = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    const DIAS_KEYS = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+
+    function horaAMinutos(hora) {
+        if (!hora) return 0;
+        const parts = hora.split(':').map(Number);
+        return (parts[0] * 60) + (parts[1] || 0);
+    }
 
     function formatDateISO(date) {
         const d = new Date(date);
@@ -1842,6 +2022,84 @@
         return d1.getFullYear() === d2.getFullYear() &&
                d1.getMonth() === d2.getMonth() &&
                d1.getDate() === d2.getDate();
+    }
+
+    /**
+     * Determina si una fecha dada corresponde a un día laborable de la sucursal.
+     * Reutiliza la configuración centralizada de horarios y fechas especiales.
+     */
+    function infoDiaLaborable(date) {
+        const d = (date instanceof Date) ? date : parseISODate(date);
+        const fechaStr = formatDateISO(d);
+        const diaIndex = d.getDay(); // 0: domingo, 6: sabado
+        const diaClave = DIAS_KEYS[diaIndex];
+
+        // 1. Revisar si hay fecha especial cerrada todo el día
+        if (state.fechasEspeciales && state.fechasEspeciales.length > 0) {
+            const fe = state.fechasEspeciales.find(f => f.fecha === fechaStr);
+            if (fe && fe.cerrado_todo_el_dia) {
+                return {
+                    laborable: false,
+                    motivo: fe.motivo || 'Fecha especial',
+                    mensaje: 'Cerrado, no se labora',
+                    subtexto: fe.motivo ? `Fecha especial (${fe.motivo})` : 'Sucursal cerrada',
+                    tipo: 'fecha_especial',
+                    diaClave: diaClave,
+                    apertura: null,
+                    cierre: null
+                };
+            }
+        }
+
+        // 2. Horarios de la sucursal (fuente de verdad)
+        const horarios = state.horariosSucursal || HORARIOS_SUCURSAL_INICIAL || {};
+        const configDia = horarios[diaClave];
+
+        if (!configDia || !configDia.abierto) {
+            const nombreDia = configDia ? configDia.nombre : nombresDiasSemana[diaIndex];
+            return {
+                laborable: false,
+                motivo: nombreDia,
+                mensaje: 'Cerrado, no se labora',
+                subtexto: 'Día no laborable',
+                tipo: 'dia_no_laborable',
+                diaClave: diaClave,
+                apertura: null,
+                cierre: null
+            };
+        }
+
+        return {
+            laborable: true,
+            motivo: null,
+            mensaje: 'Laborable',
+            subtexto: `${configDia.apertura} a ${configDia.cierre}`,
+            tipo: 'laborable',
+            diaClave: diaClave,
+            apertura: configDia.apertura || '08:00',
+            cierre: configDia.cierre || '20:00'
+        };
+    }
+
+    /**
+     * Muestra una notificación visual informando que el día está cerrado y no se labora.
+     */
+    function notificarDiaNoLaborable(diaInfo) {
+        const sub = (diaInfo && diaInfo.subtexto) ? ` (${diaInfo.subtexto})` : '';
+        if (window.Swal) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'warning',
+                title: 'Cerrado, no se labora',
+                text: `La sucursal permanece cerrada en esta fecha${sub}. No hay horarios de atención disponibles para agendar.`,
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                background: '#0c142b',
+                color: '#ffffff'
+            });
+        }
     }
 
     // OBTENER RANGO DE FECHAS SEGÚN LA VISTA
@@ -1919,6 +2177,12 @@
             const data = await res.json();
             if (data.success) {
                 state.citas = data.eventos || [];
+                if (data.horarios_sucursal) {
+                    state.horariosSucursal = data.horarios_sucursal;
+                }
+                if (data.fechas_especiales) {
+                    state.fechasEspeciales = data.fechas_especiales;
+                }
                 actualizarTituloPeriodo();
                 actualizarContadoresLegend();
                 renderizarVista();
@@ -2028,6 +2292,20 @@
         el.emptyState.style.display = 'none';
 
         const citasFiltradas = obtenerCitasFiltradas();
+        const diaActivoInfo = infoDiaLaborable(state.fechaSeleccionada);
+
+        // Bloquear o habilitar botón superior de agendar según la fecha activa en vista día
+        if (el.btnAgendarCita) {
+            if (state.vista === 'dia' && !diaActivoInfo.laborable) {
+                el.btnAgendarCita.classList.add('is-disabled-closed');
+                el.btnAgendarCita.setAttribute('aria-disabled', 'true');
+                el.btnAgendarCita.title = 'No se puede agendar citas en días no laborables (Cerrado, no se labora)';
+            } else {
+                el.btnAgendarCita.classList.remove('is-disabled-closed');
+                el.btnAgendarCita.removeAttribute('aria-disabled');
+                el.btnAgendarCita.title = 'Agendar nueva cita';
+            }
+        }
 
         if (state.vista === 'mes') {
             el.viewMesContainer.style.display = 'block';
@@ -2041,8 +2319,15 @@
         }
 
         // Mostrar estado vacío si no hay eventos y no estamos en mes (en mes se ven las celdas)
+        // CRÍTICO: Si estamos en vista día y el día no es laborable, NUNCA mostrar estado vacío ni opción de agendar
         if (citasFiltradas.length === 0 && (state.vista === 'semana' || state.vista === 'dia')) {
-            el.emptyState.style.display = 'flex';
+            if (state.vista === 'dia' && !diaActivoInfo.laborable) {
+                el.emptyState.style.display = 'none';
+            } else {
+                el.emptyState.style.display = 'flex';
+            }
+        } else {
+            el.emptyState.style.display = 'none';
         }
     }
 
@@ -2074,10 +2359,12 @@
             const esHoy = isSameDay(fechaIter, hoy);
             const esMismoMes = fechaIter.getMonth() === curr.getMonth();
             const citasDelDia = citasPorFecha[fechaStr] || [];
+            const diaInfo = infoDiaLaborable(fechaIter);
 
             const cell = document.createElement('div');
-            cell.className = `cal-month-cell ${esHoy ? 'is-today' : ''} ${!esMismoMes ? 'different-month' : ''}`;
+            cell.className = `cal-month-cell ${esHoy ? 'is-today' : ''} ${!esMismoMes ? 'different-month' : ''} ${!diaInfo.laborable ? 'is-closed cal-month-cell-closed' : ''}`;
             cell.dataset.fecha = fechaStr;
+            cell.dataset.laborable = diaInfo.laborable ? '1' : '0';
 
             // Encabezado de celda
             const header = document.createElement('div');
@@ -2088,20 +2375,39 @@
             numSpan.textContent = fechaIter.getDate();
             header.appendChild(numSpan);
 
-            if (citasDelDia.length > 0) {
+            if (diaInfo.laborable && citasDelDia.length > 0) {
                 const countBadge = document.createElement('span');
                 countBadge.className = 'cal-day-count-badge';
                 countBadge.textContent = `${citasDelDia.length} ${citasDelDia.length === 1 ? 'cita' : 'citas'}`;
                 header.appendChild(countBadge);
+            } else if (!diaInfo.laborable) {
+                const closedPill = document.createElement('span');
+                closedPill.className = 'cal-month-closed-pill';
+                closedPill.title = 'Cerrado, no se labora';
+                closedPill.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <span>Cerrado</span>
+                `;
+                header.appendChild(closedPill);
             }
 
             cell.appendChild(header);
 
-            // Lista de eventos (Cero scrollbars, máximo 2 chips para que encaje limpiamente)
+            // Lista de eventos o aviso de cerrado
             const eventsList = document.createElement('div');
             eventsList.className = 'cal-cell-events-list';
 
-            const maxChips = 2;
+            if (!diaInfo.laborable) {
+                const closedBanner = document.createElement('div');
+                closedBanner.className = 'cal-month-closed-banner';
+                closedBanner.innerHTML = `<span>Cerrado, no se labora</span>`;
+                eventsList.appendChild(closedBanner);
+            }
+
+            const maxChips = diaInfo.laborable ? 2 : 1;
             citasDelDia.slice(0, maxChips).forEach(cita => {
                 const chip = document.createElement('div');
                 const st = cita.estado_visual || cita.estado;
@@ -2136,10 +2442,21 @@
 
             cell.appendChild(eventsList);
 
-            // Click en la celda para saltar a vista de día
-            cell.addEventListener('click', () => {
-                cambiarADia(fechaStr);
-            });
+            // Click en la celda para saltar a vista de día solo si es laborable
+            if (!diaInfo.laborable) {
+                cell.addEventListener('click', (e) => {
+                    if (e.target.closest('.cal-event-chip') || e.target.closest('.cal-more-events-btn')) {
+                        return;
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                    notificarDiaNoLaborable(diaInfo);
+                });
+            } else {
+                cell.addEventListener('click', () => {
+                    cambiarADia(fechaStr);
+                });
+            }
 
             el.monthDaysGrid.appendChild(cell);
             fechaIter.setDate(fechaIter.getDate() + 1);
@@ -2170,16 +2487,20 @@
             const fechaStr = formatDateISO(fechaIter);
             const esHoy = isSameDay(fechaIter, hoy);
             const citasDelDia = citasPorFecha[fechaStr] || [];
+            const diaInfo = infoDiaLaborable(fechaIter);
 
             const col = document.createElement('div');
-            col.className = 'cal-week-column';
+            col.className = `cal-week-column ${!diaInfo.laborable ? 'is-closed cal-week-column-closed' : ''}`;
+            col.dataset.fecha = fechaStr;
+            col.dataset.laborable = diaInfo.laborable ? '1' : '0';
 
             // Cabecera columna
             const colHeader = document.createElement('div');
-            colHeader.className = `cal-week-col-header ${esHoy ? 'is-today' : ''}`;
+            colHeader.className = `cal-week-col-header ${esHoy ? 'is-today' : ''} ${!diaInfo.laborable ? 'is-closed' : ''}`;
             colHeader.innerHTML = `
                 <div class="cal-week-day-name">${nombresDiasCortos[i]}</div>
                 <div class="cal-week-day-number">${fechaIter.getDate()} ${nombresMeses[fechaIter.getMonth()].substring(0, 3)}</div>
+                ${!diaInfo.laborable ? '<div class="cal-week-closed-header-badge">Cerrado, no se labora</div>' : ''}
             `;
             col.appendChild(colHeader);
 
@@ -2187,7 +2508,39 @@
             const colBody = document.createElement('div');
             colBody.className = 'cal-week-col-body';
 
-            if (citasDelDia.length === 0) {
+            if (!diaInfo.laborable) {
+                const closedNotice = document.createElement('div');
+                closedNotice.className = 'cal-week-closed-notice';
+                closedNotice.innerHTML = `
+                    <div class="cal-closed-lock-icon">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <div class="cal-closed-notice-title">Cerrado, no se labora</div>
+                    <div class="cal-closed-notice-sub">${diaInfo.subtexto || 'Día no laborable'}</div>
+                `;
+                colBody.appendChild(closedNotice);
+
+                // Si hubieran citas históricas existentes, mostrarlas informativamente
+                citasDelDia.forEach(cita => {
+                    const card = document.createElement('div');
+                    const st = cita.estado_visual || cita.estado;
+                    card.className = 'cal-week-event-card';
+                    card.dataset.id = cita.id;
+                    card.innerHTML = `
+                        <div class="cal-card-top-row">
+                            <span class="cal-card-time">${cita.hora_inicio} - ${cita.hora_fin}</span>
+                            <span class="cal-card-status-pill status-bg-${st}">${cita.estado_label}</span>
+                        </div>
+                        <div class="cal-card-client">${escapeHtml(cita.cliente.nombre_completo)}</div>
+                        <div class="cal-card-service">${escapeHtml(cita.servicio.nombre)} • ${cita.precio_formateado}</div>
+                    `;
+                    card.addEventListener('click', () => abrirModalCita(cita.id));
+                    colBody.appendChild(card);
+                });
+            } else if (citasDelDia.length === 0) {
                 const emptySlot = document.createElement('div');
                 emptySlot.className = 'cal-hour-empty-slot';
                 emptySlot.textContent = 'Sin citas programadas';
@@ -2220,6 +2573,17 @@
                 });
             }
 
+            if (!diaInfo.laborable) {
+                col.addEventListener('click', (e) => {
+                    if (e.target.closest('.cal-week-event-card')) {
+                        return;
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                    notificarDiaNoLaborable(diaInfo);
+                });
+            }
+
             col.appendChild(colBody);
             el.weekBoard.appendChild(col);
             fechaIter.setDate(fechaIter.getDate() + 1);
@@ -2231,12 +2595,75 @@
         const d = state.fechaSeleccionada;
         const fechaStr = formatDateISO(d);
         const diaNombre = nombresDiasSemana[d.getDay()];
+        const diaInfo = infoDiaLaborable(d);
 
-        // Resumen superior
+        if (!diaInfo.laborable) {
+            el.emptyState.style.display = 'none';
+            el.dayHeaderSummary.innerHTML = `
+                <div class="cal-day-summary-left">
+                    <h3>${diaNombre} ${d.getDate()} de ${nombresMeses[d.getMonth()]}, ${d.getFullYear()}</h3>
+                    <p class="cal-day-closed-warning">La sucursal permanece cerrada en esta fecha (${diaInfo.subtexto || 'Día no laborable'})</p>
+                </div>
+                <div class="cal-day-summary-right">
+                    <span class="cal-badge-pill cal-badge-closed">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>Cerrado, no se labora</span>
+                    </span>
+                </div>
+            `;
+
+            el.dayHoursList.innerHTML = `
+                <div class="cal-day-closed-card">
+                    <div class="cal-day-closed-icon">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h4 class="cal-day-closed-title">Cerrado, no se labora</h4>
+                    <p class="cal-day-closed-desc">Este día está configurado como no laborable en la sucursal. No hay horarios de atención ni selección disponible.</p>
+                </div>
+            `;
+
+            if (citas.length > 0) {
+                const histWrap = document.createElement('div');
+                histWrap.className = 'cal-day-hist-citas';
+                histWrap.innerHTML = `<h5 style="color: #94a3b8; font-size: 13px; margin: 16px 0 8px;">Citas registradas previamente en este día (${citas.length}):</h5>`;
+                citas.forEach(cita => {
+                    const card = document.createElement('div');
+                    const st = cita.estado_visual || cita.estado;
+                    card.className = 'cal-day-event-card';
+                    card.dataset.id = cita.id;
+                    card.innerHTML = `
+                        <div class="cal-day-event-left">
+                            <span class="cal-day-event-time-badge">${cita.hora_inicio} - ${cita.hora_fin}</span>
+                            <div class="cal-day-event-main-info">
+                                <span class="cal-day-client-name">${escapeHtml(cita.cliente.nombre_completo)}</span>
+                                <span class="cal-day-service-name">${escapeHtml(cita.servicio.nombre)} • ${cita.duracion_minutos} min</span>
+                                <span class="cal-day-worker-tag">Especialista: ${escapeHtml(cita.trabajador.nombre_completo)}</span>
+                            </div>
+                        </div>
+                        <div class="cal-day-event-right">
+                            <span class="cal-day-price-tag">${cita.precio_formateado}</span>
+                            <span class="cal-card-status-pill status-bg-${st}">${cita.estado_label}</span>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => abrirModalCita(cita.id));
+                    histWrap.appendChild(card);
+                });
+                el.dayHoursList.appendChild(histWrap);
+            }
+            return;
+        }
+
+        // Resumen superior para día laborable
         el.dayHeaderSummary.innerHTML = `
             <div class="cal-day-summary-left">
                 <h3>${diaNombre} ${d.getDate()} de ${nombresMeses[d.getMonth()]}, ${d.getFullYear()}</h3>
-                <p>${citas.length} ${citas.length === 1 ? 'cita programada' : 'citas programadas'} para esta fecha</p>
+                <p>${citas.length} ${citas.length === 1 ? 'cita programada' : 'citas programadas'} para esta fecha • Horario de atención: ${diaInfo.apertura} a ${diaInfo.cierre}</p>
             </div>
             <div class="cal-day-summary-right">
                 <span class="cal-badge-pill">Fecha seleccionada</span>
@@ -2251,8 +2678,12 @@
             horas.push(String(h).padStart(2, '0') + ':00');
         }
 
+        const aperturaMin = diaInfo.apertura ? horaAMinutos(diaInfo.apertura) : 480;
+        const cierreMin = diaInfo.cierre ? horaAMinutos(diaInfo.cierre) : 1200;
+
         horas.forEach(hora => {
             const horaPrefijo = hora.substring(0, 2);
+            const horaActualMin = horaAMinutos(hora);
             // Citas que caen en esta franja horaria
             const citasDeLaHora = citas.filter(c => c.hora_inicio.startsWith(horaPrefijo));
 
@@ -2269,8 +2700,13 @@
 
             if (citasDeLaHora.length === 0) {
                 const emptySlot = document.createElement('div');
-                emptySlot.className = 'cal-hour-empty-slot';
-                emptySlot.textContent = 'Disponible para agendar';
+                if (horaActualMin < aperturaMin || horaActualMin >= cierreMin) {
+                    emptySlot.className = 'cal-hour-empty-slot is-outside-hours';
+                    emptySlot.textContent = `Fuera de horario de atención (Cierre: ${diaInfo.cierre})`;
+                } else {
+                    emptySlot.className = 'cal-hour-empty-slot';
+                    emptySlot.textContent = 'Disponible para agendar';
+                }
                 eventsGroup.appendChild(emptySlot);
             } else {
                 citasDeLaHora.forEach(cita => {
@@ -2400,7 +2836,7 @@
         if (el.modalCheckInTitulo && el.modalCheckInSub && el.btnModalCheckIn) {
             if (c.checked_in) {
                 el.modalCheckInTitulo.textContent = 'Llegada Registrada';
-                el.modalCheckInTitulo.style.color = '#34d399';
+                el.modalCheckInTitulo.style.color = '#10b981';
                 el.modalCheckInSub.textContent = `Registrado a las ${c.check_in_hora || ''} hrs (${c.check_in_formateado || ''})`;
                 if (el.modalCheckInIcon) {
                     el.modalCheckInIcon.className = 'cal-checkin-icon-circle';
@@ -2455,16 +2891,11 @@
                 el.btnGuardarCambioEstado.title = 'Guardar cambios de estado y observaciones';
 
                 if (estadoDb === 'confirmada') {
-                    if (estadoVisual === 'vencida') {
+                    if (estadoVisual === 'vencida' || c.es_pasada) {
                         const optVencida = document.createElement('option');
                         optVencida.value = 'vencida';
                         optVencida.textContent = 'Vencida (Expirada sin atención)';
                         el.modalSelectNuevoEstado.appendChild(optVencida);
-
-                        const optCanc = document.createElement('option');
-                        optCanc.value = 'cancelada';
-                        optCanc.textContent = 'Formalizar Cancelación';
-                        el.modalSelectNuevoEstado.appendChild(optCanc);
                     } else {
                         const optMantener = document.createElement('option');
                         optMantener.value = 'confirmada';
@@ -2476,10 +2907,12 @@
                         optProc.textContent = 'Iniciar Atención (En proceso)';
                         el.modalSelectNuevoEstado.appendChild(optProc);
 
-                        const optCanc = document.createElement('option');
-                        optCanc.value = 'cancelada';
-                        optCanc.textContent = 'Cancelar Cita';
-                        el.modalSelectNuevoEstado.appendChild(optCanc);
+                        if (!c.es_pasada && c.puede_cancelar !== false) {
+                            const optCanc = document.createElement('option');
+                            optCanc.value = 'cancelada';
+                            optCanc.textContent = 'Cancelar Cita';
+                            el.modalSelectNuevoEstado.appendChild(optCanc);
+                        }
                     }
                 } else if (estadoDb === 'en_atencion' || estadoDb === 'en_proceso') {
                     const optMantener = document.createElement('option');
@@ -2492,20 +2925,17 @@
                     optComp.textContent = 'Finalizar Atención (Completada)';
                     el.modalSelectNuevoEstado.appendChild(optComp);
 
-                    const optCanc = document.createElement('option');
-                    optCanc.value = 'cancelada';
-                    optCanc.textContent = 'Cancelar / Interrumpir Servicio';
-                    el.modalSelectNuevoEstado.appendChild(optCanc);
+                    if (!c.es_pasada && c.puede_cancelar !== false) {
+                        const optCanc = document.createElement('option');
+                        optCanc.value = 'cancelada';
+                        optCanc.textContent = 'Cancelar / Interrumpir Servicio';
+                        el.modalSelectNuevoEstado.appendChild(optCanc);
+                    }
                 } else if (estadoDb === 'vencida') {
                     const optVencida = document.createElement('option');
                     optVencida.value = 'vencida';
                     optVencida.textContent = 'Vencida (Mantener)';
                     el.modalSelectNuevoEstado.appendChild(optVencida);
-
-                    const optCanc = document.createElement('option');
-                    optCanc.value = 'cancelada';
-                    optCanc.textContent = 'Formalizar Cancelación';
-                    el.modalSelectNuevoEstado.appendChild(optCanc);
                 }
             }
         }
@@ -2556,7 +2986,7 @@
                         showConfirmButton: false,
                         timer: 2500,
                         timerProgressBar: true,
-                        background: '#10b981',
+                        background: '#0c142b',
                         color: '#ffffff'
                     });
                 }
@@ -2616,6 +3046,20 @@
         });
         el.btnRefresh.addEventListener('click', () => cargarCitas());
 
+        // Botón Agendar Cita (bloquear si el día activo en vista día es no laborable)
+        if (el.btnAgendarCita) {
+            el.btnAgendarCita.addEventListener('click', (e) => {
+                if (state.vista === 'dia') {
+                    const diaInfo = infoDiaLaborable(state.fechaSeleccionada);
+                    if (!diaInfo.laborable) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        notificarDiaNoLaborable(diaInfo);
+                    }
+                }
+            });
+        }
+
         // Selector de vistas
         el.btnViewMes.addEventListener('click', () => setVista('mes'));
         el.btnViewSemana.addEventListener('click', () => setVista('semana'));
@@ -2632,30 +3076,7 @@
             cargarCitas();
         });
 
-        // Clic en chips de leyenda para filtrar rápidamente
-        document.querySelectorAll('.legend-chip').forEach(chip => {
-            chip.style.cursor = 'pointer';
-            chip.addEventListener('click', () => {
-                const classList = chip.className;
-                let estadoTarget = 'todas';
-                if (classList.includes('legend-confirmada')) estadoTarget = 'confirmada';
-                else if (classList.includes('legend-en_proceso')) estadoTarget = 'en_proceso';
-                else if (classList.includes('legend-completada')) estadoTarget = 'completada';
-                else if (classList.includes('legend-cancelada')) estadoTarget = 'cancelada';
-                else if (classList.includes('legend-vencida')) estadoTarget = 'vencida';
-
-                // Si ya está activo ese estado, volver a todas
-                if (state.filtroEstado === estadoTarget) {
-                    estadoTarget = 'todas';
-                }
-
-                state.filtroEstado = estadoTarget;
-                if (el.selectEstado) {
-                    el.selectEstado.value = estadoTarget;
-                }
-                cargarCitas();
-            });
-        });
+        // Subtarea 5: Las etiquetas de leyenda de estado se mantienen como elementos informativos y no interactivos (sin listeners de clic ni filtros)
 
         el.searchInput.addEventListener('input', (e) => {
             state.terminoBusqueda = e.target.value;

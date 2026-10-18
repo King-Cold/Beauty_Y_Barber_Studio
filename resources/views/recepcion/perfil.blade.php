@@ -102,7 +102,7 @@
         font-size: 28px;
         font-weight: 800;
         color: #ffffff;
-        box-shadow: 0 8px 24px rgba(0, 85, 255, 0.35);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
         border: 3px solid rgba(255, 255, 255, 0.12);
         letter-spacing: 0.05em;
     }
@@ -115,7 +115,7 @@
         border-radius: 50%;
         background: #10b981;
         border: 3px solid var(--bg-card);
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
     }
 
     .hero-details h2 {
@@ -142,9 +142,9 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(0, 85, 255, 0.12);
+        background: rgba(37, 99, 235, 0.12);
         color: #93c5fd;
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        border: 1px solid rgba(37, 99, 235, 0.25);
         padding: 3px 12px;
         border-radius: 20px;
         font-size: 11.5px;
@@ -303,7 +303,7 @@
         outline: none;
         border-color: var(--barber-blue);
         background: #09122a;
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.2);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
     .form-input-recepcion::placeholder {
         color: #475569;
@@ -375,19 +375,19 @@
         transition: all 0.2s ease;
     }
     .check-item.valid {
-        color: #34d399;
+        color: #10b981;
     }
     .check-item.valid .check-dot {
         background: #10b981;
-        box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
     }
 
     /* ALERTA DE AUTONOMÍA */
     .autonomy-alert {
         display: flex;
         gap: 12px;
-        background: rgba(0, 85, 255, 0.08);
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        background: rgba(37, 99, 235, 0.08);
+        border: 1px solid rgba(37, 99, 235, 0.25);
         border-radius: 10px;
         padding: 12px 14px;
         margin-bottom: 20px;
@@ -423,24 +423,29 @@
         font-family: inherit;
     }
     .btn-submit-blue {
-        background: linear-gradient(135deg, var(--barber-blue) 0%, #1d4ed8 100%);
+        background: #1e40af;
         color: #ffffff;
-        box-shadow: 0 4px 14px rgba(0, 85, 255, 0.35);
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
     .btn-submit-blue:hover:not(:disabled) {
-        background: linear-gradient(135deg, var(--barber-blue-light) 0%, var(--barber-blue) 100%);
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(0, 85, 255, 0.45);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
     .btn-submit-red {
-        background: linear-gradient(135deg, var(--barber-red) 0%, #b91c1c 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+        background: #1e293b;
+        color: #f8fafc;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
     .btn-submit-red:hover:not(:disabled) {
-        background: linear-gradient(135deg, #f87171 0%, var(--barber-red) 100%);
+        background: #334155;
+        color: #ffffff;
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
     }
     .btn-action-submit:disabled {
         opacity: 0.65;
@@ -890,7 +895,7 @@
                         icon: 'warning',
                         title: 'Fecha inválida',
                         text: 'La fecha de nacimiento no puede ser una fecha futura ni el día de mañana.',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     this.value = '';
                 }
@@ -913,7 +918,7 @@
                             icon: 'error',
                             title: 'Fecha inválida',
                             text: 'La fecha de nacimiento no puede ser una fecha futura ni el día de mañana.',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                         return;
                     }
@@ -942,7 +947,7 @@
                             icon: 'success',
                             title: '¡Datos Actualizados!',
                             text: data.message || 'Tus datos de recepción se han guardado con éxito.',
-                            confirmButtonColor: '#0055ff',
+                            confirmButtonColor: '#1e40af',
                             timer: 3000,
                             timerProgressBar: true
                         });
@@ -977,7 +982,7 @@
                             icon: 'error',
                             title: 'Error de validación',
                             html: errorMsg,
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     }
                 } catch (error) {
@@ -985,7 +990,7 @@
                         icon: 'error',
                         title: 'Error de conexión',
                         text: 'No se pudo conectar con el servidor. Intenta nuevamente.',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 } finally {
                     btnGuardarDatos.disabled = false;
@@ -1012,7 +1017,7 @@
                         icon: 'warning',
                         title: 'Campo obligatorio',
                         text: 'Debes ingresar tu contraseña actual para confirmar el cambio.',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     return;
                 }
@@ -1022,7 +1027,7 @@
                         icon: 'warning',
                         title: 'Contraseña insegura',
                         text: 'La nueva contraseña debe tener al menos 8 caracteres.',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     return;
                 }
@@ -1032,7 +1037,7 @@
                         icon: 'error',
                         title: 'No coinciden',
                         text: 'La nueva contraseña y su confirmación no coinciden exactamente.',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                     return;
                 }
@@ -1060,7 +1065,7 @@
                             icon: 'success',
                             title: '¡Contraseña Actualizada!',
                             text: data.message || 'Tu contraseña de recepción ha sido modificada con éxito.',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         formPass.reset();
                         checkRecepPassRules();
@@ -1070,7 +1075,7 @@
                             icon: 'error',
                             title: 'Validación de credenciales',
                             html: errorMsg,
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     }
                 } catch (error) {
@@ -1078,7 +1083,7 @@
                         icon: 'error',
                         title: 'Error de servidor',
                         text: 'Ocurrió un error inesperado al procesar la actualización. Intenta de nuevo.',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 } finally {
                     btnGuardarPass.disabled = false;

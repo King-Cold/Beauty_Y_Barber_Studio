@@ -56,7 +56,7 @@
         justify-content: center;
         font-size: 26px;
         font-weight: 800;
-        box-shadow: 0 0 20px rgba(0, 85, 255, 0.4);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
         border: 2px solid rgba(255, 255, 255, 0.12);
         flex-shrink: 0;
     }
@@ -238,30 +238,32 @@
 
     .form-input:focus {
         border-color: var(--barber-blue);
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.2);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
 
     .btn-submit-premium {
-        background: linear-gradient(135deg, var(--barber-blue) 0%, #1d4ed8 100%);
-        color: var(--text-white);
-        border: 1px solid rgba(0, 85, 255, 0.4);
-        padding: 12px 24px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 700;
+        background: #1e40af;
+        color: #ffffff;
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        padding: 11px 22px;
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.25s var(--ease-fluid);
+        transition: all 0.2s ease;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        box-shadow: 0 4px 14px rgba(0, 85, 255, 0.25);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-submit-premium:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 85, 255, 0.4);
-        border-color: #60a5fa;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        border-color: rgba(147, 197, 253, 0.45);
+        background: #1d4ed8;
+        color: #ffffff;
     }
 
     .btn-submit-premium:disabled {
@@ -272,8 +274,8 @@
 
     /* TARJETA PRÓXIMA CITA */
     .upcoming-appointment-box {
-        background: linear-gradient(135deg, rgba(0, 85, 255, 0.08) 0%, rgba(30, 64, 175, 0.08) 100%);
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-subtle);
         border-radius: 12px;
         padding: 16px 20px;
         display: flex;
@@ -302,18 +304,19 @@
         gap: 6px;
         padding: 8px 14px;
         border-radius: 8px;
-        background: rgba(0, 85, 255, 0.15);
-        color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+        color: #94a3b8;
+        border: 1px solid var(--border-subtle);
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 600;
         text-decoration: none;
         transition: all 0.2s ease;
     }
 
     .btn-view-citas:hover {
-        background: var(--barber-blue);
-        color: #ffffff;
+        background: #1e293b;
+        color: #f8fafc;
+        border-color: rgba(255, 255, 255, 0.2);
     }
 </style>
 @endpush
@@ -512,7 +515,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'El nombre, los apellidos y el correo electrónico son obligatorios.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -528,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: 'La fecha de nacimiento no puede ser una fecha futura ni el día de mañana.',
                         background: '#0a1124',
                         color: '#fff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     return;
                 }
@@ -581,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: data.message || 'No se pudieron actualizar los datos.',
                         background: '#0a1124',
                         color: '#fff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -591,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Ocurrió un fallo de conexión con el servidor.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             } finally {
                 btnGuardarDatos.disabled = false;
@@ -619,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Debes completar todos los campos de contraseña.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -631,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'La nueva contraseña y su confirmación no coinciden.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
                 return;
             }
@@ -677,7 +680,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: data.message || 'La contraseña actual no es válida o la nueva no cumple los requisitos.',
                         background: '#0a1124',
                         color: '#fff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -687,7 +690,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: 'Ocurrió un problema de comunicación con el servidor.',
                     background: '#0a1124',
                     color: '#fff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             } finally {
                 btnGuardarPassword.disabled = false;

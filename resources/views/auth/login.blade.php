@@ -76,7 +76,7 @@
         }
 
         .barber-stripes-mini .stripe-blue { flex: 1; background: #143b8c; }
-        .barber-stripes-mini .stripe-red { flex: 1; background: #d1121d; }
+        .barber-stripes-mini .stripe-red { flex: 1; background: #991b1b; }
         .barber-stripes-mini .stripe-white { flex: 1; background: #ffffff; }
 
         /* ==========================================
@@ -93,7 +93,7 @@
             align-items: center;
             z-index: 15;
             filter: drop-shadow(14px 18px 24px rgba(4, 12, 32, 0.85)) 
-                    drop-shadow(0 0 16px rgba(20, 55, 130, 0.35));
+                    drop-shadow(4px 6px 12px rgba(4, 12, 32, 0.5));
             pointer-events: none;
         }
 
@@ -351,12 +351,12 @@
             height: auto;
             object-fit: contain;
             display: block;
-            filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 20px rgba(209, 18, 29, 0.18));
+            filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.75));
             transition: filter 0.35s ease;
         }
 
         .brand-logo-wrapper:hover .brand-logo-img {
-            filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 30px rgba(209, 18, 29, 0.35));
+            filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.85));
         }
 
         .sr-only {
@@ -534,8 +534,8 @@
             width: 18px;
             height: 18px;
             border-radius: 4px;
-            background: #d1121d;
-            border: 1px solid #d1121d;
+            background: #991b1b;
+            border: 1px solid #991b1b;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -571,7 +571,7 @@
             height: 48px;
             margin-top: 18px;
             padding: 0 20px;
-            background: #d1121d;
+            background: #991b1b;
             color: #ffffff;
             border: none;
             border-radius: 10px;
@@ -584,13 +584,13 @@
             justify-content: center;
             gap: 8px;
             transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 18px rgba(209, 18, 29, 0.45);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .submit-btn:hover {
-            background: #b50f19;
+            background: #7f1d1d;
             transform: translateY(-1px);
-            box-shadow: 0 6px 22px rgba(209, 18, 29, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .submit-btn:active {
@@ -618,7 +618,7 @@
         }
 
         .signup-link {
-            color: #d1121d;
+            color: #fca5a5;
             text-decoration: none;
             font-weight: 600;
             margin-left: 4px;
@@ -626,7 +626,7 @@
         }
 
         .signup-link:hover {
-            color: #ff3b47;
+            color: #fca5a5;
             text-decoration: underline;
         }
 
@@ -856,7 +856,7 @@
             @endif
 
             @if(session('warning'))
-                <div class="alert-box" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                <div class="alert-box" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.28); color: #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
                     <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
@@ -1042,7 +1042,7 @@
                 icon: 'warning',
                 title: 'Sesión finalizada por inactividad',
                 text: '{{ session("warning") }}',
-                confirmButtonColor: '#0055ff',
+                confirmButtonColor: '#1e40af',
                 confirmButtonText: 'Entendido',
                 background: '#0c142b',
                 color: '#ffffff'

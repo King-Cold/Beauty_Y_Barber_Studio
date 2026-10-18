@@ -29,11 +29,11 @@
             --border-subtle: rgba(255, 255, 255, 0.06);
             --border-strong: rgba(255, 255, 255, 0.12);
 
-            --barber-red: #ef4444;
-            --barber-red-light: rgba(239, 68, 68, 0.1);
-            --barber-blue: #0055ff;
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
+            --barber-red: #7f1d1d;
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-blue: #1e3a8a;
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
 
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -125,7 +125,7 @@
 
         .mobile-toggle-btn:hover {
             color: var(--barber-blue);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             background: var(--barber-blue-pale);
             transform: scale(1.05);
         }
@@ -505,7 +505,7 @@
 
         .nav-item.active .nav-icon-box {
             color: var(--barber-blue);
-            filter: drop-shadow(0 0 8px rgba(0, 85, 255, 0.5));
+            
         }
 
         .nav-label {
@@ -684,25 +684,27 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: linear-gradient(135deg, var(--barber-blue) 0%, var(--barber-blue-light) 100%);
-            color: var(--text-white);
+            background: #1e40af;
+            color: #ffffff;
             padding: 9px 18px;
             border-radius: 8px;
             font-size: 13px;
-            font-weight: 700;
-            border: none;
+            font-weight: 600;
+            border: 1px solid rgba(147, 197, 253, 0.28);
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(0, 85, 255, 0.35);
-            transition: all 0.25s var(--ease-fluid);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s ease;
             text-decoration: none;
             font-family: inherit;
             flex-shrink: 0;
         }
 
         .btn-register-worker:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 85, 255, 0.5);
-            filter: brightness(1.1);
+            background: #1d4ed8;
+            color: #ffffff;
+            border-color: rgba(147, 197, 253, 0.45);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         .btn-register-worker svg {
@@ -740,18 +742,8 @@
         }
 
         .workers-stat-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--barber-blue);
+            display: none;
         }
-
-        .workers-stat-card.card-green::before { background: #10b981; }
-        .workers-stat-card.card-red::before { background: var(--barber-red); }
-        .workers-stat-card.card-amber::before { background: #f59e0b; }
 
         .workers-stat-icon {
             width: clamp(34px, 2.6vw, 44px);
@@ -763,7 +755,7 @@
             flex-shrink: 0;
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.2);
+            border: 1px solid rgba(37, 99, 235, 0.2);
         }
 
         .workers-stat-card.card-green .workers-stat-icon {
@@ -861,8 +853,8 @@
         .workers-search-input:focus {
             outline: none;
             border-color: var(--barber-blue);
-            background: rgba(0, 85, 255, 0.04);
-            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.15);
+            background: rgba(37, 99, 235, 0.04);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
         .workers-filters-group {
@@ -894,7 +886,7 @@
         .btn-filter.active {
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
         }
 
         .workers-view-toggle {
@@ -1175,7 +1167,7 @@
         .chip-service {
             background: var(--barber-blue-pale);
             color: #93c5fd;
-            border: 1px solid rgba(0, 85, 255, 0.25);
+            border: 1px solid rgba(37, 99, 235, 0.25);
             padding: 2px 8px;
             border-radius: 6px;
             font-size: 11px;
@@ -1282,7 +1274,7 @@
             min-width: 0;
             width: 100%;
             scrollbar-width: thin;
-            scrollbar-color: rgba(0, 85, 255, 0.4) rgba(255, 255, 255, 0.02);
+            scrollbar-color: rgba(37, 99, 235, 0.4) rgba(255, 255, 255, 0.02);
             -webkit-overflow-scrolling: touch;
         }
 
@@ -1296,7 +1288,7 @@
         }
 
         .today-slots-scroll::-webkit-scrollbar-thumb {
-            background: rgba(0, 85, 255, 0.35);
+            background: rgba(37, 99, 235, 0.35);
             border-radius: 4px;
         }
 
@@ -1307,9 +1299,9 @@
         .badge-today-slot {
             display: inline-flex;
             align-items: center;
-            background: rgba(0, 85, 255, 0.12);
+            background: rgba(37, 99, 235, 0.12);
             color: #93c5fd;
-            border: 1px solid rgba(0, 85, 255, 0.28);
+            border: 1px solid rgba(37, 99, 235, 0.28);
             padding: 2px 8px;
             border-radius: 6px;
             font-size: 11px;
@@ -1321,8 +1313,8 @@
         }
 
         .badge-today-slot:hover {
-            background: rgba(0, 85, 255, 0.24);
-            border-color: rgba(0, 85, 255, 0.5);
+            background: rgba(37, 99, 235, 0.24);
+            border-color: rgba(37, 99, 235, 0.5);
             color: #ffffff;
             transform: translateY(-1px);
         }
@@ -1537,7 +1529,7 @@
         .btn-card-action:hover {
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             transform: translateY(-2px);
         }
 
@@ -1784,7 +1776,7 @@
         .form-control:focus {
             outline: none;
             border-color: var(--barber-blue);
-            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
         /* Campo de contraseña con botón de ojo (Diseño y funcionalidad idénticos a Login) */
@@ -1864,7 +1856,7 @@
         }
 
         select.form-control option:checked {
-            background-color: #0055ff !important;
+            background-color: #1e40af !important;
             color: #ffffff !important;
         }
 
@@ -1916,22 +1908,28 @@
         }
 
         .btn-submit-action {
-            background: var(--barber-blue);
-            border: none;
-            color: var(--text-white);
+            background: #1e40af;
+            border: 1px solid rgba(147, 197, 253, 0.28);
+            color: #ffffff;
             padding: 9px 20px;
             border-radius: 6px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             font-family: inherit;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s ease;
         }
 
         .btn-submit-action:hover {
-            background: var(--barber-blue-light);
+            background: #1d4ed8;
+            border-color: rgba(147, 197, 253, 0.45);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         /* ===================================================
@@ -1976,7 +1974,7 @@
             justify-content: center;
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.25);
+            border: 1px solid rgba(37, 99, 235, 0.25);
             flex-shrink: 0;
         }
 
@@ -2032,7 +2030,7 @@
         }
 
         .schedule-day-row:hover {
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             background: rgba(14, 23, 48, 0.8);
         }
 
@@ -2048,7 +2046,7 @@
             height: 8px;
             border-radius: 50%;
             background: #10b981;
-            box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+            box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25);
             flex-shrink: 0;
         }
 
@@ -2108,7 +2106,7 @@
 
         .schedule-time-box select.time-select:hover,
         .block-input-group select.time-select:hover {
-            border-color: rgba(0, 85, 255, 0.4);
+            border-color: rgba(37, 99, 235, 0.4);
             background-color: #0d162a;
         }
 
@@ -2116,7 +2114,7 @@
         .block-input-group select.time-select:focus {
             outline: none;
             border-color: var(--barber-blue);
-            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
             background-color: #0d162a;
         }
 
@@ -2169,7 +2167,7 @@
         .block-input-group input[type="time"]:focus {
             outline: none;
             border-color: var(--barber-blue);
-            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
             background: #0d162a;
         }
 
@@ -2250,7 +2248,7 @@
 
         .btn-calendar-trigger:hover svg {
             stroke: #ffffff !important;
-            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+            filter: none;
         }
 
         .block-input-group input[type="date"]::-webkit-calendar-picker-indicator {
@@ -2265,13 +2263,13 @@
         .block-input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
             opacity: 1 !important;
             transform: scale(1.15);
-            filter: invert(1) brightness(120%) contrast(100%) drop-shadow(0 0 3px rgba(255, 255, 255, 0.8)) !important;
+            filter: invert(1) brightness(120%) contrast(100%) none !important;
         }
 
         .block-input-group input:focus {
             outline: none;
             border-color: var(--barber-blue);
-            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
         }
 
         .btn-add-block-action {
@@ -2279,8 +2277,8 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            background: rgba(0, 85, 255, 0.12);
-            border: 1px solid rgba(0, 85, 255, 0.35);
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.35);
             color: var(--barber-blue-light);
             font-size: 12px;
             font-weight: 700;
@@ -2291,10 +2289,10 @@
         }
 
         .btn-add-block-action:hover {
-            background: var(--barber-blue);
+            background: #1e293b;
             color: #ffffff;
-            border-color: var(--barber-blue);
-            box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
             transform: translateY(-1px);
         }
 
@@ -2361,7 +2359,7 @@
         .btn-remove-block {
             background: transparent;
             border: none;
-            color: #ef4444;
+            color: #dc2626;
             cursor: pointer;
             width: 28px;
             height: 28px;
@@ -4458,7 +4456,7 @@
                     text: 'Por favor ingresa la fecha completa en formato DD/MM/AAAA.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 const nativePicker = document.getElementById('newBlockDateNativePicker');
@@ -4476,7 +4474,7 @@
                     text: 'El formato de fecha debe ser DD/MM/AAAA (día, mes y año).',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 const nativePicker = document.getElementById('newBlockDateNativePicker');
@@ -4500,7 +4498,7 @@
                     text: `Únicamente se admiten fechas correspondientes al año en curso (${currentYear}).`,
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 const nativePicker = document.getElementById('newBlockDateNativePicker');
@@ -4517,7 +4515,7 @@
                     text: 'El mes ingresado no es válido (debe estar entre 01 y 12).',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 const nativePicker = document.getElementById('newBlockDateNativePicker');
@@ -4534,7 +4532,7 @@
                     text: 'La fecha ingresada no existe en el calendario.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 const nativePicker = document.getElementById('newBlockDateNativePicker');
@@ -4552,7 +4550,7 @@
                     text: 'No puedes seleccionar fechas de días anteriores en los bloqueos de disponibilidad.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 const nativePicker = document.getElementById('newBlockDateNativePicker');
@@ -4716,7 +4714,7 @@
                     text: 'Completa la fecha (DD/MM/AAAA), hora de inicio, hora de fin y motivo para registrar el bloqueo.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -4733,7 +4731,7 @@
                     text: 'La hora de inicio debe ser anterior a la hora de fin.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -4747,7 +4745,7 @@
                     text: workingInfo.message,
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
                 return;
             }
@@ -4760,7 +4758,7 @@
                     html: `La hora de inicio (<b>${startVal}</b>) no puede ser anterior al inicio del horario laboral para el ${workingInfo.nombreDia} (<b>${workingInfo.allowedStart}</b>).<br><small style="color: #94a3b8;">Horario del trabajador: ${workingInfo.workerIn}–${workingInfo.workerOut} | Sucursal: ${workingInfo.branchOpen}–${workingInfo.branchClose}</small>`,
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
                 return;
             }
@@ -4773,7 +4771,7 @@
                     html: `La hora de fin (<b>${endVal}</b>) no puede exceder el fin del horario laboral para el ${workingInfo.nombreDia} (<b>${workingInfo.allowedEnd}</b>).<br><small style="color: #94a3b8;">Horario del trabajador: ${workingInfo.workerIn}–${workingInfo.workerOut} | Sucursal: ${workingInfo.branchOpen}–${workingInfo.branchClose}</small>`,
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
                 return;
             }
@@ -4980,7 +4978,7 @@
                             text: `La hora de entrada debe ser anterior a la hora de salida para el ${nombreDia}.`,
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         return;
                     }
@@ -4993,7 +4991,7 @@
                             text: `El horario asignado para el ${nombreDia} excede el horario de la sucursal (${bDay.apertura} - ${bDay.cierre})`,
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                         return;
                     }
@@ -5074,7 +5072,7 @@
                             html: `El horario de <strong>${workerName}</strong> se guardó correctamente.<br><br><div style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; font-weight: 600; font-size: 13px;">✔ Con disponibilidad de horario</div>`,
                             background: '#141f38',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff',
+                            confirmButtonColor: '#1e40af',
                             confirmButtonText: 'Aceptar'
                         });
                     } else {
@@ -5086,7 +5084,7 @@
                             showConfirmButton: false,
                             timer: 3500,
                             timerProgressBar: true,
-                            background: '#10b981',
+                            background: '#0c142b',
                             color: '#ffffff',
                             iconColor: '#ffffff'
                         });
@@ -5102,7 +5100,7 @@
                         html: errorMsg,
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -5112,7 +5110,7 @@
                     text: 'No se pudo comunicar con el servidor.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             } finally {
                 if (submitBtn) {
@@ -5224,7 +5222,7 @@
                 showConfirmButton: false,
                 timer: 3500,
                 timerProgressBar: true,
-                background: '#10b981',
+                background: '#0c142b',
                 color: '#ffffff',
                 iconColor: '#ffffff'
             });
@@ -5249,10 +5247,10 @@
 
             if (currentPhone.length === 10) {
                 if (isDuplicate) {
-                    input.style.borderColor = '#ef4444';
+                    input.style.borderColor = '#dc2626';
                     if (helpEl) {
                         helpEl.textContent = '✗ Este número de teléfono ya está registrado por otro trabajador';
-                        helpEl.style.color = '#ef4444';
+                        helpEl.style.color = '#dc2626';
                     }
                 } else {
                     input.style.borderColor = '#10b981';
@@ -5333,10 +5331,10 @@
             const nameVal = createNameInput.value.trim();
             const lastNameVal = createLastNameInput.value.trim();
             if (nameVal && lastNameVal && checkWorkerFullNameDuplicate(nameVal, lastNameVal)) {
-                createNameInput.style.borderColor = '#ef4444';
-                createLastNameInput.style.borderColor = '#ef4444';
+                createNameInput.style.borderColor = '#dc2626';
+                createLastNameInput.style.borderColor = '#dc2626';
                 createFullNameHelp.textContent = '⚠️ Ya existe un trabajador registrado con este nombre y apellidos.';
-                createFullNameHelp.style.color = '#ef4444';
+                createFullNameHelp.style.color = '#dc2626';
             } else {
                 createNameInput.style.borderColor = '';
                 createLastNameInput.style.borderColor = '';
@@ -5362,10 +5360,10 @@
             const lastNameVal = editLastNameInput.value.trim();
             const workerId = editWorkerIdInput ? editWorkerIdInput.value : null;
             if (nameVal && lastNameVal && checkWorkerFullNameDuplicate(nameVal, lastNameVal, workerId)) {
-                editNameInput.style.borderColor = '#ef4444';
-                editLastNameInput.style.borderColor = '#ef4444';
+                editNameInput.style.borderColor = '#dc2626';
+                editLastNameInput.style.borderColor = '#dc2626';
                 editFullNameHelp.textContent = '⚠️ Ya existe otro trabajador registrado con este nombre y apellidos.';
-                editFullNameHelp.style.color = '#ef4444';
+                editFullNameHelp.style.color = '#dc2626';
             } else {
                 editNameInput.style.borderColor = '';
                 editLastNameInput.style.borderColor = '';
@@ -5402,7 +5400,7 @@
                         text: 'El campo Nombre únicamente debe permitir letras del abecedario (sin números, caracteres especiales ni símbolos).',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerName').focus();
                     return;
@@ -5416,7 +5414,7 @@
                         text: 'El campo Apellidos únicamente debe permitir letras del abecedario (sin números, caracteres especiales ni símbolos).',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerLastName').focus();
                     return;
@@ -5431,7 +5429,7 @@
                         text: `Ya existe un trabajador registrado con el nombre completo "${name} ${lastName}". Debe ser único dentro del sistema (duplicidad en nombre y apellidos).`,
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerName').focus();
                     return;
@@ -5445,7 +5443,7 @@
                         text: 'El número de teléfono debe contener exactamente 10 dígitos numéricos (sin letras ni caracteres especiales).',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerPhone').focus();
                     return;
@@ -5462,7 +5460,7 @@
                         text: `El número de teléfono "${phone}" ya se encuentra registrado por otro trabajador. Debe ser único en el sistema.`,
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerPhone').focus();
                     return;
@@ -5477,7 +5475,7 @@
                         text: 'Introduce un correo electrónico válido (ejemplo: usuario@dominio.com). Debe contener un dominio y extensión válidos.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerEmail').focus();
                     return;
@@ -5492,7 +5490,7 @@
                         text: 'Los años de experiencia deben ser un número positivo igual o mayor a 0 (no se permiten números negativos).',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerExperience').focus();
                     return;
@@ -5507,7 +5505,7 @@
                         text: 'La contraseña debe tener al menos 8 caracteres.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerPassword').focus();
                     return;
@@ -5519,7 +5517,7 @@
                         text: 'La contraseña debe contener al menos una letra mayúscula, un número y un carácter especial.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('workerPassword').focus();
                     return;
@@ -5557,7 +5555,7 @@
                             showConfirmButton: false,
                             timer: 3500,
                             timerProgressBar: true,
-                            background: '#10b981',
+                            background: '#0c142b',
                             color: '#ffffff',
                             iconColor: '#ffffff'
                         });
@@ -5576,7 +5574,7 @@
                             html: errorMsg,
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     }
                 } catch (error) {
@@ -5586,7 +5584,7 @@
                         text: 'No se pudo comunicar con el servidor.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 } finally {
                     submitBtn.disabled = false;
@@ -5622,7 +5620,7 @@
                         text: 'El campo Nombre únicamente debe permitir letras del abecedario (sin números, caracteres especiales ni símbolos).',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('editWorkerName').focus();
                     return;
@@ -5636,7 +5634,7 @@
                         text: 'El campo Apellidos únicamente debe permitir letras del abecedario (sin números, caracteres especiales ni símbolos).',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('editWorkerLastName').focus();
                     return;
@@ -5651,7 +5649,7 @@
                         text: `Ya existe otro trabajador registrado con el nombre completo "${name} ${lastName}". Debe ser único dentro del sistema (duplicidad en nombre y apellidos).`,
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('editWorkerName').focus();
                     return;
@@ -5665,7 +5663,7 @@
                         text: 'El número de teléfono debe contener exactamente 10 dígitos numéricos (sin letras ni caracteres especiales).',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('editWorkerPhone').focus();
                     return;
@@ -5686,7 +5684,7 @@
                         text: `El número de teléfono "${phone}" ya se encuentra registrado por otro trabajador. Debe ser único en el sistema.`,
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('editWorkerPhone').focus();
                     return;
@@ -5701,7 +5699,7 @@
                         text: 'Introduce un correo electrónico válido (ejemplo: usuario@dominio.com). Debe contener un dominio y extensión válidos.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('editWorkerEmail').focus();
                     return;
@@ -5716,7 +5714,7 @@
                         text: 'Los años de experiencia deben ser un número positivo igual o mayor a 0 (no se permiten números negativos).',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#0055ff'
+                        confirmButtonColor: '#1e40af'
                     });
                     document.getElementById('editWorkerExperience').focus();
                     return;
@@ -5732,7 +5730,7 @@
                             text: 'La nueva contraseña debe tener al menos 8 caracteres.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         document.getElementById('editWorkerPassword').focus();
                         return;
@@ -5744,7 +5742,7 @@
                             text: 'La nueva contraseña debe contener al menos una letra mayúscula, un número y un carácter especial.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         document.getElementById('editWorkerPassword').focus();
                         return;
@@ -5783,7 +5781,7 @@
                             showConfirmButton: false,
                             timer: 3500,
                             timerProgressBar: true,
-                            background: '#10b981',
+                            background: '#0c142b',
                             color: '#ffffff',
                             iconColor: '#ffffff'
                         });
@@ -5800,7 +5798,7 @@
                             html: errorMsg,
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     }
                 } catch (error) {
@@ -5810,7 +5808,7 @@
                         text: 'No se pudo comunicar con el servidor.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 } finally {
                     submitBtn.disabled = false;
@@ -5860,7 +5858,7 @@
                             showConfirmButton: false,
                             timer: 3500,
                             timerProgressBar: true,
-                            background: '#10b981',
+                            background: '#0c142b',
                             color: '#ffffff',
                             iconColor: '#ffffff'
                         });
@@ -5873,7 +5871,7 @@
                             text: result.message || 'Ocurrió un error al guardar los servicios.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     }
                 } catch (error) {
@@ -5883,7 +5881,7 @@
                         text: 'No se pudo comunicar con el servidor.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 } finally {
                     submitBtn.disabled = false;
@@ -5900,7 +5898,7 @@
                 ? 'El especialista volverá a estar activo y disponible para agendar citas en el sistema.' 
                 : 'Se bloqueará la disponibilidad del especialista y no podrá recibir citas ni agendamientos mientras permanezca inactivo.';
             const confirmBtnText = isActivating ? 'Sí, activar' : 'Sí, desactivar';
-            const confirmBtnColor = isActivating ? '#10b981' : '#ef4444';
+            const confirmBtnColor = isActivating ? '#10b981' : '#dc2626';
 
             const result = await Swal.fire({
                 title: actionTitle,
@@ -5939,7 +5937,7 @@
                         showConfirmButton: false,
                         timer: 2500,
                         timerProgressBar: true,
-                        background: '#10b981',
+                        background: '#0c142b',
                         color: '#ffffff',
                         iconColor: '#ffffff'
                     });
@@ -5952,7 +5950,7 @@
                         text: data.message || 'No se pudo cambiar el estado del especialista.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -5962,7 +5960,7 @@
                     text: 'No se pudo comunicar con el servidor.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             }
         }
@@ -5971,10 +5969,10 @@
         async function confirmDeleteWorker(id, nombre) {
             const result = await Swal.fire({
                 title: '¿Eliminar especialista?',
-                html: `¿Estás seguro de que deseas eliminar permanentemente a <strong>"${nombre}"</strong>?<br><span style="font-size: 13px; color: #ef4444; margin-top: 6px; display: inline-block;">Esta acción no se puede deshacer y desvinculará sus servicios asociados.</span>`,
+                html: `¿Estás seguro de que deseas eliminar permanentemente a <strong>"${nombre}"</strong>?<br><span style="font-size: 13px; color: #dc2626; margin-top: 6px; display: inline-block;">Esta acción no se puede deshacer y desvinculará sus servicios asociados.</span>`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ef4444',
+                confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: 'Sí, eliminar definitivamente',
                 cancelButtonText: 'Cancelar',
@@ -6023,7 +6021,7 @@
                         showConfirmButton: false,
                         timer: 2500,
                         timerProgressBar: true,
-                        background: '#10b981',
+                        background: '#0c142b',
                         color: '#ffffff',
                         iconColor: '#ffffff'
                     });
@@ -6036,7 +6034,7 @@
                         text: data.message || 'No se pudo eliminar al especialista seleccionado.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -6046,7 +6044,7 @@
                     text: 'No se pudo comunicar con el servidor.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             }
         }

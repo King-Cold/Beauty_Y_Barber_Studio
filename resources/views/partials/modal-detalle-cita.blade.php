@@ -237,7 +237,7 @@
         max-height: 90vh;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(0, 85, 255, 0.15);
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(37, 99, 235, 0.15);
         overflow: hidden;
         animation: detSlideUp 0.25s var(--ease-fluid, cubic-bezier(0.25, 1, 0.5, 1));
     }
@@ -273,8 +273,8 @@
         font-size: 13px;
         font-weight: 700;
         color: #93c5fd;
-        background: rgba(0, 85, 255, 0.18);
-        border: 1px solid rgba(0, 85, 255, 0.35);
+        background: rgba(37, 99, 235, 0.18);
+        border: 1px solid rgba(37, 99, 235, 0.35);
         padding: 3px 10px;
         border-radius: 6px;
         letter-spacing: 0.05em;
@@ -329,7 +329,7 @@
     .detalle-spinner {
         width: 36px;
         height: 36px;
-        border: 3px solid rgba(0, 85, 255, 0.2);
+        border: 3px solid rgba(37, 99, 235, 0.2);
         border-top-color: #3b82f6;
         border-radius: 50%;
         animation: detSpin 0.7s linear infinite;
@@ -376,11 +376,11 @@
         flex-shrink: 0;
     }
 
-    .icon-purple  { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
-    .icon-cyan    { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
-    .icon-amber   { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .icon-blue    { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .icon-emerald { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .icon-purple  { background: rgba(139, 92, 246, 0.12); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.28); }
+    .icon-cyan    { background: rgba(13, 148, 136, 0.12); color: #2dd4bf; border: 1px solid rgba(13, 148, 136, 0.28); }
+    .icon-amber   { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.28); }
+    .icon-blue    { background: rgba(37, 99, 235, 0.12); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.28); }
+    .icon-emerald { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.28); }
     .icon-slate   { background: rgba(148, 163, 184, 0.1); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2); }
 
     .detalle-card-data {
@@ -454,7 +454,7 @@
     .detalle-price-tag {
         font-size: 14px;
         font-weight: 800;
-        color: #38bdf8;
+        color: #60a5fa;
     }
 
     .detalle-notes-container {
@@ -508,9 +508,9 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(16, 185, 129, 0.15);
-        border: 1px solid rgba(16, 185, 129, 0.35);
-        color: #34d399;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.28);
+        color: #10b981;
         font-size: 13px;
         font-weight: 700;
         padding: 10px 18px;
@@ -530,9 +530,9 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(245, 158, 11, 0.15);
-        border: 1px solid rgba(245, 158, 11, 0.35);
-        color: #fbbf24;
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.28);
+        color: #f59e0b;
         font-size: 13px;
         font-weight: 700;
         padding: 10px 18px;
@@ -552,9 +552,9 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(16, 185, 129, 0.15);
-        border: 1px solid rgba(16, 185, 129, 0.35);
-        color: #34d399;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.28);
+        color: #10b981;
         font-size: 13px;
         font-weight: 700;
         padding: 10px 18px;
@@ -574,8 +574,8 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(239, 68, 68, 0.12);
-        border: 1px solid rgba(239, 68, 68, 0.3);
+        background: rgba(220, 38, 38, 0.12);
+        border: 1px solid rgba(220, 38, 38, 0.28);
         color: #f87171;
         font-size: 13px;
         font-weight: 700;
@@ -586,8 +586,8 @@
     }
 
     .btn-detalle-cancelar:hover {
-        background: rgba(239, 68, 68, 0.22);
-        border-color: rgba(239, 68, 68, 0.5);
+        background: rgba(220, 38, 38, 0.22);
+        border-color: rgba(220, 38, 38, 0.5);
         color: #ffffff;
     }
 
@@ -595,8 +595,8 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(0, 85, 255, 0.15);
-        border: 1px solid rgba(0, 85, 255, 0.35);
+        background: rgba(37, 99, 235, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.28);
         color: #60a5fa;
         font-size: 13px;
         font-weight: 700;
@@ -607,10 +607,11 @@
     }
 
     .btn-detalle-editar:hover {
-        background: #0055ff;
-        border-color: #0055ff;
+        background: #1e40af;
+        border-color: rgba(147, 197, 253, 0.45);
         color: #ffffff;
         transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .btn-detalle-cerrar {
@@ -807,7 +808,7 @@
                 if (c.checked_in) {
                     if (checkInTexto) {
                         checkInTexto.textContent = 'Llegada Registrada';
-                        checkInTexto.style.color = '#34d399';
+                        checkInTexto.style.color = '#10b981';
                     }
                     if (checkInSub) {
                         checkInSub.textContent = `Registrado a las ${c.check_in_hora || ''} hrs (${c.check_in_formateado || ''})`;
@@ -917,7 +918,7 @@
                         };
                         btnCancelar.style.display = 'none';
                     } else if (estado === 'vencida') {
-                        // En vencida: se permite Reagendar o Formalizar Cancelación
+                        // En vencida: se permite Reagendar (no se permite cancelar citas vencidas/pasadas)
                         btnEditar.style.display = 'inline-flex';
                         if (editSpan) editSpan.textContent = 'Reagendar Cita';
                         btnEditar.onclick = function() {
@@ -927,12 +928,7 @@
                             }
                         };
 
-                        btnCancelar.style.display = 'inline-flex';
-                        btnCancelar.onclick = function() {
-                            if (window.cancelarCitaPrompt) {
-                                window.cancelarCitaPrompt(c.id, cancelUrl, c.folio);
-                            }
-                        };
+                        btnCancelar.style.display = 'none';
                     } else {
                         // Confirmada, En proceso / En atención
                         btnEditar.style.display = 'inline-flex';
@@ -944,12 +940,17 @@
                             }
                         };
 
-                        btnCancelar.style.display = 'inline-flex';
-                        btnCancelar.onclick = function() {
-                            if (window.cancelarCitaPrompt) {
-                                window.cancelarCitaPrompt(c.id, cancelUrl, c.folio);
-                            }
-                        };
+                        // Cancelar disponible únicamente si la cita es futura y cancelable
+                        if (!c.es_pasada && c.puede_cancelar !== false) {
+                            btnCancelar.style.display = 'inline-flex';
+                            btnCancelar.onclick = function() {
+                                if (window.cancelarCitaPrompt) {
+                                    window.cancelarCitaPrompt(c.id, cancelUrl, c.folio);
+                                }
+                            };
+                        } else {
+                            btnCancelar.style.display = 'none';
+                        }
                     }
                 }
             })
@@ -1034,8 +1035,8 @@
                         Swal.fire({
                             icon: 'success',
                             title: '¡Llegada Registrada!',
-                            html: `<b>${data.message || 'Check-in registrado con éxito.'}</b><br><span style="font-size: 13px; color: #34d399; display: inline-block; margin-top: 6px;">Hora: ${data.cita?.check_in_hora || 'Registrada'}</span>`,
-                            confirmButtonColor: '#0055ff',
+                            html: `<b>${data.message || 'Check-in registrado con éxito.'}</b><br><span style="font-size: 13px; color: #10b981; display: inline-block; margin-top: 6px;">Hora: ${data.cita?.check_in_hora || 'Registrada'}</span>`,
+                            confirmButtonColor: '#1e40af',
                             background: '#0a1124',
                             color: '#f8fafc',
                             timer: 2000,
@@ -1141,7 +1142,7 @@
                             icon: 'success',
                             title: '¡Atención Iniciada!',
                             html: `<b>${data.mensaje || 'La cita ahora se encuentra en proceso de atención.'}</b>`,
-                            confirmButtonColor: '#0055ff',
+                            confirmButtonColor: '#1e40af',
                             background: '#0a1124',
                             color: '#f8fafc',
                             timer: 2000,
@@ -1253,7 +1254,7 @@
                             icon: 'success',
                             title: '¡Servicio Completado!',
                             html: `<b>${data.mensaje || 'La cita ha sido marcada como completada con éxito.'}</b>`,
-                            confirmButtonColor: '#0055ff',
+                            confirmButtonColor: '#1e40af',
                             background: '#0a1124',
                             color: '#f8fafc',
                             timer: 2000,

@@ -34,11 +34,11 @@
             --border-subtle: rgba(255, 255, 255, 0.08);
             --border-strong: rgba(255, 255, 255, 0.16);
 
-            --barber-red: #ef4444;
-            --barber-red-light: rgba(239, 68, 68, 0.12);
-            --barber-blue: #0055ff;
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
+            --barber-red: #7f1d1d;
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-blue: #1e3a8a;
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
             --barber-gold: #f59e0b;
             --barber-green: #10b981;
 
@@ -179,7 +179,7 @@
             display: inline-block;
             width: fit-content;
             margin-top: 2px;
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
         /* Dropdown de usuario */
@@ -565,7 +565,7 @@
             font-size: 32px;
             font-weight: 800;
             color: #ffffff;
-            box-shadow: 0 8px 24px rgba(0, 85, 255, 0.35);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
             border: 3px solid rgba(255, 255, 255, 0.15);
         }
         .hero-badge-dot {
@@ -577,7 +577,7 @@
             background: var(--barber-green);
             border: 3px solid var(--bg-card);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
         }
 
         .hero-info h2 {
@@ -693,7 +693,7 @@
         .card-icon-blue {
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
         .card-icon-red {
             background: var(--barber-red-light);
@@ -769,7 +769,7 @@
             outline: none;
             border-color: var(--barber-blue);
             background: #09122a;
-            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
         }
         .form-control-custom::placeholder {
             color: #475569;
@@ -841,11 +841,11 @@
             transition: all 0.2s ease;
         }
         .rule-item.valid {
-            color: #34d399;
+            color: #10b981;
         }
         .rule-item.valid .rule-dot {
             background: #10b981;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
         }
 
         /* NIVEL DE SEGURIDAD / ADVERTENCIA */
@@ -877,35 +877,39 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 12px 22px;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 11px 22px;
+            border-radius: 8px;
+            font-size: 13.5px;
             font-weight: 600;
             cursor: pointer;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.18);
             transition: all 0.2s ease;
             margin-top: auto;
             width: 100%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
         .btn-blue {
-            background: linear-gradient(135deg, var(--barber-blue) 0%, #1d4ed8 100%);
+            background: #1e40af;
             color: #ffffff;
-            box-shadow: 0 4px 14px rgba(0, 85, 255, 0.35);
+            border: 1px solid rgba(147, 197, 253, 0.28);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
         }
         .btn-blue:hover:not(:disabled) {
-            background: linear-gradient(135deg, var(--barber-blue-light) 0%, var(--barber-blue) 100%);
+            background: #1d4ed8;
+            color: #ffffff;
+            border-color: rgba(147, 197, 253, 0.45);
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(0, 85, 255, 0.45);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
         .btn-red {
-            background: linear-gradient(135deg, var(--barber-red) 0%, #b91c1c 100%);
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+            background: #1e293b;
+            color: #f8fafc;
         }
         .btn-red:hover:not(:disabled) {
-            background: linear-gradient(135deg, #f87171 0%, var(--barber-red) 100%);
+            background: #334155;
+            color: #ffffff;
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
         }
         .btn-submit:disabled {
             opacity: 0.65;
@@ -1655,7 +1659,7 @@
                             icon: 'warning',
                             title: 'Fecha inválida',
                             text: 'La fecha de nacimiento no puede ser el día de mañana ni una fecha futura.',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         this.value = '';
                     }
@@ -1679,7 +1683,7 @@
                                 icon: 'error',
                                 title: 'Fecha de nacimiento errónea',
                                 text: 'La fecha de nacimiento no puede ser una fecha futura ni el día de mañana.',
-                                confirmButtonColor: '#ef4444'
+                                confirmButtonColor: '#dc2626'
                             });
                             return;
                         }
@@ -1708,7 +1712,7 @@
                                 icon: 'success',
                                 title: '¡Datos Actualizados!',
                                 text: data.message || 'La información del administrador ha sido actualizada con éxito.',
-                                confirmButtonColor: '#0055ff',
+                                confirmButtonColor: '#1e40af',
                                 timer: 3000,
                                 timerProgressBar: true
                             });
@@ -1742,7 +1746,7 @@
                                 icon: 'error',
                                 title: 'Error de validación',
                                 html: errorMsg,
-                                confirmButtonColor: '#ef4444'
+                                confirmButtonColor: '#dc2626'
                             });
                         }
                     } catch (error) {
@@ -1750,7 +1754,7 @@
                             icon: 'error',
                             title: 'Error de servidor',
                             text: 'No fue posible conectar con el servidor. Intenta nuevamente.',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     } finally {
                         btnGuardarDatos.disabled = false;
@@ -1777,7 +1781,7 @@
                             icon: 'warning',
                             title: 'Campo obligatorio',
                             text: 'Debes ingresar tu contraseña actual para autenticar el cambio de credenciales.',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         return;
                     }
@@ -1787,7 +1791,7 @@
                             icon: 'warning',
                             title: 'Contraseña insegura',
                             text: 'La nueva contraseña debe tener al menos 8 caracteres.',
-                            confirmButtonColor: '#0055ff'
+                            confirmButtonColor: '#1e40af'
                         });
                         return;
                     }
@@ -1797,7 +1801,7 @@
                             icon: 'error',
                             title: 'No coinciden',
                             text: 'La nueva contraseña y su confirmación no coinciden exactamente.',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                         return;
                     }
@@ -1825,7 +1829,7 @@
                                 icon: 'success',
                                 title: '¡Credenciales Renovadas!',
                                 text: data.message || 'Tu contraseña de Administrador ha sido actualizada correctamente.',
-                                confirmButtonColor: '#0055ff'
+                                confirmButtonColor: '#1e40af'
                             });
                             formPassword.reset();
                             checkPasswordRules();
@@ -1835,7 +1839,7 @@
                                 icon: 'error',
                                 title: 'Verificación de credenciales',
                                 html: errorMsg,
-                                confirmButtonColor: '#ef4444'
+                                confirmButtonColor: '#dc2626'
                             });
                         }
                     } catch (error) {
@@ -1843,7 +1847,7 @@
                             icon: 'error',
                             title: 'Error de servidor',
                             text: 'Ocurrió un error inesperado al procesar la actualización. Intenta de nuevo.',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     } finally {
                         btnGuardarPassword.disabled = false;

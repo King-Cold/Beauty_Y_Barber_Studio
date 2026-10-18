@@ -27,8 +27,8 @@
         align-items: center;
         gap: 6px;
         padding: 4px 12px;
-        background: rgba(0, 85, 255, 0.12);
-        border: 1px solid rgba(0, 85, 255, 0.28);
+        background: rgba(37, 99, 235, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.28);
         border-radius: 20px;
         font-size: 11px;
         font-weight: 700;
@@ -44,7 +44,7 @@
         height: 6px;
         border-radius: 50%;
         background: #3b82f6;
-        box-shadow: 0 0 8px #3b82f6;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
     }
 
     .section-title {
@@ -66,22 +66,23 @@
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        padding: 12px 24px;
-        background: linear-gradient(135deg, #0055ff 0%, #1e40af 100%);
+        padding: 10px 20px;
+        background: #1e40af;
         color: #ffffff;
-        font-size: 14px;
-        font-weight: 700;
-        border-radius: 12px;
+        font-size: 13.5px;
+        font-weight: 600;
+        border-radius: 8px;
         text-decoration: none;
-        transition: all 0.25s var(--ease-fluid);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        box-shadow: 0 4px 20px rgba(0, 85, 255, 0.35);
+        transition: all 0.2s ease;
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-agendar-nueva:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 85, 255, 0.5);
-        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+        background: #1d4ed8;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        border-color: rgba(147, 197, 253, 0.45);
         color: #ffffff;
     }
 
@@ -132,14 +133,14 @@
     }
 
     .kpi-icon-wrap.blue {
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(37, 99, 235, 0.15);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
     }
 
     .kpi-icon-wrap.green {
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
@@ -157,7 +158,7 @@
 
     .kpi-icon-wrap.amber {
         background: rgba(245, 158, 11, 0.15);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
@@ -223,10 +224,10 @@
     }
 
     .filter-btn.active {
-        background: linear-gradient(135deg, rgba(0, 85, 255, 0.2) 0%, rgba(30, 64, 175, 0.25) 100%);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(30, 64, 175, 0.25) 100%);
         color: #60a5fa;
-        border-color: rgba(0, 85, 255, 0.4);
-        box-shadow: 0 2px 10px rgba(0, 85, 255, 0.2);
+        border-color: rgba(37, 99, 235, 0.4);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
     }
 
     .filter-btn svg {
@@ -246,7 +247,7 @@
     }
 
     .filter-btn.active .filter-badge-count {
-        background: rgba(0, 85, 255, 0.35);
+        background: rgba(37, 99, 235, 0.35);
         color: #bfdbfe;
     }
 
@@ -285,11 +286,11 @@
     }
 
     .cita-card.proxima {
-        border-color: rgba(0, 85, 255, 0.3);
+        border-color: rgba(37, 99, 235, 0.3);
     }
     .cita-card.proxima::before {
-        background: linear-gradient(90deg, #0055ff 0%, #38bdf8 100%);
-        box-shadow: 0 0 12px rgba(0, 85, 255, 0.6);
+        background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+        box-shadow: none;
     }
 
     .cita-card.cancelada {
@@ -297,7 +298,7 @@
         opacity: 0.92;
     }
     .cita-card.cancelada::before {
-        background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+        background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
     }
 
     .cita-card.vencida {
@@ -305,15 +306,15 @@
         opacity: 0.95;
     }
     .cita-card.vencida::before {
-        background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
-        box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        background: linear-gradient(90deg, #d97706 0%, #f59e0b 100%);
+        box-shadow: none;
     }
 
     .cita-card.pasada:not(.cancelada):not(.vencida) {
         border-color: rgba(16, 185, 129, 0.25);
     }
     .cita-card.pasada:not(.cancelada):not(.vencida)::before {
-        background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+        background: linear-gradient(90deg, #059669 0%, #10b981 100%);
     }
 
     .cita-card:hover {
@@ -375,13 +376,13 @@
     .status-badge.status-confirmada,
     .status-badge.status-programada {
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.35);
     }
     .status-badge.status-confirmada::before,
     .status-badge.status-programada::before {
-        background-color: #34d399;
-        box-shadow: 0 0 6px #34d399;
+        background-color: #10b981;
+        box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25);
         animation: pulseDot 2s infinite;
     }
 
@@ -392,11 +393,11 @@
 
     .status-badge.status-pendiente {
         background: rgba(245, 158, 11, 0.15);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.35);
     }
     .status-badge.status-pendiente::before {
-        background-color: #fbbf24;
+        background-color: #f59e0b;
     }
 
     .status-badge.status-en_proceso {
@@ -409,12 +410,12 @@
     }
 
     .status-badge.status-completada {
-        background: rgba(6, 182, 212, 0.15);
-        color: #22d3ee;
-        border: 1px solid rgba(6, 182, 212, 0.35);
+        background: rgba(13, 148, 136, 0.12);
+        color: #2dd4bf;
+        border: 1px solid rgba(13, 148, 136, 0.28);
     }
     .status-badge.status-completada::before {
-        background-color: #22d3ee;
+        background-color: #2dd4bf;
     }
 
     .status-badge.status-cancelada {
@@ -428,12 +429,12 @@
 
     .status-badge.status-vencida {
         background: rgba(245, 158, 11, 0.15);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.35);
     }
     .status-badge.status-vencida::before {
-        background-color: #fbbf24;
-        box-shadow: 0 0 6px #fbbf24;
+        background-color: #f59e0b;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.25);
     }
 
     /* Nombre del Servicio y Precio */
@@ -459,10 +460,10 @@
         align-items: baseline;
         gap: 3px;
         padding: 5px 12px;
-        background: rgba(56, 189, 248, 0.1);
-        border: 1px solid rgba(56, 189, 248, 0.25);
+        background: rgba(37, 99, 235, 0.1);
+        border: 1px solid rgba(37, 99, 235, 0.25);
         border-radius: 10px;
-        color: #38bdf8;
+        color: #60a5fa;
         font-weight: 800;
         font-size: 16px;
         white-space: nowrap;
@@ -490,8 +491,8 @@
     .schedule-calendar-tile {
         width: 48px;
         height: 48px;
-        background: linear-gradient(135deg, rgba(0, 85, 255, 0.2) 0%, rgba(30, 64, 175, 0.3) 100%);
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(30, 64, 175, 0.3) 100%);
+        border: 1px solid rgba(37, 99, 235, 0.3);
         border-radius: 10px;
         display: flex;
         flex-direction: column;
@@ -625,11 +626,11 @@
     }
 
     .btn-cancelar:hover {
-        background: #ef4444;
+        background: #dc2626;
         color: #ffffff;
-        border-color: #ef4444;
+        border-color: #dc2626;
         transform: translateY(-2px);
-        box-shadow: 0 4px 18px rgba(239, 68, 68, 0.4);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
     }
 
     .btn-cancelar svg {
@@ -730,14 +731,14 @@
         width: 72px;
         height: 72px;
         border-radius: 20px;
-        background: linear-gradient(135deg, rgba(0, 85, 255, 0.15) 0%, rgba(30, 64, 175, 0.25) 100%);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(30, 64, 175, 0.25) 100%);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.35);
+        border: 1px solid rgba(37, 99, 235, 0.35);
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 22px;
-        box-shadow: 0 0 20px rgba(0, 85, 255, 0.2);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
     }
 
     .placeholder-icon-wrap svg {
@@ -1214,7 +1215,7 @@
                             </p>
                         `,
                         confirmButtonText: 'Entendido',
-                        confirmButtonColor: '#0055ff',
+                        confirmButtonColor: '#1e40af',
                         background: '#0c142b',
                         color: '#ffffff',
                         customClass: {
@@ -1237,7 +1238,7 @@
                                 <div style="font-size:13px;color:#94a3b8;">Especialista: <strong style="color:#e2e8f0;">${especialista}</strong></div>
                                 <div style="font-size:13px;color:#94a3b8;">Horario: <strong style="color:#e2e8f0;">${fecha} a las ${hora} hrs</strong></div>
                             </div>
-                            <div style="padding:10px 12px;background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;border-radius:6px;color:#fca5a5;font-size:12px;">
+                            <div style="padding:10px 12px;background:rgba(239,68,68,0.1);border-left:3px solid #dc2626;border-radius:6px;color:#fca5a5;font-size:12px;">
                                 <strong>Aviso importante:</strong> Esta acción liberará el horario del especialista y no se podrá revertir.
                             </div>
                         </div>
@@ -1245,7 +1246,7 @@
                     icon: 'warning',
                     iconColor: '#f87171',
                     showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
+                    confirmButtonColor: '#dc2626',
                     cancelButtonColor: '#334155',
                     confirmButtonText: 'Sí, cancelar cita',
                     cancelButtonText: 'Conservar mi cita',
@@ -1280,11 +1281,11 @@
                             if (response.ok && data.success) {
                                 Swal.fire({
                                     icon: 'success',
-                                    iconColor: '#34d399',
+                                    iconColor: '#10b981',
                                     title: '¡Cita Cancelada!',
                                     text: data.mensaje || 'Tu cita ha sido cancelada exitosamente.',
                                     confirmButtonText: 'Aceptar',
-                                    confirmButtonColor: '#0055ff',
+                                    confirmButtonColor: '#1e40af',
                                     background: '#0c142b',
                                     color: '#ffffff'
                                 }).then(() => {
@@ -1297,7 +1298,7 @@
                                     title: 'No se pudo cancelar',
                                     text: data.mensaje || 'No se pudo procesar la cancelación.',
                                     confirmButtonText: 'Entendido',
-                                    confirmButtonColor: '#ef4444',
+                                    confirmButtonColor: '#dc2626',
                                     background: '#0c142b',
                                     color: '#ffffff'
                                 });
@@ -1309,7 +1310,7 @@
                                 title: 'Error de conexión',
                                 text: 'Ocurrió un error al comunicarse con el servidor.',
                                 confirmButtonText: 'Entendido',
-                                confirmButtonColor: '#ef4444',
+                                confirmButtonColor: '#dc2626',
                                 background: '#0c142b',
                                 color: '#ffffff'
                             });

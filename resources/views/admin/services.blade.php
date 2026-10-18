@@ -30,12 +30,12 @@
             --border-subtle: rgba(255, 255, 255, 0.06);
             --border-strong: rgba(255, 255, 255, 0.12);
 
-            /* Paleta cromática estricta (Red, White, Blue) */
-            --barber-red: #ef4444;        /* Rojo vivo y vibrante */
-            --barber-red-light: rgba(239, 68, 68, 0.1);
-            --barber-blue: #0055ff;       /* Azul eléctrico vibrante */
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
+            /* Paleta cromática corporativa (Barber Pole: Red, White, Blue) */
+            --barber-red: #7f1d1d;        /* Borgoña sobrio y elegante */
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-blue: #1e3a8a;       /* Azul marino sobrio */
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
 
             /* Tipografía */
             --text-main: #f8fafc;         /* Blanco roto casi puro para buena legibilidad */
@@ -134,7 +134,7 @@
 
         .mobile-toggle-btn:hover {
             color: var(--barber-blue);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             background: var(--barber-blue-pale);
             transform: scale(1.05);
         }
@@ -531,7 +531,6 @@
 
         .nav-item.active .nav-icon-box {
             color: var(--barber-blue);
-            filter: drop-shadow(0 0 8px rgba(0, 85, 255, 0.5));
         }
 
         .nav-label {
@@ -653,22 +652,7 @@
         }
 
         /* Indicador decorativo lateral */
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--text-white);
-            opacity: 0.8;
-        }
-        .stat-card.card-blue::before {
-            background: var(--barber-blue);
-        }
-        .stat-card.card-red::before {
-            background: var(--barber-red);
-        }
+        .stat-card::before { display: none; }
 
         .stat-icon {
             width: 56px;
@@ -686,7 +670,7 @@
         .stat-card.card-blue .stat-icon {
             color: var(--barber-blue);
             background: var(--barber-blue-pale);
-            border-color: rgba(0, 85, 255, 0.2);
+            border-color: rgba(37, 99, 235, 0.2);
         }
         
         .stat-card.card-red .stat-icon {
@@ -830,8 +814,8 @@
             gap: 6px;
             padding: 5px 12px;
             border-radius: 6px;
-            background: rgba(0, 85, 255, 0.08);
-            border: 1px solid rgba(0, 85, 255, 0.25);
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
             color: #bfdbfe;
             font-size: 12.5px;
             font-weight: 600;
@@ -842,8 +826,8 @@
         }
 
         .btn-toggle-workers:hover {
-            background: rgba(0, 85, 255, 0.16);
-            border-color: rgba(0, 85, 255, 0.45);
+            background: rgba(37, 99, 235, 0.16);
+            border-color: rgba(37, 99, 235, 0.45);
             color: #ffffff;
         }
 
@@ -881,7 +865,7 @@
         .status-confirmed {
             background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
         .status-cancelled {
@@ -912,7 +896,7 @@
 
         .action-card:hover {
             background: var(--barber-blue-pale);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             transform: translateX(4px);
         }
 
@@ -950,6 +934,17 @@
         @media (max-width: 1024px) {
             .dashboard-layout-bottom {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .service-detail-body {
+                flex-direction: column !important;
+            }
+            #view_image_container {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: 180px !important;
             }
         }
     </style>
@@ -1195,8 +1190,8 @@
             <!-- Header Section -->
             <div class="welcome-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                 <h1>Catálogo de servicios</h1>
-                <a href="#" onclick="event.preventDefault(); document.getElementById('createServiceModal').style.display='flex'; document.body.style.overflow='hidden';" style="background: var(--barber-red); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); transition: all 0.2s;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('createServiceModal').style.display='flex'; document.body.style.overflow='hidden';" style="background: #1e40af; color: #ffffff; border: 1px solid rgba(147, 197, 253, 0.28); padding: 9px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13.5px; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35); transition: all 0.2s ease;" onmouseover="this.style.background='#1d4ed8'; this.style.borderColor='rgba(147, 197, 253, 0.45)';" onmouseout="this.style.background='#1e40af'; this.style.borderColor='rgba(147, 197, 253, 0.28)';">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     Nuevo servicio
                 </a>
             </div>
@@ -1287,7 +1282,7 @@
                                             <div class="service-workers-collapse" id="service-workers-list-{{ $service->id }}" style="display: none;">
                                                 <div style="display: flex; flex-wrap: wrap; gap: 6px; max-width: 260px; margin-top: 6px;">
                                                     @foreach($service->trabajadores as $trabajador)
-                                                        <span class="status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: rgba(0, 85, 255, 0.08); border: 1px solid rgba(0, 85, 255, 0.25); color: #bfdbfe; font-size: 12px; font-weight: 500;" title="{{ $trabajador->nombre_completo }}{{ $trabajador->activo ? '' : ' (Inactivo)' }}">
+                                                        <span class="status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); color: #bfdbfe; font-size: 12px; font-weight: 500;" title="{{ $trabajador->nombre_completo }}{{ $trabajador->activo ? '' : ' (Inactivo)' }}">
                                                             <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ $trabajador->activo ? '#10b981' : '#f59e0b' }}; display: inline-block;"></span>
                                                             <span>{{ $trabajador->nombre }}</span>
                                                         </span>
@@ -1322,7 +1317,7 @@
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
                                             </button>
                                             @else
-                                            <button type="submit" class="btn-outline" style="padding: 6px; border-radius: 6px; color: var(--barber-blue-light); border-color: rgba(0, 85, 255, 0.3);" title="Activar servicio">
+                                            <button type="submit" class="btn-outline" style="padding: 6px; border-radius: 6px; color: var(--barber-blue-light); border-color: rgba(37, 99, 235, 0.3);" title="Activar servicio">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
                                             </button>
                                             @endif
@@ -1413,52 +1408,65 @@
 
                     <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
                         <button type="button" onclick="document.getElementById('createServiceForm').reset(); document.getElementById('createServiceModal').style.display='none'; document.body.style.overflow='auto';" class="btn-outline" style="padding: 8px 16px; color: white;">Cancelar</button>
-                        <button type="submit" style="background: var(--barber-blue); color: white; padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">Guardar Servicio</button>
+                        <button type="submit" style="background: #1e40af; color: #ffffff; border: 1px solid rgba(147, 197, 253, 0.28); padding: 8px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);" onmouseover="this.style.background='#1d4ed8'; this.style.borderColor='rgba(147, 197, 253, 0.45)';" onmouseout="this.style.background='#1e40af'; this.style.borderColor='rgba(147, 197, 253, 0.28)';">Guardar Servicio</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- MODAL VER DETALLE SERVICIO -->
-    <div id="viewServiceModal" style="display: none; position: fixed; inset: 0; background: rgba(5,10,21,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px;">
-        <div style="background: var(--bg-header); border: 1px solid var(--border-strong); border-radius: 12px; width: 100%; max-width: 500px; max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
-            <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="font-size: 1.15rem; font-weight: 700;">Detalles del Servicio</h2>
-                <button type="button" onclick="document.getElementById('viewServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;">
+    <!-- MODAL VER DETALLE SERVICIO (SUBTAREA 4: AJUSTE DE DISTRIBUCIÓN SIN SCROLL VERTICAL) -->
+    <div id="viewServiceModal" onclick="if(event.target === this) { this.style.display='none'; document.body.style.overflow='auto'; }" style="display: none; position: fixed; inset: 0; background: rgba(5,10,21,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px;">
+        <div style="background: var(--bg-header); border: 1px solid var(--border-strong); border-radius: 12px; width: 100%; max-width: 660px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            <div style="padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 1.1rem; font-weight: 700; color: #ffffff;">Detalles del Servicio</h2>
+                <button type="button" onclick="document.getElementById('viewServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: color 0.15s ease;" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='var(--text-muted)';" title="Cerrar modal">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
-            <div style="padding: 24px;">
-                <div id="view_image_container" style="width: 100%; height: 280px; border-radius: 8px; background: rgba(0,0,0,0.2); overflow: hidden; margin-bottom: 20px; display: none; align-items: center; justify-content: center;">
-                    <img id="view_image" src="" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px;">
-                </div>
-                
-                <h3 id="view_name" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: white;"></h3>
-                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                    <span id="view_category" class="status-badge" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: var(--text-muted);"></span>
-                </div>
-                
-                <p id="view_description" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;"></p>
-                
-                <div style="display: flex; gap: 16px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--border-subtle);">
-                    <div style="flex: 1;">
-                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Precio</span>
-                        <span id="view_price" style="font-size: 1.1rem; font-weight: 700; color: white;"></span>
+            <div style="padding: 16px 20px;">
+                <div class="service-detail-body" style="display: flex; gap: 16px; align-items: stretch;">
+                    <!-- Columna Izquierda: Imagen del servicio -->
+                    <div id="view_image_container" style="width: 200px; min-width: 180px; max-width: 220px; border-radius: 8px; background: rgba(0,0,0,0.25); border: 1px solid var(--border-subtle); overflow: hidden; display: none; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <img id="view_image" src="" alt="Detalle del servicio" style="width: 100%; height: 100%; max-height: 240px; object-fit: cover; border-radius: 6px; display: block;">
                     </div>
-                    <div style="flex: 1;">
-                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Duración</span>
-                        <span id="view_duration" style="font-size: 1.1rem; font-weight: 700; color: white;"></span>
+
+                    <!-- Columna Derecha: Información del servicio -->
+                    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <!-- Nombre y Categoría -->
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+                                <h3 id="view_name" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; line-height: 1.3; margin: 0; word-break: break-word;"></h3>
+                                <span id="view_category" class="status-badge" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border-subtle); color: var(--text-muted); font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; text-transform: capitalize; white-space: nowrap; flex-shrink: 0;"></span>
+                            </div>
+
+                            <!-- Descripción -->
+                            <p id="view_description" style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin: 0 0 10px 0; word-break: break-word;"></p>
+
+                            <!-- Precio y Duración -->
+                            <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); margin-bottom: 10px;">
+                                <div style="flex: 1;">
+                                    <span style="display: block; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Precio</span>
+                                    <span id="view_price" style="font-size: 1.05rem; font-weight: 700; color: #ffffff;"></span>
+                                </div>
+                                <div style="flex: 1;">
+                                    <span style="display: block; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Duración</span>
+                                    <span id="view_duration" style="font-size: 1.05rem; font-weight: 700; color: #ffffff;"></span>
+                                </div>
+                            </div>
+
+                            <!-- Trabajadores Asignados -->
+                            <div style="background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                                <span style="display: block; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Trabajadores Asignados</span>
+                                <div id="view_workers" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Footer con Botón Cerrar -->
+                        <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
+                            <button type="button" onclick="document.getElementById('viewServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: #1e293b; color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.18); padding: 6px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);" onmouseover="this.style.background='#334155';" onmouseout="this.style.background='#1e293b';">Cerrar</button>
+                        </div>
                     </div>
-                </div>
-
-                <div style="margin-top: 16px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--border-subtle);">
-                    <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">Trabajadores Asignados</span>
-                    <div id="view_workers" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
-                </div>
-
-                <div style="margin-top: 24px; text-align: right;">
-                    <button type="button" onclick="document.getElementById('viewServiceModal').style.display='none'; document.body.style.overflow='auto';" style="background: var(--barber-blue); color: white; padding: 8px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -1539,7 +1547,7 @@
 
                 <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
                     <button type="button" onclick="document.getElementById('editServiceForm').reset(); document.getElementById('editServiceModal').style.display='none'; document.body.style.overflow='auto';" class="btn-outline" style="padding: 8px 16px; color: white;">Cancelar</button>
-                    <button type="submit" style="background: var(--barber-blue); color: white; padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s;">Actualizar Servicio</button>
+                    <button type="submit" style="background: #1e40af; color: #ffffff; border: 1px solid rgba(147, 197, 253, 0.28); padding: 8px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);" onmouseover="this.style.background='#1d4ed8'; this.style.borderColor='rgba(147, 197, 253, 0.45)';" onmouseout="this.style.background='#1e40af'; this.style.borderColor='rgba(147, 197, 253, 0.28)';">Actualizar Servicio</button>
                 </div>
             </form>
         </div>
@@ -1625,7 +1633,7 @@
             if (workersContainer) {
                 if (workers && workers.length > 0) {
                     workersContainer.innerHTML = workers.map(w => `
-                        <span class="status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: rgba(0, 85, 255, 0.08); border: 1px solid rgba(0, 85, 255, 0.25); color: #bfdbfe; font-size: 12px; font-weight: 500;">
+                        <span class="status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); color: #bfdbfe; font-size: 12px; font-weight: 500;">
                             <span style="width: 7px; height: 7px; border-radius: 50%; background: ${w.activo ? '#10b981' : '#f59e0b'}; display: inline-block;"></span>
                             ${w.nombre_completo || w.nombre}
                         </span>
@@ -1790,7 +1798,7 @@
                 text: 'Esta acción no se puede deshacer y el servicio será eliminado permanentemente del catálogo.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ef4444',
+                confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar',
@@ -1838,7 +1846,7 @@
                         text: data.message || 'No se pudo eliminar el servicio.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -1848,7 +1856,7 @@
                     text: 'No se pudo comunicar con el servidor.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             }
         }

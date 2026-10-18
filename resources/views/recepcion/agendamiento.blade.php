@@ -78,7 +78,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(0, 85, 255, 0.4);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     .booking-card-title {
@@ -157,7 +157,7 @@
         background: var(--barber-blue-pale);
         color: var(--text-white);
         border-color: var(--barber-blue-border);
-        box-shadow: 0 2px 8px rgba(0, 85, 255, 0.2);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     .catalog-badge-count {
@@ -245,15 +245,15 @@
     }
 
     .cat-icon-badge.barberia {
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(37, 99, 235, 0.15);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
     }
 
     .cat-icon-badge.estetica {
-        background: rgba(236, 72, 153, 0.15);
-        color: #f472b6;
-        border: 1px solid rgba(236, 72, 153, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+        color: #cbd5e1;
+        border: 1px solid var(--border-subtle);
     }
 
     .category-block-title {
@@ -278,15 +278,15 @@
     }
 
     .cat-pill.barberia {
-        background: rgba(0, 85, 255, 0.12);
+        background: rgba(37, 99, 235, 0.12);
         color: #93c5fd;
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        border: 1px solid rgba(37, 99, 235, 0.25);
     }
 
     .cat-pill.estetica {
-        background: rgba(236, 72, 153, 0.12);
-        color: #fbcfe8;
-        border: 1px solid rgba(236, 72, 153, 0.25);
+        background: rgba(255, 255, 255, 0.05);
+        color: #cbd5e1;
+        border: 1px solid var(--border-subtle);
     }
 
     .services-cards-grid {
@@ -311,13 +311,13 @@
         background: rgba(255, 255, 255, 0.04);
         border-color: rgba(255, 255, 255, 0.2);
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
     .service-card.is-selected {
-        background: rgba(0, 85, 255, 0.08);
+        background: rgba(30, 58, 138, 0.12);
         border-color: var(--barber-blue);
-        box-shadow: 0 0 0 2px var(--barber-blue), 0 8px 22px rgba(0, 85, 255, 0.35);
+        box-shadow: 0 0 0 1px var(--barber-blue), 0 2px 6px rgba(0, 0, 0, 0.25);
         transform: translateY(-2px);
     }
 
@@ -341,19 +341,26 @@
         transform: scale(1.06);
     }
 
+    /* En tarjetas sin imagen se anula cualquier overlay para evitar sombras fuertes */
+    .service-card-media.empty-media::after {
+        display: none !important;
+    }
+
     .service-card-media.empty-media {
         display: flex;
         align-items: center;
         justify-content: center;
         border-bottom: 1px solid var(--border-subtle);
+        background: #0a1124 !important;
+        box-shadow: none !important;
     }
 
     .service-card-media.empty-media.barberia {
-        background: radial-gradient(circle at 50% 40%, rgba(0, 85, 255, 0.2) 0%, rgba(10, 17, 36, 0.95) 75%);
+        background: #0a1124;
     }
 
     .service-card-media.empty-media.estetica {
-        background: radial-gradient(circle at 50% 40%, rgba(236, 72, 153, 0.2) 0%, rgba(10, 17, 36, 0.95) 75%);
+        background: #0a1124;
     }
 
     .empty-media-inner {
@@ -372,19 +379,19 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+        box-shadow: none !important;
     }
 
     .empty-media.barberia .empty-media-icon {
-        background: rgba(0, 85, 255, 0.2);
+        background: rgba(255, 255, 255, 0.04);
         color: #93c5fd;
-        border: 1px solid rgba(0, 85, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .empty-media.estetica .empty-media-icon {
-        background: rgba(236, 72, 153, 0.2);
-        color: #fbcfe8;
-        border: 1px solid rgba(236, 72, 153, 0.4);
+        background: rgba(255, 255, 255, 0.04);
+        color: #cbd5e1;
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .service-category-tag {
@@ -398,19 +405,20 @@
         letter-spacing: 0.04em;
         text-transform: uppercase;
         backdrop-filter: blur(8px);
+        box-shadow: none !important;
         z-index: 2;
     }
 
     .service-category-tag.barberia {
         background: rgba(10, 17, 36, 0.85);
         color: #93c5fd;
-        border: 1px solid rgba(0, 85, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .service-category-tag.estetica {
         background: rgba(10, 17, 36, 0.85);
-        color: #fbcfe8;
-        border: 1px solid rgba(236, 72, 153, 0.4);
+        color: #cbd5e1;
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .service-card-selected-badge {
@@ -589,9 +597,9 @@
 
     .form-control:focus {
         border-color: var(--barber-blue);
-        background: rgba(0, 85, 255, 0.05);
+        background: rgba(37, 99, 235, 0.05);
         outline: none;
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.2);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
 
     select.form-control {
@@ -632,9 +640,9 @@
     }
 
     .selected-service-display.has-service {
-        background: rgba(0, 85, 255, 0.06);
+        background: rgba(37, 99, 235, 0.06);
         border: 1px solid var(--barber-blue-border);
-        box-shadow: 0 2px 10px rgba(0, 85, 255, 0.15);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
     }
 
     .selected-service-empty {
@@ -817,14 +825,16 @@
     }
 
     .btn-primary {
-        background: var(--barber-blue);
-        color: var(--text-white);
-        box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
+        background: #1e40af;
+        color: #ffffff;
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-primary:hover {
-        background: #0044cc;
-        box-shadow: 0 6px 16px rgba(0, 85, 255, 0.5);
+        background: #1d4ed8;
+        border-color: rgba(147, 197, 253, 0.45);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .visually-hidden {
@@ -861,7 +871,7 @@
             <p class="page-subtitle">Registra una nueva cita para un cliente seleccionando el cliente, servicio, fecha y especialista disponible.</p>
         </div>
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <a href="{{ route('recepcion.dashboard') }}" class="btn btn-secondary" style="border-color: rgba(0, 85, 255, 0.35); color: #60a5fa;" title="Ir al panel de turnos de recepción">
+            <a href="{{ route('recepcion.dashboard') }}" class="btn btn-secondary" style="border-color: rgba(37, 99, 235, 0.35); color: #60a5fa;" title="Ir al panel de turnos de recepción">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                 </svg>
@@ -1201,7 +1211,7 @@
                     >
 
                     <!-- Ficha visual del cliente seleccionado -->
-                    <div id="selectedClientCard" class="selected-client-card" style="display: {{ $preId ? 'flex' : 'none' }}; align-items: center; justify-content: space-between; background: rgba(0, 85, 255, 0.08); border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px;">
+                    <div id="selectedClientCard" class="selected-client-card" style="display: {{ $preId ? 'flex' : 'none' }}; align-items: center; justify-content: space-between; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px;">
                         <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
                             <div id="selectedClientAvatar" style="width: 34px; height: 34px; border-radius: 50%; background: var(--barber-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
                                 {{ $preInitials }}
@@ -1244,7 +1254,7 @@
                         </div>
 
                         <!-- Dropdown de resultados interactivos -->
-                        <div id="clientSearchResults" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #0c142b; border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 50; max-height: 220px; overflow-y: auto;">
+                        <div id="clientSearchResults" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #0c142b; border: 1px solid rgba(37, 99, 235, 0.3); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 50; max-height: 220px; overflow-y: auto;">
                         </div>
                     </div>
 
@@ -1629,7 +1639,7 @@
                         </div>
                     </div>
                 `;
-                item.addEventListener('mouseenter', () => item.style.background = 'rgba(0, 85, 255, 0.18)');
+                item.addEventListener('mouseenter', () => item.style.background = 'rgba(37, 99, 235, 0.18)');
                 item.addEventListener('mouseleave', () => item.style.background = 'transparent');
                 item.addEventListener('click', () => {
                     selectSearchedClient(c);
@@ -2252,31 +2262,31 @@
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
                                     <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #c084fc; flex-shrink: 0;"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #a78bfa; flex-shrink: 0;"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
                                         Servicio:
                                     </span>
                                     <span style="color: #ffffff; font-weight: 700; text-align: right; max-width: 65%;">${escapeHtml(serviceObj ? serviceObj.name : 'Servicio')}</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
                                     <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8; flex-shrink: 0;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #60a5fa; flex-shrink: 0;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
                                         Especialista:
                                     </span>
                                     <span style="color: #ffffff; font-weight: 700; text-align: right; max-width: 65%;">${escapeHtml(workerObj ? workerObj.name : 'Especialista')}</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
                                     <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #fbbf24; flex-shrink: 0;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f59e0b; flex-shrink: 0;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                                         Fecha:
                                     </span>
                                     <span style="color: #ffffff; font-weight: 700; text-align: right;">${escapeHtml(fechaFormateada)}</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
                                     <span style="color: #94a3b8; font-weight: 500; display: inline-flex; align-items: center; gap: 7px;">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #60a5fa; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                         Horario:
                                     </span>
-                                    <span style="color: #38bdf8; font-weight: 700; text-align: right;">${escapeHtml(timeVal)} hrs (${serviceObj ? serviceObj.duration : 30} min)</span>
+                                    <span style="color: #60a5fa; font-weight: 700; text-align: right;">${escapeHtml(timeVal)} hrs (${serviceObj ? serviceObj.duration : 30} min)</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 9px 0 2px 0;">
                                     <span style="color: #94a3b8; font-weight: 600; font-size: 13.5px; display: inline-flex; align-items: center; gap: 7px;">
@@ -2291,7 +2301,7 @@
                         showCancelButton: true,
                         confirmButtonText: 'Confirmar Cita',
                         cancelButtonText: 'Cancelar',
-                        confirmButtonColor: '#0055ff',
+                        confirmButtonColor: '#1e40af',
                         cancelButtonColor: '#64748b',
                         background: '#0c142b',
                         color: '#ffffff',
@@ -2354,7 +2364,7 @@
                             background: '#0c142b',
                             color: '#ffffff',
                             showCancelButton: true,
-                            confirmButtonColor: '#0055ff',
+                            confirmButtonColor: '#1e40af',
                             cancelButtonColor: '#334155',
                             confirmButtonText: 'Ver listado de citas',
                             cancelButtonText: 'Agendar otra cita',
@@ -2409,7 +2419,7 @@
                 text: mensaje,
                 background: '#0c142b',
                 color: '#ffffff',
-                confirmButtonColor: '#0055ff'
+                confirmButtonColor: '#1e40af'
             });
         }
     });

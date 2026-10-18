@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Cita;
+use App\Models\HorarioSucursal;
 use App\Models\Service;
 use App\Models\Trabajador;
 use App\Models\User;
@@ -145,6 +146,8 @@ class CitaCalendarioService
                 'check_in_at' => $cita->check_in_at ? $cita->check_in_at->format('Y-m-d H:i:s') : null,
                 'check_in_hora' => $cita->check_in_at ? $cita->check_in_at->format('H:i') : null,
                 'puede_check_in' => $cita->puedeRegistrarCheckIn(),
+                'es_pasada' => $cita->esPasada(),
+                'puede_cancelar' => $cita->puedeCancelarAdministrativamente(),
             ];
         })->toArray();
     }
@@ -220,6 +223,8 @@ class CitaCalendarioService
             'puede_check_in' => $cita->puedeRegistrarCheckIn(),
             'puede_iniciar_atencion' => $cita->puedeIniciarAtencion(),
             'puede_finalizar_atencion' => $cita->puedeFinalizarAtencion(),
+            'es_pasada' => $cita->esPasada(),
+            'puede_cancelar' => $cita->puedeCancelarAdministrativamente(),
         ];
     }
 
@@ -269,6 +274,11 @@ class CitaCalendarioService
 
         if ($estadoActual === 'completada') {
             throw new \DomainException('Una cita completada es un registro final y no puede volver a confirmada, en atención ni cancelada.');
+        }
+
+        // 1.1 REGLA DE CANCELACIÓN: Impedir cancelación de citas pasadas
+        if ($estadoDestino === 'cancelada' && $cita->esPasada()) {
+            throw new \DomainException('No se puede cancelar una cita cuya fecha u hora ya ha transcurrido.');
         }
 
         // 2. REGLA PARA ESTADO CONFIRMADA
@@ -549,6 +559,13 @@ class CitaCalendarioService
         if ($fecha < $today) {
             throw new \DomainException('No se puede reprogramar una cita para una fecha anterior al día de hoy.');
         }
+
+        // Validar que la fecha sea un día laborable de la sucursal
+        $checkLaborable = HorarioSucursal::esFechaLaborable($fecha);
+        if (!$checkLaborable['laborable']) {
+            throw new \DomainException($checkLaborable['mensaje']);
+        }
+
         $horaInicio = trim((string)($datos['hora_inicio'] ?? ($datos['time'] ?? $cita->hora_inicio)));
 
         $disponibilidadService = app(DisponibilidadService::class);
@@ -670,6 +687,11 @@ class CitaCalendarioService
 
         if ($estadoActual === 'completada') {
             throw new \DomainException("No se puede cancelar una cita que ya fue completada.");
+        }
+
+        // Restricción: No se permite cancelar citas correspondientes a fechas o momentos pasados
+        if ($cita->esPasada()) {
+            throw new \DomainException("No se puede cancelar una cita cuya fecha u hora ya ha transcurrido.");
         }
 
         // Si el usuario es un cliente (rol 4), aplicar restricción de 30 minutos

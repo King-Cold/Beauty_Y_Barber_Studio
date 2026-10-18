@@ -200,4 +200,36 @@ class TrabajadorConfiguracionTest extends TestCase
                 'success' => false,
             ]);
     }
+
+    /**
+     * Test: El menú de perfil no contiene la opción 'Ver mi agenda', pero conserva Mi Perfil y Cerrar sesión.
+     */
+    public function test_menu_perfil_no_contiene_opcion_ver_mi_agenda(): void
+    {
+        $response = $this->actingAs($this->trabajadorUser)
+            ->get(route('trabajador.configuracion'));
+
+        $response->assertStatus(200);
+        $response->assertDontSee('Ver mi agenda');
+        $response->assertSee('Mi Perfil');
+        $response->assertSee('Cerrar sesión');
+
+        // La agenda sigue disponible desde el sidebar
+        $response->assertSee(route('trabajador.agenda'));
+        $response->assertSee('Agenda del Trabajador');
+    }
+
+    /**
+     * Test: La agenda sigue accesible y funcional desde sus apartados del sistema.
+     */
+    public function test_agenda_del_trabajador_sigue_accesible(): void
+    {
+        $response = $this->actingAs($this->trabajadorUser)
+            ->get(route('trabajador.agenda'));
+
+        $response->assertStatus(200);
+        $response->assertDontSee('Ver mi agenda');
+        $response->assertSee('Agenda del Trabajador');
+    }
 }
+

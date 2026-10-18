@@ -195,7 +195,7 @@
     .day-box-item.selected {
         background: var(--barber-blue-pale);
         border-color: var(--barber-blue);
-        box-shadow: 0 0 14px rgba(0, 85, 255, 0.3);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     .day-box-item.selected .day-num {
@@ -203,7 +203,7 @@
     }
 
     .day-box-item.today {
-        border-color: rgba(0, 85, 255, 0.5);
+        border-color: rgba(37, 99, 235, 0.5);
     }
 
     .day-name-label {
@@ -234,7 +234,7 @@
     .day-box-item.has-citas .day-count-badge {
         background: var(--barber-blue-pale);
         color: var(--barber-blue-light);
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
     }
 
     .today-pill-tag {
@@ -361,24 +361,28 @@
     }
 
     .btn-filter-apply {
-        background: linear-gradient(135deg, var(--barber-blue), #2563eb);
-        color: var(--text-white);
-        border: none;
+        background: #1e40af;
+        color: #ffffff;
+        border: 1px solid rgba(147, 197, 253, 0.28);
         padding: 8px 16px;
         border-radius: 8px;
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 6px;
         transition: all 0.2s ease;
         text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-filter-apply:hover {
-        opacity: 0.95;
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
         transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     /* PÍLDORAS DE RESULTADOS GLOBALES */
@@ -479,12 +483,12 @@
     .date-context-badge.badge-hoy {
         background: var(--barber-blue);
         color: var(--text-white);
-        box-shadow: 0 0 10px rgba(0, 85, 255, 0.4);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     .date-context-badge.badge-manana {
         background: rgba(168, 85, 247, 0.2);
-        color: #c084fc;
+        color: #a78bfa;
         border: 1px solid rgba(168, 85, 247, 0.3);
     }
 
@@ -998,13 +1002,13 @@
 
     .badge-observacion.has-obs {
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .badge-observacion.pending-obs {
         background: rgba(245, 158, 11, 0.12);
-        color: #fbbf24;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
@@ -1026,25 +1030,27 @@
     }
 
     .btn-action-completar {
-        background: linear-gradient(135deg, #10b981, #059669);
+        background: #1e40af;
         color: #ffffff;
-        border: none;
+        border: 1px solid rgba(147, 197, 253, 0.28);
         padding: 6px 12px;
         border-radius: 8px;
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
         gap: 6px;
         transition: all 0.2s ease;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-action-completar:hover {
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-        opacity: 0.95;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     /* TARJETA DE OBSERVACIONES EN EL MODAL */
@@ -1062,7 +1068,7 @@
 
     .obs-section-card.highlight-focus {
         border-color: #3b82f6;
-        box-shadow: 0 0 22px rgba(59, 130, 246, 0.35);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
         background: rgba(30, 58, 138, 0.2);
     }
 
@@ -1085,7 +1091,7 @@
 
     .obs-status-tag.registered {
         background: rgba(16, 185, 129, 0.15);
-        color: #34d399;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
@@ -1104,7 +1110,7 @@
     }
 
     .obs-alert-completion svg {
-        color: #34d399;
+        color: #10b981;
         flex-shrink: 0;
         margin-top: 2px;
     }
@@ -1170,7 +1176,7 @@
 
     .obs-textarea:focus {
         border-color: var(--barber-blue);
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.15);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
     .obs-textarea-meta {
@@ -1199,24 +1205,27 @@
     }
 
     .btn-guardar-obs {
-        background: linear-gradient(135deg, var(--barber-blue), #2563eb);
-        color: var(--text-white);
-        border: none;
+        background: #1e40af;
+        color: #ffffff;
+        border: 1px solid rgba(147, 197, 253, 0.28);
         padding: 7px 16px;
         border-radius: 8px;
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
         gap: 6px;
         transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-guardar-obs:hover {
-        opacity: 0.95;
+        background: #1d4ed8;
+        color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 </style>
 @endpush
@@ -1873,6 +1882,14 @@
                 selectEstado.value = cita.estado.toLowerCase();
             }
 
+            // Ocultar o deshabilitar opción cancelada si la cita ya es pasada
+            const optCancModal = selectEstado.querySelector('option[value="cancelada"]');
+            if (optCancModal) {
+                const noCancelable = Boolean(cita.es_pasada) || cita.puede_cancelar === false;
+                optCancModal.disabled = noCancelable && cita.estado.toLowerCase() !== 'cancelada';
+                optCancModal.hidden = noCancelable && cita.estado.toLowerCase() !== 'cancelada';
+            }
+
             manejarCambioEstadoModal();
 
             // Abrir modal
@@ -1944,7 +1961,7 @@
             alertBanner.style.display = 'none';
             seccion.classList.remove('highlight-focus');
             btnActualizar.innerHTML = 'Actualizar Estado';
-            btnActualizar.style.background = 'linear-gradient(135deg, var(--barber-blue), #2563eb)';
+            btnActualizar.style.background = '#1e40af';
         }
     }
 
@@ -2022,7 +2039,7 @@
                     showConfirmButton: false,
                     timer: 2000,
                     timerProgressBar: true,
-                    background: '#10b981',
+                    background: '#0c142b',
                     color: '#ffffff'
                 });
 
@@ -2080,7 +2097,7 @@
                     showConfirmButton: false,
                     timer: 2500,
                     timerProgressBar: true,
-                    background: nuevoEstado === 'completada' ? '#10b981' : '#0055ff',
+                    background: nuevoEstado === 'completada' ? '#10b981' : '#1e40af',
                     color: '#ffffff'
                 });
 

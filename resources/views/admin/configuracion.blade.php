@@ -29,11 +29,11 @@
             --border-subtle: rgba(255, 255, 255, 0.06);
             --border-strong: rgba(255, 255, 255, 0.12);
 
-            --barber-red: #ef4444;
-            --barber-red-light: rgba(239, 68, 68, 0.1);
-            --barber-blue: #0055ff;
-            --barber-blue-light: #3377ff; 
-            --barber-blue-pale: rgba(0, 85, 255, 0.15);
+            --barber-red: #7f1d1d;
+            --barber-red-light: rgba(127, 29, 29, 0.18);
+            --barber-blue: #1e3a8a;
+            --barber-blue-light: #60a5fa; 
+            --barber-blue-pale: rgba(30, 58, 138, 0.18);
 
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -125,7 +125,7 @@
 
         .mobile-toggle-btn:hover {
             color: var(--barber-blue);
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             background: var(--barber-blue-pale);
             transform: scale(1.05);
         }
@@ -206,7 +206,7 @@
 
         .profile-btn:hover,
         .profile-btn:focus-visible {
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             background: rgba(255, 255, 255, 0.02);
             outline: none;
         }
@@ -460,7 +460,6 @@
 
         .nav-item.active .nav-icon-box {
             color: var(--barber-blue);
-            filter: drop-shadow(0 0 8px rgba(0, 85, 255, 0.5));
         }
 
         .nav-label {
@@ -549,7 +548,7 @@
         .card-icon-badge.icon-amber {
             background: rgba(245, 158, 11, 0.12);
             border: 1px solid rgba(245, 158, 11, 0.3);
-            color: #fbbf24;
+            color: #f59e0b;
         }
 
         /* Formulario en línea */
@@ -634,7 +633,6 @@
 
         .btn-calendar-trigger:hover svg {
             stroke: #ffffff !important;
-            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
         }
 
         input[type="date"]::-webkit-calendar-picker-indicator {
@@ -645,7 +643,7 @@
 
         .special-date-help-text {
             font-size: 11px;
-            color: #ef4444;
+            color: #dc2626;
             font-weight: 600;
             margin-top: 4px;
             line-height: 1.3;
@@ -655,7 +653,7 @@
         .special-form-control:focus {
             outline: none;
             border-color: var(--barber-blue);
-            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
         }
 
         .special-checkbox-wrapper {
@@ -698,27 +696,29 @@
         }
 
         .btn-add-special {
-            background: linear-gradient(135deg, var(--barber-blue) 0%, #0044cc 100%);
+            background: #1e40af;
             color: #ffffff;
-            border: none;
+            border: 1px solid rgba(147, 197, 253, 0.28);
             border-radius: 6px;
             padding: 0 18px;
             height: 38px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
         }
 
         .btn-add-special:hover {
-            background: linear-gradient(135deg, var(--barber-blue-light) 0%, var(--barber-blue) 100%);
+            background: #1d4ed8;
+            color: #ffffff;
+            border-color: rgba(147, 197, 253, 0.45);
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(0, 85, 255, 0.45);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         /* Tabla de Fechas Especiales */
@@ -773,9 +773,9 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: rgba(0, 85, 255, 0.12);
+            background: rgba(37, 99, 235, 0.12);
             color: #93c5fd;
-            border: 1px solid rgba(0, 85, 255, 0.25);
+            border: 1px solid rgba(37, 99, 235, 0.25);
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 12px;
@@ -799,7 +799,7 @@
         .btn-edit-special:hover {
             background: var(--barber-blue-pale);
             color: #60a5fa;
-            border-color: rgba(0, 85, 255, 0.4);
+            border-color: rgba(37, 99, 235, 0.4);
             transform: scale(1.05);
         }
 
@@ -945,25 +945,27 @@
         }
 
         .btn-modal-save {
-            background: linear-gradient(135deg, var(--barber-blue) 0%, #0044cc 100%);
+            background: #1e40af;
             color: #ffffff;
-            border: none;
+            border: 1px solid rgba(147, 197, 253, 0.28);
             border-radius: 6px;
             padding: 8px 18px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
         }
 
         .btn-modal-save:hover {
-            background: linear-gradient(135deg, var(--barber-blue-light) 0%, var(--barber-blue) 100%);
+            background: #1d4ed8;
+            color: #ffffff;
+            border-color: rgba(147, 197, 253, 0.45);
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(0, 85, 255, 0.45);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         .special-empty-row {
@@ -1026,7 +1028,7 @@
             height: 44px;
             border-radius: 10px;
             background: var(--barber-blue-pale);
-            border: 1px solid rgba(0, 85, 255, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
             color: var(--barber-blue-light);
             display: flex;
             align-items: center;
@@ -1058,7 +1060,7 @@
             padding: 6px 14px;
             border-radius: 20px;
             background: rgba(16, 185, 129, 0.12);
-            color: #34d399;
+            color: #10b981;
             border: 1px solid rgba(16, 185, 129, 0.25);
             display: flex;
             align-items: center;
@@ -1071,7 +1073,7 @@
             height: 7px;
             border-radius: 50%;
             background: #10b981;
-            box-shadow: 0 0 6px #10b981;
+            box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3);
         }
 
         /* CUERPO DEL PANEL: LISTA DE 7 DÍAS */
@@ -1095,7 +1097,7 @@
         }
 
         .branch-day-row:hover {
-            border-color: rgba(0, 85, 255, 0.3);
+            border-color: rgba(37, 99, 235, 0.3);
             background: rgba(15, 25, 52, 0.8);
             transform: translateX(2px);
         }
@@ -1170,6 +1172,15 @@
             background-color: #ffffff;
         }
 
+        .toggle-switch input:disabled + .toggle-slider {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        .toggle-switch input:disabled {
+            cursor: not-allowed;
+        }
+
         .branch-day-title-wrap {
             display: flex;
             align-items: center;
@@ -1193,15 +1204,15 @@
         }
 
         .branch-day-status-pill.status-open {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.28);
         }
 
         .branch-day-status-pill.status-closed {
-            background: rgba(239, 68, 68, 0.12);
+            background: rgba(220, 38, 38, 0.12);
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.25);
+            border: 1px solid rgba(220, 38, 38, 0.28);
         }
 
         /* Lado Derecho del Día (Selectores de Hora o Mensaje de Cerrado) */
@@ -1254,14 +1265,14 @@
         }
 
         .time-picker-item select.time-select:hover:not(:disabled) {
-            border-color: rgba(0, 85, 255, 0.4);
+            border-color: rgba(37, 99, 235, 0.4);
             background-color: #0d162a;
         }
 
         .time-picker-item select.time-select:focus {
             outline: none;
             border-color: var(--barber-blue);
-            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
             background-color: #0d162a;
         }
 
@@ -1271,6 +1282,14 @@
             background-color: rgba(255, 255, 255, 0.02);
             border-color: rgba(255, 255, 255, 0.04);
             color: var(--text-muted);
+        }
+
+        .time-picker-item select.time-select.time-select-locked {
+            opacity: 0.85;
+            cursor: not-allowed;
+            background-color: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
         }
 
         .time-picker-item select.time-select option {
@@ -1316,7 +1335,7 @@
         .time-picker-item input[type="time"]:focus {
             outline: none;
             border-color: var(--barber-blue);
-            box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
             background: #0d162a;
         }
 
@@ -1377,20 +1396,28 @@
         }
 
         .btn-save-schedule {
-            background: var(--barber-blue);
-            border: none;
-            color: var(--text-white);
-            padding: 10px 24px;
+            background: #1e40af;
+            border: 1px solid rgba(147, 197, 253, 0.28);
+            color: #ffffff;
+            padding: 9px 22px;
             border-radius: 8px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             font-family: inherit;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             transition: all 0.2s var(--ease-fluid);
-            box-shadow: 0 4px 14px rgba(0, 85, 255, 0.35);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-save-schedule:hover {
+            background: #1d4ed8;
+            color: #ffffff;
+            border-color: rgba(147, 197, 253, 0.45);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         .schedule-card-actions {
@@ -1416,11 +1443,11 @@
         }
 
         .schedule-autosave-indicator.is-saving {
-            color: #38bdf8;
+            color: #60a5fa;
         }
 
         .schedule-autosave-indicator.is-saved {
-            color: #34d399;
+            color: #10b981;
         }
 
         .schedule-autosave-indicator svg {
@@ -1428,9 +1455,10 @@
         }
 
         .btn-save-schedule:hover {
-            background: var(--barber-blue-light);
+            background: #334155;
+            color: #ffffff;
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(0, 85, 255, 0.45);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
         }
 
         .btn-save-schedule:active {
@@ -1764,12 +1792,26 @@
                         $branchDaysConfig = [];
                         foreach ($daysMapList as $dId => $dNom) {
                             $savedH = $horariosSucursal[$dId] ?? null;
+                            if ($dId === 'sabado') {
+                                $isOpen = true;
+                                $startVal = '08:00';
+                                $endVal = '12:00';
+                            } elseif ($dId === 'domingo') {
+                                $isOpen = false;
+                                $startVal = $savedH['apertura'] ?? '10:00';
+                                $endVal = $savedH['cierre'] ?? '15:00';
+                            } else {
+                                $isOpen = $savedH ? (bool)$savedH['abierto'] : true;
+                                $startVal = $savedH['apertura'] ?? '09:00';
+                                $endVal = $savedH['cierre'] ?? '20:00';
+                            }
+
                             $branchDaysConfig[] = [
                                 'id' => $dId,
                                 'name' => $dNom,
-                                'open' => $savedH ? (bool)$savedH['abierto'] : (!in_array($dId, ['sabado', 'domingo'])),
-                                'start' => $savedH['apertura'] ?? ($dId === 'sabado' || $dId === 'domingo' ? '10:00' : '09:00'),
-                                'end' => $savedH['cierre'] ?? ($dId === 'domingo' ? '15:00' : ($dId === 'sabado' ? '18:00' : '20:00')),
+                                'open' => $isOpen,
+                                'start' => $startVal,
+                                'end' => $endVal,
                             ];
                         }
 
@@ -1784,10 +1826,14 @@
                     @endphp
 
                     @foreach($branchDaysConfig as $day)
+                        @php
+                            $isDomingo = ($day['id'] === 'domingo');
+                            $isSabado = ($day['id'] === 'sabado');
+                        @endphp
                         <div class="branch-day-row {{ $day['open'] ? '' : 'day-closed' }}" id="row-{{ $day['id'] }}">
                             <div class="branch-day-info">
-                                <label class="toggle-switch" title="Alternar Abierto / Cerrado para {{ $day['name'] }}">
-                                    <input type="checkbox" id="toggle-{{ $day['id'] }}" {{ $day['open'] ? 'checked' : '' }} onchange="toggleBranchDay('{{ $day['id'] }}', this.checked)">
+                                <label class="toggle-switch" title="{{ $isDomingo ? 'Domingo no laborable (no habilitable)' : ($isSabado ? 'Horario fijo de sábado (08:00 a 12:00)' : 'Alternar Abierto / Cerrado para ' . $day['name']) }}">
+                                    <input type="checkbox" id="toggle-{{ $day['id'] }}" {{ $day['open'] ? 'checked' : '' }} {{ ($isDomingo || $isSabado) ? 'disabled' : '' }} onchange="toggleBranchDay('{{ $day['id'] }}', this.checked)">
                                     <span class="toggle-slider"></span>
                                 </label>
                                 <div class="branch-day-title-wrap">
@@ -1800,7 +1846,7 @@
                             <div class="branch-day-times" id="times-{{ $day['id'] }}">
                                 <div class="time-picker-item">
                                     <label for="open-{{ $day['id'] }}">Apertura</label>
-                                    <select id="open-{{ $day['id'] }}" class="time-select" {{ $day['open'] ? '' : 'disabled' }}>
+                                    <select id="open-{{ $day['id'] }}" class="time-select {{ $isSabado ? 'time-select-locked' : '' }}" {{ ($day['open'] && !$isSabado) ? '' : 'disabled' }} {{ $isSabado ? 'title="Horario fijo de sábado: 08:00 a 12:00 (no modificable)"' : '' }}>
                                         @foreach($timeSlots as $slot)
                                             <option value="{{ $slot }}" {{ $slot === $day['start'] ? 'selected' : '' }}>{{ $slot }}</option>
                                         @endforeach
@@ -1809,7 +1855,7 @@
                                 <span class="time-sep-arrow">→</span>
                                 <div class="time-picker-item">
                                     <label for="close-{{ $day['id'] }}">Cierre</label>
-                                    <select id="close-{{ $day['id'] }}" class="time-select" {{ $day['open'] ? '' : 'disabled' }}>
+                                    <select id="close-{{ $day['id'] }}" class="time-select {{ $isSabado ? 'time-select-locked' : '' }}" {{ ($day['open'] && !$isSabado) ? '' : 'disabled' }} {{ $isSabado ? 'title="Horario fijo de sábado: 08:00 a 12:00 (no modificable)"' : '' }}>
                                         @foreach($timeSlots as $slot)
                                             <option value="{{ $slot }}" {{ $slot === $day['end'] ? 'selected' : '' }}>{{ $slot }}</option>
                                         @endforeach
@@ -2181,6 +2227,7 @@
 
             // Escuchar cambios en los selectores de hora de apertura y cierre de la sucursal para auto-guardado
             BRANCH_DAYS.forEach(day => {
+                if (day === 'sabado' || day === 'domingo') return;
                 const openSel = document.getElementById(`open-${day}`);
                 const closeSel = document.getElementById(`close-${day}`);
                 if (openSel) {
@@ -2190,6 +2237,9 @@
                     closeSel.addEventListener('change', () => triggerBranchScheduleAutoSave());
                 }
             });
+
+            // Actualizar contador inicial
+            updateSummaryCount();
         });
 
         // Temporizador de auto-guardado (Debounce)
@@ -2218,6 +2268,9 @@
 
         // Alternar estado Abierto / Cerrado de un día específico
         function toggleBranchDay(day, isOpen) {
+            // Protección contra alteración de sábado y domingo (Subtarea 3)
+            if (day === 'domingo' || day === 'sabado') return;
+
             const row = document.getElementById(`row-${day}`);
             const badge = document.getElementById(`badge-${day}`);
             const openInput = document.getElementById(`open-${day}`);
@@ -2279,11 +2332,25 @@
                 const openSel = document.getElementById(`open-${day}`);
                 const closeSel = document.getElementById(`close-${day}`);
 
-                dias[day] = {
-                    abierto: toggle ? toggle.checked : true,
-                    apertura: openSel ? openSel.value : '09:00',
-                    cierre: closeSel ? closeSel.value : '20:00'
-                };
+                if (day === 'domingo') {
+                    dias[day] = {
+                        abierto: false,
+                        apertura: '10:00',
+                        cierre: '15:00'
+                    };
+                } else if (day === 'sabado') {
+                    dias[day] = {
+                        abierto: true,
+                        apertura: '08:00',
+                        cierre: '12:00'
+                    };
+                } else {
+                    dias[day] = {
+                        abierto: toggle ? toggle.checked : true,
+                        apertura: openSel ? openSel.value : '09:00',
+                        cierre: closeSel ? closeSel.value : '20:00'
+                    };
+                }
             });
 
             if (!isAuto && btn) {
@@ -2347,7 +2414,7 @@
                             showConfirmButton: false,
                             timer: 3500,
                             timerProgressBar: true,
-                            background: '#10b981',
+                            background: '#0c142b',
                             color: '#ffffff',
                             iconColor: '#ffffff'
                         });
@@ -2355,7 +2422,7 @@
                 } else {
                     if (indicator) {
                         indicator.className = 'schedule-autosave-indicator is-visible';
-                        indicator.style.color = '#ef4444';
+                        indicator.style.color = '#dc2626';
                         indicator.innerHTML = `<span>Error al sincronizar</span>`;
                     }
                     if (!isAuto) {
@@ -2365,14 +2432,14 @@
                             text: result.message || 'No se pudieron actualizar los horarios de la sucursal.',
                             background: '#1e293b',
                             color: '#ffffff',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#dc2626'
                         });
                     }
                 }
             } catch (err) {
                 if (indicator) {
                     indicator.className = 'schedule-autosave-indicator is-visible';
-                    indicator.style.color = '#ef4444';
+                    indicator.style.color = '#dc2626';
                     indicator.innerHTML = `<span>Error de conexión</span>`;
                 }
                 if (!isAuto) {
@@ -2382,7 +2449,7 @@
                         text: 'No se pudo conectar con el servidor para guardar los horarios.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } finally {
@@ -2430,7 +2497,7 @@
                     text: 'Por favor ingresa la fecha de la excepción en formato DD/MM/AAAA.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 dateInput.focus();
                 return;
@@ -2455,7 +2522,7 @@
                     text: 'Por favor escribe el motivo de la excepción (ej. Navidad, Día Festivo).',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 reasonInput.focus();
                 return;
@@ -2468,7 +2535,7 @@
                     text: 'La hora de apertura debe ser anterior a la hora de cierre.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -2506,7 +2573,7 @@
                         showConfirmButton: false,
                         timer: 3500,
                         timerProgressBar: true,
-                        background: '#10b981',
+                        background: '#0c142b',
                         color: '#ffffff',
                         iconColor: '#ffffff'
                     });
@@ -2529,7 +2596,7 @@
                         html: errorMsg,
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -2539,7 +2606,7 @@
                     text: 'No se pudo comunicar con el servidor.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             } finally {
                 submitBtn.disabled = false;
@@ -2554,7 +2621,7 @@
                 text: `Se eliminará la excepción para "${motivo}".`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ef4444',
+                confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar',
@@ -2585,7 +2652,7 @@
                         showConfirmButton: false,
                         timer: 3500,
                         timerProgressBar: true,
-                        background: '#10b981',
+                        background: '#0c142b',
                         color: '#ffffff',
                         iconColor: '#ffffff'
                     });
@@ -2605,7 +2672,7 @@
                         text: result.message || 'No se pudo eliminar el registro.',
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -2615,7 +2682,7 @@
                     text: 'No se pudo comunicar con el servidor.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             }
         }
@@ -2693,7 +2760,7 @@
                     text: 'Por favor ingresa la fecha de la excepción en formato DD/MM/AAAA.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 if (dateInput) dateInput.focus();
                 return;
@@ -2713,7 +2780,7 @@
                     text: 'Por favor escribe el motivo de la excepción.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -2725,7 +2792,7 @@
                     text: 'La hora de apertura debe ser anterior a la hora de cierre.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 return;
             }
@@ -2763,7 +2830,7 @@
                         showConfirmButton: false,
                         timer: 3000,
                         timerProgressBar: true,
-                        background: '#10b981',
+                        background: '#0c142b',
                         color: '#ffffff',
                         iconColor: '#ffffff'
                     });
@@ -2839,7 +2906,7 @@
                         html: errorMsg,
                         background: '#1e293b',
                         color: '#ffffff',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#dc2626'
                     });
                 }
             } catch (err) {
@@ -2849,7 +2916,7 @@
                     text: 'No se pudo comunicar con el servidor.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#ef4444'
+                    confirmButtonColor: '#dc2626'
                 });
             } finally {
                 submitBtn.disabled = false;
@@ -2903,7 +2970,7 @@
                     text: 'Por favor ingresa la fecha completa en formato DD/MM/AAAA.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 return false;
@@ -2918,7 +2985,7 @@
                     text: 'El formato de fecha debe ser DD/MM/AAAA (día, mes y año).',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 return false;
@@ -2939,7 +3006,7 @@
                     text: `Únicamente se admiten fechas correspondientes al año en curso (${currentYear}).`,
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 return false;
@@ -2953,7 +3020,7 @@
                     text: 'El mes ingresado no es válido (debe estar entre 01 y 12).',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 return false;
@@ -2967,7 +3034,7 @@
                     text: 'La fecha ingresada no existe en el calendario.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
                 return false;
@@ -2982,9 +3049,27 @@
                     text: 'No puedes seleccionar fechas de días pasados.',
                     background: '#1e293b',
                     color: '#ffffff',
-                    confirmButtonColor: '#0055ff'
+                    confirmButtonColor: '#1e40af'
                 });
                 input.value = '';
+                const nativePicker = document.getElementById(input.id === 'editSpecialDateInput' ? 'editSpecialDateNativePicker' : 'specialDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
+                return false;
+            }
+
+            // Validar que no sea domingo (día no laborable de la sucursal)
+            if (testDate.getDay() === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Día no laboral',
+                    text: 'Los domingos son días no laborables de la sucursal y no se pueden registrar como fechas especiales.',
+                    background: '#1e293b',
+                    color: '#ffffff',
+                    confirmButtonColor: '#1e40af'
+                });
+                input.value = '';
+                const nativePicker = document.getElementById(input.id === 'editSpecialDateInput' ? 'editSpecialDateNativePicker' : 'specialDateNativePicker');
+                if (nativePicker) nativePicker.value = '';
                 return false;
             }
 
@@ -3034,7 +3119,9 @@
                 nativePicker.addEventListener('change', function () {
                     if (this.value) {
                         textInput.value = formatYmdToDmy(this.value);
-                        validateSpecialDateField(textInput);
+                        if (!validateSpecialDateField(textInput)) {
+                            this.value = '';
+                        }
                     }
                 });
             }

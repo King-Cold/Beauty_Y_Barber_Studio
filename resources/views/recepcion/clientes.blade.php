@@ -30,22 +30,24 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 20px;
-        background: linear-gradient(135deg, var(--barber-blue) 0%, #1d4ed8 100%);
-        color: var(--text-white);
-        font-size: 14px;
-        font-weight: 700;
-        border-radius: 10px;
+        padding: 9px 18px;
+        background: #1e40af;
+        color: #ffffff;
+        font-size: 13.5px;
+        font-weight: 600;
+        border-radius: 8px;
         text-decoration: none;
-        transition: all 0.25s var(--ease-fluid);
-        border: 1px solid rgba(0, 85, 255, 0.4);
-        box-shadow: 0 4px 14px rgba(0, 85, 255, 0.25);
+        transition: all 0.2s ease;
+        border: 1px solid rgba(147, 197, 253, 0.28);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     }
 
     .btn-agendar-cta:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 85, 255, 0.4);
-        border-color: #60a5fa;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        border-color: rgba(147, 197, 253, 0.45);
+        background: #1d4ed8;
+        color: #ffffff;
     }
 
     .clients-card {
@@ -93,8 +95,8 @@
         width: 38px;
         height: 38px;
         border-radius: 10px;
-        background: linear-gradient(135deg, rgba(0, 85, 255, 0.2), rgba(30, 64, 175, 0.3));
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(30, 64, 175, 0.3));
+        border: 1px solid rgba(37, 99, 235, 0.3);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -120,11 +122,11 @@
         gap: 5px;
         padding: 3px 10px;
         border-radius: 12px;
-        background: rgba(0, 85, 255, 0.12);
+        background: rgba(37, 99, 235, 0.12);
         color: #60a5fa;
         font-size: 12px;
         font-weight: 700;
-        border: 1px solid rgba(0, 85, 255, 0.25);
+        border: 1px solid rgba(37, 99, 235, 0.25);
     }
 
     .btn-agendar-row {
@@ -133,9 +135,9 @@
         gap: 6px;
         padding: 6px 12px;
         border-radius: 8px;
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(37, 99, 235, 0.15);
         color: #60a5fa;
-        border: 1px solid rgba(0, 85, 255, 0.3);
+        border: 1px solid rgba(37, 99, 235, 0.3);
         font-size: 12px;
         font-weight: 700;
         text-decoration: none;
@@ -143,8 +145,10 @@
     }
 
     .btn-agendar-row:hover {
-        background: var(--barber-blue);
+        background: #1e40af;
         color: #ffffff;
+        border-color: rgba(147, 197, 253, 0.45);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 </style>
 @endpush

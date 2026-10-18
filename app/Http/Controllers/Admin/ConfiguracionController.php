@@ -69,6 +69,14 @@ class ConfiguracionController extends Controller
 
         $cerrado = (bool) $validated['cerrado_todo_el_dia'];
 
+        $fechaCarbon = Carbon::parse($validated['fecha']);
+        if ($fechaCarbon->isSunday()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Los domingos son días no laborables de la sucursal y no se pueden registrar como fechas especiales.',
+            ], 422);
+        }
+
         if ($cerrado) {
             $validated['hora_apertura'] = null;
             $validated['hora_cierre'] = null;
@@ -139,6 +147,14 @@ class ConfiguracionController extends Controller
 
         $cerrado = (bool) $validated['cerrado_todo_el_dia'];
 
+        $fechaCarbon = Carbon::parse($validated['fecha']);
+        if ($fechaCarbon->isSunday()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Los domingos son días no laborables de la sucursal y no se pueden registrar como fechas especiales.',
+            ], 422);
+        }
+
         if ($cerrado) {
             $validated['hora_apertura'] = null;
             $validated['hora_cierre'] = null;
@@ -199,15 +215,62 @@ class ConfiguracionController extends Controller
         $diasConfig = $request->input('dias', []);
         $diasPermitidos = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
+        // =========================================================================
+        // VALIDACIÓN DE SERVIDOR: Proteger restricciones fijas (Subtarea 3)
+        // Las restricciones no se pueden eludir mediante solicitudes directas
+        // =========================================================================
+        if (isset($diasConfig['domingo'])) {
+            $domingoData = $diasConfig['domingo'];
+            $domingoAbierto = isset($domingoData['abierto']) ? filter_var($domingoData['abierto'], FILTER_VALIDATE_BOOLEAN) : false;
+            if ($domingoAbierto) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Los domingos deben permanecer como días no laborables y no pueden habilitarse.',
+                ], 422);
+            }
+        }
+
+        if (isset($diasConfig['sabado'])) {
+            $sabData = $diasConfig['sabado'];
+            if (isset($sabData['abierto']) && !filter_var($sabData['abierto'], FILTER_VALIDATE_BOOLEAN)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El sábado debe tener un horario fijo de 08:00 a 12:00 horas y no permite modificaciones.',
+                ], 422);
+            }
+            if (isset($sabData['apertura']) && substr(trim((string)$sabData['apertura']), 0, 5) !== '08:00') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El horario del sábado es fijo de 08:00 a 12:00 horas y no permite modificaciones.',
+                ], 422);
+            }
+            if (isset($sabData['cierre']) && substr(trim((string)$sabData['cierre']), 0, 5) !== '12:00') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El horario del sábado es fijo de 08:00 a 12:00 horas y no permite modificaciones.',
+                ], 422);
+            }
+        }
+
         foreach ($diasConfig as $diaKey => $data) {
             $diaKey = strtolower(trim($diaKey));
             if (!in_array($diaKey, $diasPermitidos, true)) {
                 continue;
             }
 
-            $abierto = isset($data['abierto']) ? filter_var($data['abierto'], FILTER_VALIDATE_BOOLEAN) : true;
-            $apertura = $data['apertura'] ?? '09:00';
-            $cierre = $data['cierre'] ?? '20:00';
+            if ($diaKey === 'domingo') {
+                $abierto = false;
+                $apertura = '10:00';
+                $cierre = '15:00';
+            } elseif ($diaKey === 'sabado') {
+                $abierto = true;
+                $apertura = '08:00';
+                $cierre = '12:00';
+            } else {
+                $abierto = isset($data['abierto']) ? filter_var($data['abierto'], FILTER_VALIDATE_BOOLEAN) : true;
+                $apertura = $data['apertura'] ?? '09:00';
+                $cierre = $data['cierre'] ?? '20:00';
+            }
 
             $variantes = [$diaKey];
             if ($diaKey === 'miercoles') $variantes[] = 'miércoles';
@@ -230,6 +293,24 @@ class ConfiguracionController extends Controller
                 ]
             );
         }
+
+        // Garantizar persistencia obligatoria de restricciones de sábado y domingo
+        HorarioSucursal::updateOrCreate(
+            ['dia' => 'sabado'],
+            [
+                'abierto' => true,
+                'apertura' => '08:00',
+                'cierre' => '12:00',
+            ]
+        );
+        HorarioSucursal::updateOrCreate(
+            ['dia' => 'domingo'],
+            [
+                'abierto' => false,
+                'apertura' => '10:00',
+                'cierre' => '15:00',
+            ]
+        );
 
         $nuevoHorarioSucursal = HorarioSucursal::getHorariosMap();
 
