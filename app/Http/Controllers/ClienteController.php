@@ -26,7 +26,22 @@ class ClienteController extends Controller
             return $this->redirectByRole($user->role_id);
         }
 
-        return view('cliente.dashboard', compact('user'));
+        Cita::ensureTableExists();
+
+        $proximaCita = null;
+        if ($user && $user->id) {
+            $citas = Cita::where('user_id', $user->id)
+                ->whereNotIn('estado', ['cancelada', 'cancelled', 'anulada', 'completada', 'completed'])
+                ->with(['service', 'trabajador.user'])
+                ->get();
+
+            $proximaCita = $citas
+                ->filter(fn($c) => $c->esProxima())
+                ->sortBy(fn($c) => $c->fecha_hora_inicio->timestamp)
+                ->first();
+        }
+
+        return view('cliente.dashboard', compact('user', 'proximaCita'));
     }
 
     /**
