@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="100%" height="100%">
+    <defs>
+        <radialGradient id="cardBg" cx="50%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="70%" stop-color="#0f172a"/>
+            <stop offset="100%" stop-color="#090d16"/>
+        </radialGradient>
+        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f5e6b3"/>
+            <stop offset="50%" stop-color="#d4af37"/>
+            <stop offset="100%" stop-color="#997c1d"/>
+        </linearGradient>
+        <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#334155"/>
+            <stop offset="100%" stop-color="#1e293b"/>
+        </linearGradient>
+    </defs>
+    <!-- Fondo oscuro -->
+    <rect width="320" height="320" fill="url(#cardBg)"/>
+    
+    <!-- Anillo decorativo dorado sutil -->
+    <circle cx="160" cy="160" r="148" fill="none" stroke="url(#goldGradient)" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.3"/>
+    
+    <!-- Cabeza / Silueta -->
+    <circle cx="160" cy="115" r="54" fill="url(#goldGradient)" opacity="0.85"/>
+    
+    <!-- Torso / Hombros -->
+    <path d="M60,285 C60,215 105,195 160,195 C215,195 260,215 260,285 Z" fill="url(#goldGradient)" opacity="0.85"/>
+    
+    <!-- Tijera decorativa estilizada en la solapa -->
+    <path d="M152,240 L168,256 M168,240 L152,256" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

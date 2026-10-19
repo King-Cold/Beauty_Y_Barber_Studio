@@ -87,7 +87,7 @@ class RecepcionPerfilTest extends TestCase
     public function test_usuario_no_autenticado_es_redirigido(): void
     {
         $response = $this->get(route('recepcion.perfil'));
-        $response->assertRedirect('/');
+        $response->assertRedirect(route('login'));
     }
 
     /**
