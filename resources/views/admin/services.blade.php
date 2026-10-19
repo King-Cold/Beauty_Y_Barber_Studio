@@ -1064,6 +1064,15 @@
 
         <!-- MENÚ LATERAL (SIDEBAR) COLAPSABLE CON COLORES VIBRANTES -->
         <aside class="admin-sidebar" id="adminSidebar" aria-label="Menú de navegación lateral">
+            <script>
+                (function() {
+                    try {
+                        if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                            document.getElementById('adminSidebar')?.classList.add('collapsed');
+                        }
+                    } catch (e) {}
+                })();
+            </script>
             
             <!-- Encabezado del menú con el botón para colapsar / expandir -->
             <div class="sidebar-header">
@@ -1128,7 +1137,7 @@
                     </a>
 
                     <!-- 4. Clientes -->
-                    <a href="#clientes" class="nav-item" title="Clientes">
+                    <a href="{{ route('admin.clientes') }}" class="nav-item" title="Clientes Registrados">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -1136,6 +1145,7 @@
                             </svg>
                         </div>
                         <span class="nav-label">Clientes</span>
+                        <span class="nav-badge">Cartera</span>
                     </a>
 
                     <!-- 5. Servicios -->
@@ -1172,7 +1182,7 @@
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="12" cy="12" r="3"></circle>
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2-2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                             </svg>
                         </div>
                         <span class="nav-label">Configuración general</span>
@@ -1697,9 +1707,19 @@
             const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
             const adminSidebar = document.getElementById('adminSidebar');
 
+            // Restaurar estado colapsado previo desde localStorage
+            if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                if (adminSidebar) adminSidebar.classList.add('collapsed');
+                if (sidebarToggleBtn) {
+                    sidebarToggleBtn.setAttribute('aria-expanded', 'false');
+                    sidebarToggleBtn.setAttribute('title', 'Expandir menú');
+                }
+            }
+
             if (sidebarToggleBtn && adminSidebar) {
                 sidebarToggleBtn.addEventListener('click', function () {
                     const isCollapsed = adminSidebar.classList.toggle('collapsed');
+                    localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
                     sidebarToggleBtn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
                     sidebarToggleBtn.setAttribute('title', isCollapsed ? 'Expandir menú' : 'Colapsar menú');
                 });

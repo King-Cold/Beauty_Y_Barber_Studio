@@ -160,101 +160,346 @@
         .dropdown-arrow { width: 16px; height: 16px; color: var(--text-muted); }
 
         .profile-menu {
-            position: absolute; right: 0; top: calc(100% + 8px); width: 220px;
-            background: var(--bg-header); border: 1px solid var(--border-strong);
-            border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            display: none; flex-direction: column; padding: 6px; z-index: 60;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            width: 220px;
+            background: var(--bg-header);
+            border: 1px solid var(--border-strong);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            padding: 6px;
+            z-index: 60;
         }
-        .profile-menu.show { display: flex; }
+
+        .profile-menu.show {
+            display: flex;
+        }
+
         .menu-item {
-            display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-            font-size: 13px; color: var(--text-main); text-decoration: none; border-radius: 6px;
-            border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .menu-item:hover { background: rgba(255,255,255,0.05); color: var(--text-white); }
-        .menu-item.logout-item { color: var(--barber-red); }
-        .menu-item.logout-item:hover { background: var(--barber-red-light); }
 
-        /* LAYOUT & SIDEBAR */
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-white);
+        }
+
+        .menu-item-icon {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .menu-item:hover .menu-item-icon {
+            color: var(--barber-blue-light);
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 6px 0;
+        }
+
+        .menu-item.logout-item {
+            color: #f87171;
+        }
+
+        .menu-item.logout-item:hover {
+            background: var(--barber-red-light);
+            color: #fca5a5;
+        }
+
+        .menu-item.logout-item:hover .menu-item-icon {
+            color: #fca5a5;
+        }
+
+        /* ===================================================
+           SIDEBAR MINIMALISTA Y SOFISTICADO
+           =================================================== */
         .admin-layout {
-            display: flex; flex: 1; min-height: calc(100vh - var(--header-height));
-            position: relative; overflow-x: clip;
+            display: flex;
+            flex: 1;
+            min-height: calc(100vh - var(--header-height));
+            position: relative;
+            overflow-x: clip;
         }
 
+        /* SIDEBAR MINIMALISTA (FIJO AL HACER SCROLL, SIN SCROLL INTERNO) */
         .admin-sidebar {
-            width: var(--sidebar-width); background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-subtle); flex-shrink: 0;
-            display: flex; flex-direction: column; z-index: 30;
-            position: sticky; top: var(--header-height); height: calc(100vh - var(--header-height));
-            align-self: flex-start; overflow: hidden;
-            transition: width 0.3s var(--ease-fluid);
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+            transition: width 0.3s var(--ease-fluid), transform 0.3s var(--ease-fluid);
+            display: flex;
+            flex-direction: column;
+            z-index: 30;
+            position: sticky;
+            top: var(--header-height);
+            height: calc(100vh - var(--header-height));
+            align-self: flex-start;
+            overflow: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
-        .admin-sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-        .admin-sidebar.collapsed .sidebar-title,
-        .admin-sidebar.collapsed .nav-label,
-        .admin-sidebar.collapsed .nav-badge { display: none; }
-        .admin-sidebar.collapsed .nav-item { justify-content: center; padding: 12px 0; }
-        .admin-sidebar.collapsed .sidebar-header { justify-content: center; padding: 0; }
+        .admin-sidebar::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
 
         .sidebar-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; height: 60px; border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 60px;
+            border-bottom: 1px solid var(--border-subtle);
+            box-sizing: border-box;
         }
-        .sidebar-title { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; }
-        .sidebar-toggle-btn {
-            background: transparent; border: none; width: 32px; height: 32px; display: flex;
-            align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted);
-            border-radius: 4px; transition: all 0.2s var(--ease-fluid);
-        }
-        .sidebar-toggle-btn:hover { background: var(--barber-blue-pale); color: var(--barber-blue); }
 
-        .sidebar-inner { flex: 1; overflow-y: auto; padding: 16px 12px; }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
-        .nav-item {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-            color: var(--text-muted); text-decoration: none; border-radius: 8px; font-size: 13.5px;
-            font-weight: 600; transition: all 0.2s ease;
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            white-space: nowrap;
         }
-        .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text-white); }
+
+        .sidebar-toggle-btn {
+            background: transparent;
+            border: none;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-radius: 4px;
+            transition: all 0.2s var(--ease-fluid);
+            flex-shrink: 0;
+        }
+
+        .sidebar-toggle-btn:hover,
+        .sidebar-toggle-btn:focus-visible {
+            background: var(--barber-blue-pale);
+            color: var(--barber-blue);
+            outline: none;
+            transform: scale(1.05);
+        }
+
+        .sidebar-toggle-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ===================================================
+           ESTADO COLAPSADO (80px)
+           =================================================== */
+        .admin-sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .admin-sidebar.collapsed .sidebar-header {
+            justify-content: center;
+            padding: 0;
+        }
+
+        .admin-sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+
+        .admin-sidebar.collapsed .nav-label {
+            display: none;
+        }
+
+        .admin-sidebar.collapsed .nav-badge {
+            display: none;
+        }
+
+        .admin-sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 12px 0;
+            margin: 8px 12px;
+            border-left: none;
+            border-radius: 8px;
+        }
+
+        .admin-sidebar.collapsed .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            border-left: none;
+        }
+        
+        .admin-sidebar.collapsed .nav-item.active .nav-icon-box {
+            color: var(--barber-blue);
+        }
+
+        .sidebar-inner {
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        /* Enlaces de Navegación */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 24px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s var(--ease-fluid);
+            white-space: nowrap;
+            position: relative;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover,
+        .nav-item:focus-visible {
+            background: rgba(255,255,255,0.03);
+            color: var(--barber-blue);
+            outline: none;
+            border-left-color: var(--barber-blue);
+        }
+
+        .nav-item:hover .nav-icon-box {
+            color: var(--barber-blue);
+        }
+
+        .nav-icon-box {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .nav-icon-box svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Opción activa elegante (Modo Oscuro) */
         .nav-item.active {
             color: var(--barber-blue-light);
             font-weight: 700;
             background: var(--barber-blue-pale);
-            border-left: 3px solid var(--barber-blue);
-            box-shadow: none;
+            border-left-color: var(--barber-blue);
         }
+
         .nav-item.active .nav-icon-box {
             color: var(--barber-blue);
         }
-        .nav-badge {
-            margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 6px;
-            border-radius: 10px; background: rgba(255,255,255,0.08); color: var(--text-muted);
-        }
-        .nav-item.active .nav-badge { background: rgba(255,255,255,0.12); color: var(--text-white); }
 
-        /* CONTENIDO PRINCIPAL */
-        .main-content {
-            flex: 1; padding: 32px; overflow-y: auto; max-width: 100%;
-            background-color: var(--bg-canvas);
+        .nav-label {
+            white-space: nowrap;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: var(--border-subtle);
+            color: var(--text-muted);
+        }
+
+        .nav-badge.badge-hot {
+            background: var(--barber-red-light);
+            color: var(--barber-red);
         }
 
         .sidebar-backdrop {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(4px); z-index: 25;
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(10, 25, 47, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 25;
         }
 
-        @media (max-width: 1024px) {
-            .mobile-toggle-btn { display: flex; }
-            .admin-sidebar {
-                position: fixed; top: var(--header-height); bottom: 0; left: 0;
-                width: 280px; transform: translateX(-100%);
-                box-shadow: 4px 0 24px rgba(0,0,0,0.5);
-                transition: transform 0.3s var(--ease-fluid);
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background-color: var(--bg-canvas);
+            min-width: 0;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 20px;
             }
-            .admin-sidebar.open-mobile { transform: translateX(0); }
-            .sidebar-backdrop.active { display: block; }
-            .main-content { padding: 20px 16px; }
+
+            .mobile-toggle-btn {
+                display: flex;
+            }
+
+            .brand-badge-container,
+            .user-meta {
+                display: none;
+            }
+
+            .main-content {
+                padding: 24px 20px;
+            }
+
+            .admin-sidebar {
+                position: fixed;
+                top: var(--header-height);
+                bottom: 0;
+                left: 0;
+                width: 280px;
+                transform: translateX(-100%);
+                border-right: none;
+                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+            }
+
+            .admin-sidebar.open-mobile {
+                transform: translateX(0);
+            }
+
+            .sidebar-backdrop.active {
+                display: block;
+            }
         }
 
         /* SELECTOR DE VISTAS (CALENDARIO / LISTADO) */
@@ -1062,27 +1307,58 @@
                 </a>
             </div>
 
-            <nav class="user-nav" aria-label="Cuenta">
+            <nav class="user-nav" aria-label="Navegación de usuario y cuenta">
                 <div class="profile-dropdown-wrapper" id="profileDropdownWrapper">
-                    <button type="button" class="profile-btn" id="profileBtn" aria-expanded="false" aria-haspopup="true" aria-controls="profileMenu">
+                    <button 
+                        type="button" 
+                        class="profile-btn" 
+                        id="profileBtn" 
+                        aria-expanded="false" 
+                        aria-haspopup="true" 
+                        aria-controls="profileMenu"
+                        aria-label="Menú de perfil del administrador"
+                    >
                         <div class="user-avatar" aria-hidden="true">AD</div>
                         <div class="user-meta">
                             <span class="user-name">{{ Auth::user()->name ?? 'Administrador' }}</span>
                             <span class="user-role">{{ Auth::user()->email ?? 'admin@barberstudio.com' }}</span>
                         </div>
-                        <svg class="dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
+                        <svg class="dropdown-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <div class="profile-menu" id="profileMenu" role="menu">
-                        <button type="button" class="menu-item logout-item" onclick="document.getElementById('logout-form').submit();">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                <polyline points="16 17 21 12 16 7"></polyline>
-                                <line x1="21" y1="12" x2="9" y2="12"></line>
-                            </svg>
+
+                    <!-- Opciones de perfil accesibles con iconos temáticos -->
+                    <div class="profile-menu" id="profileMenu" role="menu" aria-labelledby="profileBtn">
+                        <a href="{{ route('admin.perfil') }}" class="menu-item profile-item" role="menuitem">
+                            <div class="menu-item-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <span>Mi Perfil</span>
+                        </a>
+                        <a href="{{ route('admin.configuracion') }}" class="menu-item settings-item" role="menuitem">
+                            <div class="menu-item-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                            </div>
+                            <span>Configuración</span>
+                        </a>
+                        <div class="menu-divider" role="separator"></div>
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="menu-item logout-item" role="menuitem">
+                            <div class="menu-item-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                            </div>
                             <span>Cerrar sesión</span>
-                        </button>
+                        </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
@@ -1092,14 +1368,34 @@
         </div>
     </header>
 
-    <!-- CONTENEDOR ESTRUCTURAL -->
+    <!-- CONTENEDOR ESTRUCTURAL: SIDEBAR + ÁREA DE CONTENIDO -->
     <div class="admin-layout" id="adminLayout">
-        <!-- SIDEBAR -->
-        <aside class="admin-sidebar" id="adminSidebar" aria-label="Navegación lateral">
+
+        <!-- MENÚ LATERAL (SIDEBAR) COLAPSABLE CON COLORES VIBRANTES -->
+        <aside class="admin-sidebar" id="adminSidebar" aria-label="Menú de navegación lateral">
+            <script>
+                (function() {
+                    try {
+                        if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                            document.getElementById('adminSidebar')?.classList.add('collapsed');
+                        }
+                    } catch (e) {}
+                })();
+            </script>
+            
+            <!-- Encabezado del menú con el botón para colapsar / expandir -->
             <div class="sidebar-header">
                 <span class="sidebar-title">Módulos del Sistema</span>
-                <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Colapsar menú" title="Colapsar o expandir menú">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <button 
+                    type="button" 
+                    class="sidebar-toggle-btn" 
+                    id="sidebarToggleBtn" 
+                    aria-label="Colapsar o expandir menú lateral" 
+                    aria-expanded="true" 
+                    aria-controls="adminSidebar"
+                    title="Colapsar o expandir menú"
+                >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -1107,12 +1403,14 @@
                 </button>
             </div>
 
+            <!-- Lista de Módulos Operativos -->
             <div class="sidebar-inner">
-                <nav class="sidebar-nav">
+                <nav class="sidebar-nav" aria-label="Secciones del sistema">
+                    
                     <!-- 1. Dashboard -->
-                    <a href="{{ url('/admin') }}" class="nav-item" title="Dashboard">
+                    <a href="{{ route('admin.dashboard') }}" class="nav-item" title="Dashboard">
                         <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
                                 <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
                                 <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
@@ -1125,7 +1423,7 @@
                     <!-- 2. Usuarios -->
                     <a href="{{ route('admin.usuarios') }}" class="nav-item" title="Usuarios">
                         <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="9" cy="7" r="4"></circle>
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -1137,9 +1435,9 @@
                     </a>
 
                     <!-- 3. Trabajadores -->
-                    <a href="{{ url('/admin/trabajadores') }}" class="nav-item" title="Trabajadores">
+                    <a href="{{ route('admin.trabajadores.index') }}" class="nav-item" title="Trabajadores">
                         <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <rect x="2" y="7" width="20" height="14" rx="2"></rect>
                                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                             </svg>
@@ -1149,20 +1447,21 @@
                     </a>
 
                     <!-- 4. Clientes -->
-                    <a href="{{ route('recepcion.clientes') }}" class="nav-item" title="Clientes">
+                    <a href="{{ route('admin.clientes') }}" class="nav-item" title="Clientes Registrados">
                         <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </div>
                         <span class="nav-label">Clientes</span>
+                        <span class="nav-badge">Cartera</span>
                     </a>
 
                     <!-- 5. Servicios -->
                     <a href="{{ route('admin.services') }}" class="nav-item" title="Servicios">
                         <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="6" cy="6" r="3"></circle>
                                 <circle cx="6" cy="18" r="3"></circle>
                                 <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
@@ -1177,7 +1476,7 @@
                     <!-- 6. Citas (ACTIVO) -->
                     <a href="{{ route('admin.citas') }}" class="nav-item active" aria-current="page" title="Citas">
                         <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <rect x="3" y="4" width="18" height="18" rx="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -1185,24 +1484,25 @@
                             </svg>
                         </div>
                         <span class="nav-label">Citas</span>
-                        <span class="nav-badge">Agenda</span>
+                        <span class="nav-badge badge-hot">Hoy</span>
                     </a>
-
 
                     <!-- 7. Configuración General -->
                     <a href="{{ route('admin.configuracion') }}" class="nav-item" title="Configuración general">
                         <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="12" cy="12" r="3"></circle>
                                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                             </svg>
                         </div>
-                        <span class="nav-label">Configuración</span>
+                        <span class="nav-label">Configuración general</span>
                     </a>
+
                 </nav>
             </div>
         </aside>
 
+        <!-- Fondo para cerrar sidebar en dispositivos móviles -->
         <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
 
         <!-- ÁREA PRINCIPAL -->
@@ -1651,26 +1951,43 @@
                 });
             }
 
-            const sidebar = document.getElementById('adminSidebar');
-            const toggleBtn = document.getElementById('sidebarToggleBtn');
-            const mobileBtn = document.getElementById('mobileToggleBtn');
-            const backdrop = document.getElementById('sidebarBackdrop');
+            // --- Menú Lateral (Sidebar) Colapsar / Expandir (Desktop) ---
+            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            const adminSidebar = document.getElementById('adminSidebar');
 
-            if (toggleBtn && sidebar) {
-                toggleBtn.addEventListener('click', function () {
-                    sidebar.classList.toggle('collapsed');
+            // Restaurar estado colapsado previo desde localStorage
+            if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                if (adminSidebar) adminSidebar.classList.add('collapsed');
+                if (sidebarToggleBtn) {
+                    sidebarToggleBtn.setAttribute('aria-expanded', 'false');
+                    sidebarToggleBtn.setAttribute('title', 'Expandir menú');
+                }
+            }
+
+            if (sidebarToggleBtn && adminSidebar) {
+                sidebarToggleBtn.addEventListener('click', function () {
+                    const isCollapsed = adminSidebar.classList.toggle('collapsed');
+                    localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+                    sidebarToggleBtn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+                    sidebarToggleBtn.setAttribute('title', isCollapsed ? 'Expandir menú' : 'Colapsar menú');
                 });
             }
 
-            if (mobileBtn && sidebar && backdrop) {
-                mobileBtn.addEventListener('click', function () {
-                    sidebar.classList.toggle('open-mobile');
-                    backdrop.classList.toggle('active');
+            // --- Menú Lateral (Sidebar) en Móvil (Drawer) ---
+            const mobileToggleBtn = document.getElementById('mobileToggleBtn');
+            const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+            if (mobileToggleBtn && adminSidebar && sidebarBackdrop) {
+                mobileToggleBtn.addEventListener('click', function () {
+                    const isOpen = adminSidebar.classList.toggle('open-mobile');
+                    sidebarBackdrop.classList.toggle('active', isOpen);
+                    mobileToggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                 });
 
-                backdrop.addEventListener('click', function () {
-                    sidebar.classList.remove('open-mobile');
-                    backdrop.classList.remove('active');
+                sidebarBackdrop.addEventListener('click', function () {
+                    adminSidebar.classList.remove('open-mobile');
+                    sidebarBackdrop.classList.remove('active');
+                    mobileToggleBtn.setAttribute('aria-expanded', 'false');
                 });
             }
         });

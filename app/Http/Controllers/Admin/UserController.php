@@ -400,4 +400,27 @@ class UserController extends Controller
 
         return redirect()->route('admin.usuarios')->with('success', 'Usuario eliminado correctamente.');
     }
+
+    /**
+     * Muestra el directorio de clientes para el rol de administrador.
+     * Réplica visual e informativa de la vista de recepción sin opciones de agendamiento.
+     */
+    public function clientes(Request $request)
+    {
+        $query = User::where('role_id', 4)
+            ->withCount('citas')
+            ->orderBy('name', 'asc');
+
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('apellidos', 'like', "%{$search}%");
+            });
+        }
+
+        $clientes = $query->get();
+
+        return view('admin.clientes', compact('clientes'));
+    }
 }

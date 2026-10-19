@@ -1630,6 +1630,11 @@
 
         <!-- MENÚ LATERAL (SIDEBAR) -->
         <aside class="admin-sidebar" id="adminSidebar" aria-label="Menú de navegación lateral">
+            <script>
+                if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                    document.getElementById('adminSidebar').classList.add('collapsed');
+                }
+            </script>
             <div class="sidebar-header">
                 <span class="sidebar-title">Módulos del Sistema</span>
                 <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Colapsar o expandir menú lateral" aria-expanded="true" aria-controls="adminSidebar" title="Colapsar o expandir menú">
@@ -1683,7 +1688,7 @@
                     </a>
 
                     <!-- 4. Clientes -->
-                    <a href="#clientes" class="nav-item" title="Clientes">
+                    <a href="{{ route('admin.clientes') }}" class="nav-item" title="Clientes">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -1691,6 +1696,7 @@
                             </svg>
                         </div>
                         <span class="nav-label">Clientes</span>
+                        <span class="nav-badge">Cartera</span>
                     </a>
 
                     <!-- 5. Servicios -->
@@ -2189,9 +2195,18 @@
             const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
             const adminSidebar = document.getElementById('adminSidebar');
 
+            if (adminSidebar && localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                adminSidebar.classList.add('collapsed');
+                if (sidebarToggleBtn) {
+                    sidebarToggleBtn.setAttribute('aria-expanded', 'false');
+                    sidebarToggleBtn.setAttribute('title', 'Expandir menú');
+                }
+            }
+
             if (sidebarToggleBtn && adminSidebar) {
                 sidebarToggleBtn.addEventListener('click', function () {
                     const isCollapsed = adminSidebar.classList.toggle('collapsed');
+                    localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
                     sidebarToggleBtn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
                     sidebarToggleBtn.setAttribute('title', isCollapsed ? 'Expandir menú' : 'Colapsar menú');
                 });

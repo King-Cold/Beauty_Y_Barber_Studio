@@ -386,75 +386,93 @@
         }
 
         .sidebar-inner {
-            padding: 14px 12px;
-            overflow-y: auto;
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
             flex: 1;
+            min-height: 0;
+            overflow: hidden;
         }
 
         .sidebar-nav {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 11px 14px;
-            border-radius: 10px;
+            gap: 16px;
+            padding: 12px 24px;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
-            transition: all 0.2s ease;
-            position: relative;
+            transition: all 0.2s var(--ease-fluid);
             white-space: nowrap;
+            border-left: 3px solid transparent;
         }
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-white);
+        .nav-item:hover,
+        .nav-item:focus-visible {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--barber-blue);
+            border-left-color: var(--barber-blue);
         }
         .nav-item.active {
-            background: var(--barber-blue-pale);
             color: var(--barber-blue-light);
-            font-weight: 600;
-            border-left: 3px solid var(--barber-blue);
+            font-weight: 700;
+            background: var(--barber-blue-pale);
+            border-left-color: var(--barber-blue);
+        }
+        .nav-item.active .nav-icon-box {
+            color: var(--barber-blue);
         }
 
         .nav-icon-box {
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 22px;
-            height: 22px;
             flex-shrink: 0;
+            transition: all 0.2s ease;
         }
         .nav-icon-box svg {
-            width: 19px;
-            height: 19px;
+            width: 20px;
+            height: 20px;
         }
 
         .nav-label {
-            transition: opacity 0.2s ease;
+            white-space: nowrap;
         }
         .admin-sidebar.collapsed .nav-label {
             opacity: 0;
             pointer-events: none;
             width: 0;
+            display: none;
         }
 
         .nav-badge {
             margin-left: auto;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 9999px;
-            background: rgba(255, 255, 255, 0.06);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: var(--border-subtle);
             color: var(--text-muted);
+        }
+        .nav-badge.badge-hot {
+            background: var(--barber-red-light);
+            color: var(--barber-red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
         .admin-sidebar.collapsed .nav-badge {
             display: none;
+        }
+        .admin-sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 12px 0;
         }
 
         /* BACKDROP MÓVIL */
@@ -1083,6 +1101,11 @@
 
         <!-- MENÚ LATERAL (SIDEBAR) -->
         <aside class="admin-sidebar" id="adminSidebar" aria-label="Menú de navegación lateral">
+            <script>
+                if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                    document.getElementById('adminSidebar').classList.add('collapsed');
+                }
+            </script>
             <div class="sidebar-header">
                 <span class="sidebar-title">Módulos del Sistema</span>
                 <button 
@@ -1104,7 +1127,7 @@
 
             <div class="sidebar-inner">
                 <nav class="sidebar-nav" aria-label="Secciones del sistema">
-                    <!-- Dashboard -->
+                    <!-- 1. Dashboard -->
                     <a href="{{ route('admin.dashboard') }}" class="nav-item" title="Dashboard">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1117,7 +1140,7 @@
                         <span class="nav-label">Dashboard</span>
                     </a>
 
-                    <!-- Usuarios -->
+                    <!-- 2. Usuarios -->
                     <a href="{{ route('admin.usuarios') }}" class="nav-item" title="Usuarios">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1131,8 +1154,8 @@
                         <span class="nav-badge">Total</span>
                     </a>
 
-                    <!-- Trabajadores -->
-                    <a href="{{ url('/admin/trabajadores') }}" class="nav-item" title="Trabajadores">
+                    <!-- 3. Trabajadores -->
+                    <a href="{{ route('admin.trabajadores.index') }}" class="nav-item" title="Trabajadores">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <rect x="2" y="7" width="20" height="14" rx="2"></rect>
@@ -1143,7 +1166,19 @@
                         <span class="nav-badge">Staff</span>
                     </a>
 
-                    <!-- Servicios -->
+                    <!-- 4. Clientes -->
+                    <a href="{{ route('admin.clientes') }}" class="nav-item" title="Clientes">
+                        <div class="nav-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <span class="nav-label">Clientes</span>
+                        <span class="nav-badge">Cartera</span>
+                    </a>
+
+                    <!-- 5. Servicios -->
                     <a href="{{ route('admin.services') }}" class="nav-item" title="Servicios">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1158,7 +1193,8 @@
                         <span class="nav-badge">Catálogo</span>
                     </a>
 
-                    <!-- Citas -->
+
+                    <!-- 6. Citas -->
                     <a href="{{ route('admin.citas') }}" class="nav-item" title="Citas">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1169,10 +1205,10 @@
                             </svg>
                         </div>
                         <span class="nav-label">Citas</span>
-                        <span class="nav-badge">Hoy</span>
+                        <span class="nav-badge badge-hot">Hoy</span>
                     </a>
 
-                    <!-- Configuración General -->
+                    <!-- 7. Configuración General -->
                     <a href="{{ route('admin.configuracion') }}" class="nav-item" title="Configuración general">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1181,18 +1217,6 @@
                             </svg>
                         </div>
                         <span class="nav-label">Configuración</span>
-                    </a>
-
-                    <!-- Mi Perfil (Activo) -->
-                    <a href="{{ route('admin.perfil') }}" class="nav-item active" aria-current="page" title="Mi Perfil">
-                        <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                        </div>
-                        <span class="nav-label">Mi Perfil</span>
-                        <span class="nav-badge" style="background: var(--barber-red-light); color: var(--barber-red);">Admin</span>
                     </a>
                 </nav>
             </div>
@@ -1577,9 +1601,18 @@
             const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
             const adminSidebar = document.getElementById('adminSidebar');
 
+            if (adminSidebar && localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                adminSidebar.classList.add('collapsed');
+                if (sidebarToggleBtn) {
+                    sidebarToggleBtn.setAttribute('aria-expanded', 'false');
+                    sidebarToggleBtn.setAttribute('title', 'Expandir menú');
+                }
+            }
+
             if (sidebarToggleBtn && adminSidebar) {
                 sidebarToggleBtn.addEventListener('click', function () {
                     const isCollapsed = adminSidebar.classList.toggle('collapsed');
+                    localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
                     sidebarToggleBtn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
                     sidebarToggleBtn.setAttribute('title', isCollapsed ? 'Expandir menú' : 'Colapsar menú');
                 });

@@ -36,8 +36,9 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:1'])->group(function () {
         Route::get('/admin', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 
-        // Gestión de usuarios
+        // Gestión de usuarios y clientes
         Route::get('/admin/usuarios', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.usuarios');
+        Route::get('/admin/clientes', [\App\Http\Controllers\Admin\UserController::class, 'clientes'])->name('admin.clientes');
         Route::post('/admin/usuarios', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.usuarios.store');
         Route::match(['PUT', 'POST'], '/admin/usuarios/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.usuarios.update');
         Route::delete('/admin/usuarios/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.usuarios.destroy');

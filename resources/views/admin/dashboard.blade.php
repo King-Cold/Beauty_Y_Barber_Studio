@@ -2264,6 +2264,15 @@
 
         <!-- MENÚ LATERAL (SIDEBAR) COLAPSABLE CON COLORES VIBRANTES -->
         <aside class="admin-sidebar" id="adminSidebar" aria-label="Menú de navegación lateral">
+            <script>
+                (function() {
+                    try {
+                        if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                            document.getElementById('adminSidebar')?.classList.add('collapsed');
+                        }
+                    } catch (e) {}
+                })();
+            </script>
             
             <!-- Encabezado del menú con el botón para colapsar / expandir -->
             <div class="sidebar-header">
@@ -2328,7 +2337,7 @@
                     </a>
 
                     <!-- 4. Clientes -->
-                    <a href="{{ route('admin.usuarios', ['role_id' => 4]) }}" class="nav-item" title="Clientes Registrados">
+                    <a href="{{ route('admin.clientes') }}" class="nav-item" title="Clientes Registrados">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -2354,19 +2363,7 @@
                         <span class="nav-badge">Catálogo</span>
                     </a>
 
-                    <!-- 6. Horarios Laborales -->
-                    <a href="{{ route('admin.configuracion') }}" class="nav-item" title="Consulta y Administración de Horarios Laborales">
-                        <div class="nav-icon-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                        </div>
-                        <span class="nav-label">Horarios</span>
-                        <span class="nav-badge">Turnos</span>
-                    </a>
-
-                    <!-- 7. Citas -->
+                    <!-- 6. Citas -->
                     <a href="{{ route('admin.citas') }}" class="nav-item" title="Citas">
                         <div class="nav-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2485,7 +2482,7 @@
                                 </svg>
                                 <span>{{ isset($totalClientes) && $totalClientes > 0 ? 'Cartera activa' : '0 registrados en plataforma' }}</span>
                             </span>
-                            <a href="{{ route('admin.usuarios', ['role_id' => 4]) }}" class="kpi-link-btn" title="Gestionar clientes">
+                            <a href="{{ route('admin.clientes') }}" class="kpi-link-btn" title="Gestionar clientes">
                                 <span>Ver clientes</span>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12" aria-hidden="true">
                                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -3205,7 +3202,7 @@
                                 </a>
 
                                 <!-- Enlace a Clientes -->
-                                <a href="{{ route('admin.usuarios', ['role_id' => 4]) }}" class="quick-action-link">
+                                <a href="{{ route('admin.clientes') }}" class="quick-action-link">
                                     <div class="quick-action-icon" aria-hidden="true">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -3735,9 +3732,19 @@
             const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
             const adminSidebar = document.getElementById('adminSidebar');
 
+            // Restaurar estado colapsado previo desde localStorage
+            if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                if (adminSidebar) adminSidebar.classList.add('collapsed');
+                if (sidebarToggleBtn) {
+                    sidebarToggleBtn.setAttribute('aria-expanded', 'false');
+                    sidebarToggleBtn.setAttribute('title', 'Expandir menú');
+                }
+            }
+
             if (sidebarToggleBtn && adminSidebar) {
                 sidebarToggleBtn.addEventListener('click', function () {
                     const isCollapsed = adminSidebar.classList.toggle('collapsed');
+                    localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
                     sidebarToggleBtn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
                     sidebarToggleBtn.setAttribute('title', isCollapsed ? 'Expandir menú' : 'Colapsar menú');
                 });
