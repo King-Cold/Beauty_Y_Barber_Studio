@@ -1756,7 +1756,7 @@
             </div>
 
             <!-- 1. CONTENEDOR PRINCIPAL: HORARIO DE APERTURA Y CIERRE DE LA SUCURSAL -->
-            <div class="schedule-config-card">
+            <div class="schedule-config-card" id="horarios-sucursal">
                 <!-- Encabezado del Panel -->
                 <div class="schedule-card-header">
                     <div class="schedule-card-header-left">

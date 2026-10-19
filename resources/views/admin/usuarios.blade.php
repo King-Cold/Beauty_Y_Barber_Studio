@@ -1519,7 +1519,7 @@
                         <select id="roleFilterSelect" style="background-color: #0d1527; color-scheme: dark; border: 1px solid var(--border-subtle); color: var(--text-main); padding: 10px 36px 10px 16px; border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; appearance: none; min-width: 160px; cursor: pointer; transition: all 0.2s ease;" onfocus="this.style.borderColor='var(--barber-blue)';" onblur="this.style.borderColor='var(--border-subtle)';">
                             <option value="" style="background-color: #0d1527; color: #ffffff;">Todos los Roles</option>
                             @foreach($roles as $role)
-                                <option value="{{ $role->id }}" style="background-color: #0d1527; color: #ffffff;">{{ $role->nombre }}</option>
+                                <option value="{{ $role->id }}" {{ (string)request('role_id') === (string)$role->id ? 'selected' : '' }} style="background-color: #0d1527; color: #ffffff;">{{ $role->nombre }}</option>
                             @endforeach
                         </select>
                         <svg style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-muted);" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>

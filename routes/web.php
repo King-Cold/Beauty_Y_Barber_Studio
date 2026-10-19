@@ -23,9 +23,7 @@ Route::middleware('auth')->group(function () {
     // RUTAS PARA ADMINISTRADORES (Rol 1)
     // ==========================================
     Route::middleware(['role:1'])->group(function () {
-        Route::get('/admin', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
+        Route::get('/admin', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 
         // Gestión de usuarios
         Route::get('/admin/usuarios', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.usuarios');
