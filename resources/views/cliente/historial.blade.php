@@ -323,6 +323,24 @@
         border-color: rgba(255, 255, 255, 0.18);
     }
 
+    .cita-card:target {
+        border-color: #60a5fa !important;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.4), 0 12px 36px rgba(37, 99, 235, 0.35) !important;
+        animation: targetPulse 2.5s ease-out;
+    }
+
+    @keyframes targetPulse {
+        0% {
+            box-shadow: 0 0 0 6px rgba(96, 165, 250, 0.7), 0 14px 40px rgba(37, 99, 235, 0.5);
+        }
+        50% {
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.45), 0 12px 30px rgba(37, 99, 235, 0.35);
+        }
+        100% {
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+    }
+
     /* Cabecera de la Tarjeta */
     .cita-card-top {
         display: flex;
@@ -1184,6 +1202,16 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+        // Auto-scroll al elemento específico si se pasa hash en la URL
+        if (window.location.hash) {
+            const targetCard = document.querySelector(window.location.hash);
+            if (targetCard) {
+                setTimeout(() => {
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 150);
+            }
+        }
 
         // ==========================================
         // 1. FILTRADO DINÁMICO DE CITAS
