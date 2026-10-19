@@ -79,7 +79,7 @@ class AdminPerfilTest extends TestCase
     public function test_usuario_no_autenticado_es_redirigido(): void
     {
         $response = $this->get(route('admin.perfil'));
-        $response->assertRedirect('/');
+        $response->assertRedirect(route('login'));
     }
 
     /**

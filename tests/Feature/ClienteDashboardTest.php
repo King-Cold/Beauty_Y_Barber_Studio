@@ -13,13 +13,13 @@ class ClienteDashboardTest extends TestCase
     public function test_usuario_no_autenticado_es_redirigido_al_login(): void
     {
         $response = $this->get('/cliente');
-        $response->assertRedirect('/');
+        $response->assertRedirect(route('login'));
 
         $responseAgendamiento = $this->get('/cliente/agendamiento');
-        $responseAgendamiento->assertRedirect('/');
+        $responseAgendamiento->assertRedirect(route('login'));
 
         $responseHistorial = $this->get('/cliente/historial');
-        $responseHistorial->assertRedirect('/');
+        $responseHistorial->assertRedirect(route('login'));
     }
 
     /**

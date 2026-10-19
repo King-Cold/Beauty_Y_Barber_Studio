@@ -3,9 +3,20 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TrabajadorController;
+use App\Http\Controllers\LandingController;
 
-Route::get('/', [AuthController::class, 'login'])->name('login');
-Route::post('/', [AuthController::class, 'authenticate'])->name('login.post');
+// ==========================================
+// RUTA PRINCIPAL: LANDING PAGE PÚBLICA
+// ==========================================
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/agendar-cita', [LandingController::class, 'agendarCita'])->name('landing.agendar');
+
+// ==========================================
+// RUTAS DE AUTENTICACIÓN
+// ==========================================
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
+Route::post('/', [AuthController::class, 'authenticate']);
 
 Route::get('/registro', [AuthController::class, 'register'])->name('register');
 Route::post('/registro', [AuthController::class, 'store'])->name('register.post');
