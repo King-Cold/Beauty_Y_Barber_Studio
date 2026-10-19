@@ -9,6 +9,7 @@ use App\Models\HorarioSucursal;
 use App\Models\Service;
 use App\Models\Trabajador;
 use App\Services\CitaCalendarioService;
+use App\Services\IngresosService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ class CitaAdminController extends Controller
     /**
      * Muestra la vista de Citas (Calendario y Listado) para el Administrador.
      */
-    public function index(Request $request, CitaCalendarioService $calendarioService)
+    public function index(Request $request, CitaCalendarioService $calendarioService, IngresosService $ingresosService)
     {
         $user = Auth::user();
         Cita::ensureTableExists();
@@ -42,15 +43,20 @@ class CitaAdminController extends Controller
             ? Service::where('is_active', true)->get()
             : collect();
 
+        // Control Financiero / Corte de Caja para auditoría del Administrador
+        $fechaReferencia = $filtros['fecha'] ?? $filtros['fecha_desde'] ?? null;
+        $corteCaja = $ingresosService->obtenerResumenCorteCaja($fechaReferencia);
+
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'total' => $citas->count(),
                 'citas' => $citas->map(fn($c) => $calendarioService->obtenerDetalleCita($c)),
+                'corte_caja' => $corteCaja,
             ]);
         }
 
-        return view('admin.citas', compact('user', 'citas', 'trabajadores', 'servicios', 'filtros'));
+        return view('admin.citas', compact('user', 'citas', 'trabajadores', 'servicios', 'filtros', 'corteCaja'));
     }
 
     /**

@@ -10,6 +10,7 @@ use App\Models\Trabajador;
 use App\Models\User;
 use App\Services\DisponibilidadService;
 use App\Services\CitaCalendarioService;
+use App\Services\IngresosService;
 use App\Services\ProfileService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -110,7 +111,7 @@ class RecepcionController extends Controller
     /**
      * Módulo de gestión y consulta de citas: Muestra el listado con filtros combinables o responde en JSON.
      */
-    public function citas(Request $request, CitaCalendarioService $calendarioService)
+    public function citas(Request $request, CitaCalendarioService $calendarioService, IngresosService $ingresosService)
     {
         $user = Auth::user();
         Cita::ensureTableExists();
@@ -134,15 +135,20 @@ class RecepcionController extends Controller
             ? Service::where('is_active', true)->get()
             : collect();
 
+        // Subtarea 24.3: Cálculo y agregación centralizada de ingresos para el corte de caja
+        $fechaReferencia = $filtros['fecha'] ?? $filtros['fecha_desde'] ?? null;
+        $corteCaja = $ingresosService->obtenerResumenCorteCaja($fechaReferencia);
+
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'total' => $citas->count(),
                 'citas' => $citas->map(fn($c) => $calendarioService->obtenerDetalleCita($c)),
+                'corte_caja' => $corteCaja,
             ]);
         }
 
-        return view('recepcion.citas', compact('user', 'citas', 'trabajadores', 'servicios', 'filtros'));
+        return view('recepcion.citas', compact('user', 'citas', 'trabajadores', 'servicios', 'filtros', 'corteCaja'));
     }
 
     /**
@@ -731,9 +737,15 @@ class RecepcionController extends Controller
     {
         $validated = $request->validate([
             'estado' => 'required|string|in:confirmada,en_proceso,en_atencion,completada,cancelada,vencida',
+            'estado_pago' => 'nullable|string|in:pendiente,pagado',
             'observaciones' => 'nullable|string|max:2500',
             'notas' => 'nullable|string|max:1000',
         ]);
+
+        $estadoPago = $validated['estado_pago'] ?? null;
+        if ($estadoPago !== null && (int) $request->user()->role_id !== 2) {
+            abort(403, 'Solo el personal de recepción está autorizado para registrar o modificar el estado de pago.');
+        }
 
         try {
             $resultado = $calendarioService->actualizarEstado(
@@ -741,7 +753,8 @@ class RecepcionController extends Controller
                 nuevoEstado: $validated['estado'],
                 observaciones: $validated['observaciones'] ?? null,
                 notas: $validated['notas'] ?? null,
-                usuario: $request->user()
+                usuario: $request->user(),
+                estadoPago: $estadoPago
             );
 
             return response()->json($resultado);
@@ -755,6 +768,40 @@ class RecepcionController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => 'Error al actualizar la cita: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * API AJAX para registrar el pago de una cita desde el panel de recepción.
+     * Criterios Subtarea 24.2:
+     * - Restricción estricta por rol: Solo recepcionistas (rol 2) pueden registrar cobros.
+     *   El Administrador tiene acceso estrictamente de solo lectura.
+     */
+    public function registrarPago(Request $request, Cita $cita, CitaCalendarioService $calendarioService)
+    {
+        if ((int) $request->user()->role_id !== 2) {
+            abort(403, 'Acceso denegado. Solo el personal de recepción está autorizado para registrar cobros.');
+        }
+
+        try {
+            $resultado = $calendarioService->registrarPago(
+                cita: $cita,
+                usuario: $request->user()
+            );
+
+            return response()->json($resultado);
+        } catch (\DomainException | \InvalidArgumentException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'mensaje' => $e->getMessage(),
+            ], 422);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Error al registrar el pago: ' . $e->getMessage(),
+                'mensaje' => 'Error al registrar el pago: ' . $e->getMessage(),
             ], 500);
         }
     }

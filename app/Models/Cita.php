@@ -21,6 +21,7 @@ class Cita extends Model
         'duracion_minutos',
         'precio',
         'estado',
+        'estado_pago',
         'notas',
         'observaciones',
         'check_in_at',
@@ -36,6 +37,7 @@ class Cita extends Model
     protected $appends = [
         'estado_visual',
         'estado_label',
+        'estado_pago_label',
         'precio_formateado',
         'folio',
         'checked_in',
@@ -63,20 +65,28 @@ class Cita extends Model
                     $table->string('hora_fin', 10);
                     $table->integer('duracion_minutos')->default(30);
                     $table->decimal('precio', 10, 2)->default(0.00);
+                    $table->string('estado', 50)->default('confirmada');
+                    $table->string('estado_pago', 20)->default('pendiente');
                     $table->text('notas')->nullable();
                     $table->text('observaciones')->nullable();
                     $table->timestamps();
                 });
-            } else if (!\Illuminate\Support\Facades\Schema::hasColumn('citas', 'observaciones')) {
-                \Illuminate\Support\Facades\Schema::table('citas', function (\Illuminate\Database\Schema\Blueprint $table) {
-                    $table->text('observaciones')->nullable();
-                });
-            }
-
-            if (\Illuminate\Support\Facades\Schema::hasTable('citas') && !\Illuminate\Support\Facades\Schema::hasColumn('citas', 'check_in_at')) {
-                \Illuminate\Support\Facades\Schema::table('citas', function (\Illuminate\Database\Schema\Blueprint $table) {
-                    $table->timestamp('check_in_at')->nullable();
-                });
+            } else {
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('citas', 'estado_pago')) {
+                    \Illuminate\Support\Facades\Schema::table('citas', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('estado_pago', 20)->default('pendiente');
+                    });
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('citas', 'observaciones')) {
+                    \Illuminate\Support\Facades\Schema::table('citas', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->text('observaciones')->nullable();
+                    });
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('citas', 'check_in_at')) {
+                    \Illuminate\Support\Facades\Schema::table('citas', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->timestamp('check_in_at')->nullable();
+                    });
+                }
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning('Error en ensureTableExists de Cita: ' . $e->getMessage());
@@ -451,5 +461,52 @@ class Cita extends Model
     public function getPuedeFinalizarAtencionAttribute(): bool
     {
         return $this->puedeFinalizarAtencion();
+    }
+
+    /**
+     * Normaliza el estado de pago por defecto a 'pendiente'.
+     */
+    public function getEstadoPagoAttribute($value): string
+    {
+        return strtolower(trim((string) $value)) === 'pagado' ? 'pagado' : 'pendiente';
+    }
+
+    /**
+     * Etiqueta formateada del estado de pago.
+     */
+    public function getEstadoPagoLabelAttribute(): string
+    {
+        return $this->estado_pago === 'pagado' ? 'Pagado' : 'Pendiente';
+    }
+
+    /**
+     * Determina si la cita ya se encuentra liquidada.
+     */
+    public function getEstaPagadaAttribute(): bool
+    {
+        return $this->estado_pago === 'pagado';
+    }
+
+    /**
+     * Determina si la cita cumple con las condiciones para ser marcada como pagada:
+     * - No estar en estado cancelada.
+     * - No estar pagada previamente.
+     */
+    public function puedeMarcarComoPagado(): bool
+    {
+        $estado = strtolower(trim((string) $this->estado));
+        if (in_array($estado, ['cancelada', 'cancelled', 'anulada'], true)) {
+            return false;
+        }
+
+        return $this->estado_pago !== 'pagado';
+    }
+
+    /**
+     * Accesor para puede_marcar_como_pagado.
+     */
+    public function getPuedeMarcarComoPagadoAttribute(): bool
+    {
+        return $this->puedeMarcarComoPagado();
     }
 }
