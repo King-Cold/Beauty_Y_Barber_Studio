@@ -94,6 +94,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/calendario/eventos', [\App\Http\Controllers\RecepcionController::class, 'obtenerCitasCalendario'])->name('calendario.eventos');
         Route::get('/citas/{cita}/detalle', [\App\Http\Controllers\RecepcionController::class, 'detalleCita'])->name('citas.detalle');
         Route::patch('/citas/{cita}/estado', [\App\Http\Controllers\RecepcionController::class, 'actualizarEstadoCita'])->name('citas.actualizar-estado');
+        Route::patch('/citas/{cita}/pagar', [\App\Http\Controllers\RecepcionController::class, 'registrarPago'])->name('citas.pagar');
         Route::match(['put', 'patch'], '/citas/{cita}', [\App\Http\Controllers\RecepcionController::class, 'actualizarCita'])->name('citas.update');
         Route::match(['post', 'patch'], '/citas/{cita}/cancelar', [\App\Http\Controllers\RecepcionController::class, 'cancelarCita'])->name('citas.cancelar');
         Route::match(['post', 'patch'], '/citas/{cita}/confirmar', [\App\Http\Controllers\RecepcionController::class, 'confirmarCitaDirecta'])->name('citas.confirmar');

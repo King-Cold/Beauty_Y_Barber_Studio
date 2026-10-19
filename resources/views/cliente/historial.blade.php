@@ -476,6 +476,27 @@
         opacity: 0.8;
     }
 
+    .pago-cliente-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .pago-cliente-badge.pendiente {
+        background: rgba(245, 158, 11, 0.12);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .pago-cliente-badge.pagado {
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
     /* Schedule Highlight Box (Fecha y Horario) */
     .schedule-box {
         background: rgba(18, 29, 60, 0.5);
@@ -1016,8 +1037,27 @@
                         <!-- SERVICIO Y PRECIO -->
                         <div class="cita-headline-row">
                             <h2 class="cita-service-name">{{ $cita->service->name ?? 'Servicio' }}</h2>
-                            <div class="price-pill">
-                                ${{ number_format($cita->precio, 2) }} <small>MXN</small>
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                                <div class="price-pill">
+                                    ${{ number_format($cita->precio, 2) }} <small>MXN</small>
+                                </div>
+                                @if($cita->estado_pago === 'pagado')
+                                    <span class="pago-cliente-badge pagado" title="Servicio liquidado y pagado en el estudio">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="11" height="11">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                        ✓ Pagado
+                                    </span>
+                                @else
+                                    <span class="pago-cliente-badge pendiente" title="Pago pendiente a liquidar presencialmente en recepción">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                        Pago en recepción: Pendiente
+                                    </span>
+                                @endif
                             </div>
                         </div>
 

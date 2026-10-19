@@ -538,6 +538,274 @@
         margin-top: 4px;
         white-space: nowrap;
     }
+
+    .pago-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 7px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-top: 4px;
+        white-space: nowrap;
+    }
+    .pago-badge.pendiente {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+    .pago-badge.pagado {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    /* ==========================================================================
+       PANEL DE CORTE DE CAJA Y CONTROL FINANCIERO (Subtarea 24.4)
+       ========================================================================== */
+    .corte-caja-container {
+        background: rgba(10, 17, 36, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 20px 22px;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .corte-caja-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        flex-wrap: wrap;
+    }
+
+    .corte-caja-title-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .corte-caja-icon-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.28);
+        color: #10b981;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .corte-caja-title {
+        font-size: 16px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0;
+        letter-spacing: -0.01em;
+    }
+
+    .corte-caja-sub {
+        font-size: 12px;
+        color: #94a3b8;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .corte-caja-date-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #94a3b8;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 5px 12px;
+        border-radius: 20px;
+    }
+
+    .corte-caja-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    @media (max-width: 820px) {
+        .corte-caja-cards-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .corte-card {
+        background: rgba(15, 23, 42, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 14px;
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.22s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .corte-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.6);
+    }
+
+    .corte-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        opacity: 0.8;
+    }
+
+    .corte-card-dia::before {
+        background: linear-gradient(90deg, #10b981, transparent);
+    }
+
+    .corte-card-mes::before {
+        background: linear-gradient(90deg, #38bdf8, transparent);
+    }
+
+    .corte-card-pendiente::before {
+        background: linear-gradient(90deg, #f59e0b, transparent);
+    }
+
+    .corte-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .corte-card-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .corte-card-icon.icon-emerald {
+        background: rgba(16, 185, 129, 0.12);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.28);
+    }
+
+    .corte-card-icon.icon-blue {
+        background: rgba(37, 99, 235, 0.12);
+        color: #60a5fa;
+        border: 1px solid rgba(37, 99, 235, 0.28);
+    }
+
+    .corte-card-icon.icon-amber {
+        background: rgba(245, 158, 11, 0.12);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.28);
+    }
+
+    .corte-card-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 6px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+    }
+
+    .badge-emerald {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-blue {
+        background: rgba(37, 99, 235, 0.15);
+        color: #93c5fd;
+        border: 1px solid rgba(37, 99, 235, 0.3);
+    }
+
+    .badge-amber {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .corte-card-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .corte-card-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #94a3b8;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .corte-card-amount {
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        margin-bottom: 12px;
+    }
+
+    .amount-emerald { color: #34d399; }
+    .amount-blue    { color: #60a5fa; }
+    .amount-amber   { color: #fbbf24; }
+
+    .corte-card-footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .corte-metric-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11.5px;
+        color: #cbd5e1;
+        background: rgba(255, 255, 255, 0.04);
+        padding: 3px 8px;
+        border-radius: 6px;
+    }
+
+    .corte-metric-tag svg {
+        color: #34d399;
+    }
+
+    .corte-metric-tag.tag-amber {
+        color: #fde68a;
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .corte-metric-tag.tag-amber svg {
+        color: #fbbf24;
+    }
 </style>
 @endpush
 
@@ -571,6 +839,87 @@
                 </svg>
                 Agendar nueva cita
             </a>
+        </div>
+    </div>
+
+    {{-- CORTE DE CAJA / PANEL DE CONTROL FINANCIERO DE RECEPCIÓN (Subtarea 24.4) --}}
+    <div class="corte-caja-container">
+        <div class="corte-caja-header">
+            <div class="corte-caja-title-box">
+                <div class="corte-caja-icon-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="corte-caja-title">Corte de Caja y Control de Cobros</h2>
+                    <span class="corte-caja-sub">Ingresos devengados y liquidaciones registradas en recepción</span>
+                </div>
+            </div>
+            <div class="corte-caja-date-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Zona Horaria Oficial: {{ $corteCaja['zona_horaria'] ?? 'America/Mexico_City' }}</span>
+            </div>
+        </div>
+
+        <div class="corte-caja-cards-grid">
+            {{-- TARJETA 1: INGRESOS DEL DÍA --}}
+            <div class="corte-card corte-card-dia">
+                <div class="corte-card-top">
+                    <div class="corte-card-icon icon-emerald">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="22" height="22">
+                            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                            <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="corte-card-badge badge-emerald">
+                        <span>Ingresos del Día</span>
+                    </div>
+                </div>
+                <div class="corte-card-body">
+                    <span class="corte-card-label">Ingresos del Día</span>
+                    <strong class="corte-card-amount amount-emerald">{{ $corteCaja['dia']['total_ingresos_mxn'] ?? (($corteCaja['dia']['total_ingresos_formateado'] ?? '$0.00') . ' MXN') }}</strong>
+                    <div class="corte-card-footer">
+                        <span class="corte-metric-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <b>{{ $corteCaja['dia']['citas_pagadas_count'] ?? 0 }}</b> servicios cobrados hoy
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- TARJETA 2: INGRESOS DEL MES --}}
+            <div class="corte-card corte-card-mes">
+                <div class="corte-card-top">
+                    <div class="corte-card-icon icon-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="22" height="22">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <div class="corte-card-badge badge-blue">
+                        <span>{{ $corteCaja['mes']['mes_nombre'] ?? 'Mes Actual' }} {{ $corteCaja['mes']['anio'] ?? '' }}</span>
+                    </div>
+                </div>
+                <div class="corte-card-body">
+                    <span class="corte-card-label">Ingresos del Mes</span>
+                    <strong class="corte-card-amount amount-blue">{{ $corteCaja['mes']['total_ingresos_mxn'] ?? (($corteCaja['mes']['total_ingresos_formateado'] ?? '$0.00') . ' MXN') }}</strong>
+                    <div class="corte-card-footer">
+                        <span class="corte-metric-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <b>{{ $corteCaja['mes']['citas_pagadas_count'] ?? 0 }}</b> servicios cobrados este mes
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -711,6 +1060,7 @@
                             <th style="width: 95px;">Fecha</th>
                             <th style="width: 120px;">Horario</th>
                             <th style="width: 85px;">Precio</th>
+                            <th style="width: 105px;">Pago</th>
                             <th style="width: 120px;">Estado</th>
                             <th style="text-align: right; width: 185px;">Acciones</th>
                         </tr>
@@ -768,6 +1118,27 @@
                                 {{-- Precio --}}
                                 <td>
                                     <span class="precio-highlight">{{ $cita->precio_formateado }}</span>
+                                </td>
+
+                                {{-- Pago --}}
+                                <td>
+                                    @if($cita->estado_pago === 'pagado')
+                                        <span class="pago-badge pagado" title="Servicio liquidado y pagado">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            Pagado
+                                        </span>
+                                    @else
+                                        <span class="pago-badge pendiente" title="Pago pendiente de liquidar en recepción">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                            </svg>
+                                            Pendiente
+                                        </span>
+                                    @endif
                                 </td>
 
                                 {{-- Estado --}}

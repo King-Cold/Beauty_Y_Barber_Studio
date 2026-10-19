@@ -84,6 +84,7 @@
                         <div class="detalle-tags-row">
                             <span class="detalle-tag" id="detCitaCategoria">Servicio</span>
                             <span class="detalle-price-tag" id="detCitaPrecio">$0.00</span>
+                            <span class="detalle-payment-badge" id="detCitaEstadoPagoBadge" style="display: none;">Pendiente</span>
                         </div>
                     </div>
                 </div>
@@ -176,13 +177,21 @@
                     </svg>
                     <span>Iniciar Atención</span>
                 </button>
-                {{-- Botón Finalizar Atención (Subtarea 6) --}}
+                {{-- Botón Finalizar Atención (Subtarea 6 y 24.2) --}}
                 <button type="button" class="btn-detalle-finalizar" id="btnDetalleFinalizarAtencion" style="display: none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="15" height="15">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                     <span>Finalizar Atención</span>
+                </button>
+                {{-- Botón Marcar como Pagado (Subtarea 24.2) --}}
+                <button type="button" class="btn-detalle-pagar" id="btnDetalleMarcarPagado" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="15" height="15">
+                        <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                        <line x1="2" y1="10" x2="22" y2="10"></line>
+                    </svg>
+                    <span>Marcar como Pagado</span>
                 </button>
                 <button type="button" class="btn-detalle-cancelar" id="btnDetalleCancelarCita" style="display: none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
@@ -221,6 +230,11 @@
         justify-content: center;
         padding: 20px;
         animation: detFadeIn 0.2s ease-out;
+    }
+
+    /* Asegurar que las alertas de SweetAlert2 siempre se muestren por encima del modal de detalle */
+    .swal2-container {
+        z-index: 100005 !important;
     }
 
     @keyframes detFadeIn {
@@ -457,6 +471,29 @@
         color: #60a5fa;
     }
 
+    .detalle-payment-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        letter-spacing: 0.02em;
+    }
+
+    .detalle-payment-badge.pagado {
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        color: #34d399;
+    }
+
+    .detalle-payment-badge.pendiente {
+        background: rgba(245, 158, 11, 0.15);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        color: #fbbf24;
+    }
+
     .detalle-notes-container {
         display: flex;
         flex-direction: column;
@@ -568,6 +605,29 @@
         border-color: #059669;
         color: #ffffff;
         transform: translateY(-1px);
+    }
+
+    .btn-detalle-pagar {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.16);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        color: #34d399;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 10px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-detalle-pagar:hover {
+        background: #059669;
+        border-color: #059669;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
     .btn-detalle-cancelar {
@@ -779,6 +839,19 @@
                 setSafeText('detCitaCategoria', c.servicio?.categoria ? (c.servicio.categoria.charAt(0).toUpperCase() + c.servicio.categoria.slice(1)) : 'General');
                 setSafeText('detCitaPrecio', c.precio_formateado || ('$' + Number(c.precio || 0).toFixed(2)));
 
+                // Estado de Pago (Subtarea 24.1 y 24.2)
+                const pagoBadge = document.getElementById('detCitaEstadoPagoBadge');
+                if (pagoBadge) {
+                    pagoBadge.style.display = 'inline-flex';
+                    if (c.esta_pagada) {
+                        pagoBadge.textContent = '✓ Pagado';
+                        pagoBadge.className = 'detalle-payment-badge pagado';
+                    } else {
+                        pagoBadge.textContent = '⊚ Pago Pendiente';
+                        pagoBadge.className = 'detalle-payment-badge pendiente';
+                    }
+                }
+
                 // Fecha y Horario
                 setSafeText('detCitaHorario', (c.hora_inicio || '') + ' - ' + (c.hora_fin || ''));
                 setSafeText('detCitaFechaTexto', c.fecha_formateada || c.fecha || 'Fecha programada');
@@ -796,6 +869,7 @@
                 const btnCheckIn = document.getElementById('btnDetalleCheckInCita');
                 const btnIniciar = document.getElementById('btnDetalleIniciarAtencion');
                 const btnFinalizar = document.getElementById('btnDetalleFinalizarAtencion');
+                const btnMarcarPagado = document.getElementById('btnDetalleMarcarPagado');
                 const btnEditar = document.getElementById('btnDetalleEditarCita');
                 const btnCancelar = document.getElementById('btnDetalleCancelarCita');
                 const adminBadge = document.getElementById('detCitaAdminBadge');
@@ -850,14 +924,32 @@
                     }
                 }
 
-                // Si es Administrador: Solo permisos de visualización (no puede mutar estados, editar ni cancelar)
+                // Si es Administrador: Solo permisos de visualización (no puede mutar estados, editar, cancelar ni cobrar)
                 if (isAdmin) {
                     if (btnCheckIn) btnCheckIn.style.display = 'none';
                     if (btnIniciar) btnIniciar.style.display = 'none';
                     if (btnFinalizar) btnFinalizar.style.display = 'none';
+                    if (btnMarcarPagado) btnMarcarPagado.style.display = 'none';
                     if (btnEditar) btnEditar.style.display = 'none';
                     if (btnCancelar) btnCancelar.style.display = 'none';
                     return;
+                }
+
+                // Configurar Botón Marcar como Pagado (Subtarea 24.2)
+                if (btnMarcarPagado) {
+                    if (!isAdmin && c.puede_marcar_como_pagado) {
+                        btnMarcarPagado.style.display = 'inline-flex';
+                        const pagarUrl = `/recepcion/citas/${c.id}/pagar`;
+                        btnMarcarPagado.onclick = function() {
+                            if (window.marcarPagoPrompt) {
+                                window.marcarPagoPrompt(c.id, pagarUrl, c.folio, c.precio_formateado || ('$' + Number(c.precio || 0).toFixed(2)), c.cliente?.nombre_completo, function(updatedCita) {
+                                    window.abrirModalDetalleCita(c.id, fetchUrl);
+                                });
+                            }
+                        };
+                    } else {
+                        btnMarcarPagado.style.display = 'none';
+                    }
                 }
 
                 // Configurar Botones de Atención (Subtarea 6)
@@ -1180,7 +1272,7 @@
             }
         };
 
-        // Función Global Reutilizable para Finalizar Atención (Subtarea 6)
+        // Función Global Reutilizable para Finalizar Atención (Subtarea 6 y 24.2)
         window.finalizarAtencionPrompt = function (citaId, estadoUrl, folio, clienteNom, onCompleteCallback) {
             const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
             const nombre = clienteNom || 'Cliente';
@@ -1189,38 +1281,59 @@
             if (typeof Swal === 'undefined') {
                 const obs = prompt(`¿Finalizar atención de la cita ${fol} para ${nombre}? Observaciones opcionales:`);
                 if (obs !== null) {
-                    ejecutarFinalizarFetch(obs);
+                    const cobrar = confirm('¿Desea marcar la cita como PAGADA ahora mismo? (Aceptar = Finalizar y Marcar como Pagado, Cancelar = Finalizar y Dejar Pendiente)');
+                    ejecutarFinalizarFetch(obs, cobrar ? 'pagado' : 'pendiente');
                 }
                 return;
             }
 
             Swal.fire({
                 title: '¿Finalizar Atención del Servicio?',
-                html: `Se marcará la cita <b>${fol}</b> de <b>${nombre}</b> como <b>Completada</b>.<br><div style="text-align: left; margin-top: 14px;"><label style="font-size: 12.5px; color: #94a3b8; display: block; margin-bottom: 6px; font-weight: 600;">Observaciones técnicas del especialista (opcional):</label><textarea id="swalObsFinalizar" class="swal2-textarea" style="width: 100%; box-sizing: border-box; background: #070d1e; border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 8px; padding: 10px; font-size: 13px; min-height: 70px; resize: vertical;" placeholder="Ej. Corte clásico terminado con cera mate, cliente satisfecho..."></textarea></div>`,
+                html: `
+                    <div style="text-align: left; margin-bottom: 12px; font-size: 13.5px; color: #cbd5e1; line-height: 1.5;">
+                        Se completará la atención técnica de la cita <b>${fol}</b> de <b>${nombre}</b>.
+                        <p style="margin: 8px 0 0 0; color: #94a3b8; font-size: 13px;">
+                            Seleccione una opción de cobro para registrar la finalización:
+                        </p>
+                    </div>
+                    <div style="text-align: left; margin-top: 14px;">
+                        <label style="font-size: 12.5px; color: #94a3b8; display: block; margin-bottom: 6px; font-weight: 600;">Observaciones técnicas del especialista (opcional):</label>
+                        <textarea id="swalObsFinalizar" class="swal2-textarea" style="width: 100%; box-sizing: border-box; background: #070d1e; border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 8px; padding: 10px; font-size: 13px; min-height: 65px; resize: vertical;" placeholder="Ej. Corte clásico terminado con cera mate, cliente satisfecho..."></textarea>
+                    </div>
+                `,
                 icon: 'question',
                 showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: 'Finalizar y Marcar como Pagado',
+                denyButtonText: 'Finalizar y Dejar Pendiente',
+                cancelButtonText: 'Volver / Cancelar',
                 confirmButtonColor: '#059669',
+                denyButtonColor: '#d97706',
                 cancelButtonColor: '#475569',
-                confirmButtonText: 'Sí, finalizar servicio',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
+                reverseButtons: false,
                 background: '#0a1124',
                 color: '#f8fafc',
                 preConfirm: () => {
                     const textarea = document.getElementById('swalObsFinalizar');
                     return textarea ? textarea.value.trim() : '';
+                },
+                preDeny: () => {
+                    const textarea = document.getElementById('swalObsFinalizar');
+                    return textarea ? textarea.value.trim() : '';
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    ejecutarFinalizarFetch(result.value || null);
+                    ejecutarFinalizarFetch(result.value || null, 'pagado');
+                } else if (result.isDenied) {
+                    ejecutarFinalizarFetch(result.value || null, 'pendiente');
                 }
             });
 
-            function ejecutarFinalizarFetch(observaciones) {
+            function ejecutarFinalizarFetch(observaciones, estadoPago) {
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         title: 'Finalizando Servicio...',
-                        text: 'Completando la cita y registrando observaciones...',
+                        text: estadoPago === 'pagado' ? 'Completando la cita y registrando cobro recibido...' : 'Completando la cita y manteniendo pago pendiente...',
                         allowOutsideClick: false,
                         didOpen: () => { Swal.showLoading(); },
                         background: '#0a1124',
@@ -1238,6 +1351,7 @@
                     },
                     body: JSON.stringify({
                         estado: 'completada',
+                        estado_pago: estadoPago,
                         observaciones: observaciones
                     })
                 })
@@ -1249,15 +1363,16 @@
                     return data;
                 })
                 .then((data) => {
+                    const estadoPagoTexto = estadoPago === 'pagado' ? ' y marcada como PAGADA' : ' (queda con cobro PENDIENTE)';
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
                             icon: 'success',
                             title: '¡Servicio Completado!',
-                            html: `<b>${data.mensaje || 'La cita ha sido marcada como completada con éxito.'}</b>`,
+                            html: `<b>${data.mensaje || 'La cita ha sido marcada como completada con éxito.'}</b><br><span style="font-size: 13px; color: ${estadoPago === 'pagado' ? '#34d399' : '#fbbf24'};">${estadoPagoTexto}</span>`,
                             confirmButtonColor: '#1e40af',
                             background: '#0a1124',
                             color: '#f8fafc',
-                            timer: 2000,
+                            timer: 2500,
                             timerProgressBar: true
                         }).then(() => {
                             if (typeof onCompleteCallback === 'function') {
@@ -1267,7 +1382,7 @@
                             }
                         });
                     } else {
-                        alert(data.mensaje || 'Servicio completado con éxito.');
+                        alert((data.mensaje || 'Servicio completado con éxito.') + estadoPagoTexto);
                         if (typeof onCompleteCallback === 'function') {
                             onCompleteCallback(data.cita);
                         } else {
@@ -1287,6 +1402,111 @@
                         });
                     } else {
                         alert('Error: ' + (err.message || 'No se pudo finalizar el servicio.'));
+                    }
+                });
+            }
+        };
+
+        // Función Global Reutilizable para Marcar como Pagado (Subtarea 24.2)
+        window.marcarPagoPrompt = function (citaId, pagarUrl, folio, precio, clienteNom, onCompleteCallback) {
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const nombre = clienteNom || 'Cliente';
+            const fol = folio || ('CITA-' + String(citaId).padStart(5, '0'));
+            const url = pagarUrl || `/recepcion/citas/${citaId}/pagar`;
+            const precioTxt = precio ? ` por un importe de <b style="color: #60a5fa;">${precio}</b>` : '';
+
+            if (typeof Swal === 'undefined') {
+                if (confirm(`¿Registrar cobro de la cita ${fol} para ${nombre}${precio ? ' (' + precio + ')' : ''}?`)) {
+                    ejecutarPagoFetch();
+                }
+                return;
+            }
+
+            Swal.fire({
+                title: '¿Registrar Cobro de la Cita?',
+                html: `Se registrará la liquidación de la cita <b>${fol}</b> de <b>${nombre}</b>${precioTxt}.<br><br><span style="font-size: 12.5px; color: #94a3b8;">El estado de pago cambiará permanentemente a <b style="color: #34d399;">Pagado</b> y se sumará a los ingresos del corte de caja.</span>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#059669',
+                cancelButtonColor: '#475569',
+                confirmButtonText: 'Sí, registrar cobro',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                background: '#0a1124',
+                color: '#f8fafc'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ejecutarPagoFetch();
+                }
+            });
+
+            function ejecutarPagoFetch() {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Registrando Cobro...',
+                        text: 'Actualizando estado de pago y corte de caja...',
+                        allowOutsideClick: false,
+                        didOpen: () => { Swal.showLoading(); },
+                        background: '#0a1124',
+                        color: '#f8fafc'
+                    });
+                }
+
+                fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': token,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(async (res) => {
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok || !data.success) {
+                        throw new Error(data.message || data.error || ('Error HTTP ' + res.status));
+                    }
+                    return data;
+                })
+                .then((data) => {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Cobro Registrado!',
+                            html: `<b>${data.mensaje || 'El pago ha sido registrado con éxito.'}</b>`,
+                            confirmButtonColor: '#1e40af',
+                            background: '#0a1124',
+                            color: '#f8fafc',
+                            timer: 2000,
+                            timerProgressBar: true
+                        }).then(() => {
+                            if (typeof onCompleteCallback === 'function') {
+                                onCompleteCallback(data.cita);
+                            } else {
+                                window.recargarPreservandoVista();
+                            }
+                        });
+                    } else {
+                        alert(data.mensaje || 'Pago registrado con éxito.');
+                        if (typeof onCompleteCallback === 'function') {
+                            onCompleteCallback(data.cita);
+                        } else {
+                            window.recargarPreservandoVista();
+                        }
+                    }
+                })
+                .catch((err) => {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No se pudo registrar el cobro',
+                            text: err.message || 'Ocurrió un error inesperado al procesar la solicitud.',
+                            confirmButtonColor: '#ef4444',
+                            background: '#0a1124',
+                            color: '#f8fafc'
+                        });
+                    } else {
+                        alert('Error: ' + (err.message || 'No se pudo registrar el cobro.'));
                     }
                 });
             }

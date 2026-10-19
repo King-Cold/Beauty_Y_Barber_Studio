@@ -122,6 +122,10 @@ class CitaCalendarioService
                 'precio' => (float)$cita->precio,
                 'precio_formateado' => '$' . number_format($cita->precio, 2),
                 'estado' => $rawEstado,
+                'estado_pago' => $cita->estado_pago,
+                'estado_pago_label' => $cita->estado_pago_label,
+                'esta_pagada' => $cita->esta_pagada,
+                'puede_marcar_como_pagado' => $cita->puedeMarcarComoPagado(),
                 'estado_visual' => $estadoVisual,
                 'estado_label' => $etiquetasEstado[$estadoVisual] ?? ucfirst($estadoVisual),
                 'cliente' => [
@@ -196,6 +200,10 @@ class CitaCalendarioService
             'precio' => (float)$cita->precio,
             'precio_formateado' => '$' . number_format($cita->precio, 2),
             'estado' => $rawEstado,
+            'estado_pago' => $cita->estado_pago,
+            'estado_pago_label' => $cita->estado_pago_label,
+            'esta_pagada' => $cita->esta_pagada,
+            'puede_marcar_como_pagado' => $cita->puedeMarcarComoPagado(),
             'estado_visual' => $estadoVisual,
             'estado_label' => $etiquetasEstado[$estadoVisual] ?? ucfirst($estadoVisual),
             'cliente' => [
@@ -350,9 +358,9 @@ class CitaCalendarioService
      * Actualiza el estado y opcionalmente notas u observaciones de una cita aplicando
      * validación estricta de reglas de transición y bloqueo pesimista contra concurrencia.
      */
-    public function actualizarEstado(Cita $cita, string $nuevoEstado, ?string $observaciones = null, ?string $notas = null, ?User $usuario = null): array
+    public function actualizarEstado(Cita $cita, string $nuevoEstado, ?string $observaciones = null, ?string $notas = null, ?User $usuario = null, ?string $estadoPago = null): array
     {
-        return DB::transaction(function () use ($cita, $nuevoEstado, $observaciones, $notas, $usuario) {
+        return DB::transaction(function () use ($cita, $nuevoEstado, $observaciones, $notas, $usuario, $estadoPago) {
             // Bloqueo pesimista para evitar concurrencia y transiciones simultáneas incompatibles
             /** @var Cita $citaBloqueada */
             $citaBloqueada = Cita::where('id', $cita->id)->lockForUpdate()->firstOrFail();
@@ -379,6 +387,18 @@ class CitaCalendarioService
             if ($notas !== null) {
                 $citaBloqueada->notas = $notas;
             }
+
+            // Subtarea 24.2: Actualización de estado_pago al completar o actualizar estado
+            if ($estadoPago !== null) {
+                $estadoPagoNorm = strtolower(trim($estadoPago));
+                if ($estadoNormalizado === 'cancelada' && $estadoPagoNorm === 'pagado') {
+                    throw new \DomainException('No se puede marcar como pagada una cita cancelada.');
+                }
+                if (in_array($estadoPagoNorm, ['pendiente', 'pagado'], true)) {
+                    $citaBloqueada->estado_pago = $estadoPagoNorm;
+                }
+            }
+
             $citaBloqueada->save();
 
             $etiquetasEstado = [
@@ -395,6 +415,46 @@ class CitaCalendarioService
                 'success' => true,
                 'message' => $mensaje,
                 'mensaje' => $mensaje,
+                'cita' => $this->obtenerDetalleCita($citaBloqueada),
+            ];
+        });
+    }
+
+    /**
+     * Registra el pago/cobro de una cita aplicando bloqueo pesimista contra concurrencia.
+     * Criterios Subtarea 24.2:
+     * - Citas canceladas no pueden pasar a pagadas (DomainException 422).
+     * - Previene pagos duplicados (idempotente si ya está pagada).
+     */
+    public function registrarPago(Cita $cita, ?User $usuario = null): array
+    {
+        return DB::transaction(function () use ($cita, $usuario) {
+            /** @var Cita $citaBloqueada */
+            $citaBloqueada = Cita::where('id', $cita->id)->lockForUpdate()->firstOrFail();
+
+            $estadoActual = strtolower(trim((string)$citaBloqueada->estado));
+            if (in_array($estadoActual, ['cancelada', 'cancelled', 'anulada'], true)) {
+                throw new \DomainException('No se puede registrar el pago de una cita cancelada.');
+            }
+
+            if ($citaBloqueada->estado_pago === 'pagado') {
+                return [
+                    'success' => true,
+                    'already_paid' => true,
+                    'message' => 'La cita ya se encuentra registrada como pagada.',
+                    'mensaje' => 'La cita ya se encuentra registrada como pagada.',
+                    'cita' => $this->obtenerDetalleCita($citaBloqueada),
+                ];
+            }
+
+            $citaBloqueada->estado_pago = 'pagado';
+            $citaBloqueada->save();
+
+            return [
+                'success' => true,
+                'already_paid' => false,
+                'message' => 'Cobro registrado correctamente.',
+                'mensaje' => 'Cobro registrado correctamente. La cita ha sido marcada como pagada.',
                 'cita' => $this->obtenerDetalleCita($citaBloqueada),
             ];
         });
