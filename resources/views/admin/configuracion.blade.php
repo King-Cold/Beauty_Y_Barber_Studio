@@ -197,48 +197,51 @@
             align-items: center;
             gap: 12px;
             background: transparent;
-            border: 1px solid var(--border-subtle);
-            border-radius: 30px;
-            padding: 6px 14px 6px 6px;
+            border: 1px solid transparent;
+            padding: 6px 12px 6px 6px;
+            border-radius: 8px;
             cursor: pointer;
+            font-family: inherit;
+            color: var(--text-main);
             transition: all 0.2s var(--ease-fluid);
         }
 
         .profile-btn:hover,
         .profile-btn:focus-visible {
-            border-color: rgba(37, 99, 235, 0.3);
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--barber-blue-pale);
+            border-color: var(--border-subtle);
             outline: none;
         }
 
+        /* Avatar del Administrador minimalista */
         .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: var(--barber-blue);
             color: var(--text-white);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .user-meta {
+            text-align: left;
             display: flex;
             flex-direction: column;
-            text-align: left;
         }
 
         .user-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-white);
             line-height: 1.2;
         }
 
         .user-role {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-muted);
             line-height: 1.2;
         }
@@ -247,7 +250,7 @@
             width: 16px;
             height: 16px;
             color: var(--text-muted);
-            transition: transform 0.2s var(--ease-fluid);
+            transition: transform 0.2s ease;
         }
 
         .profile-dropdown-wrapper.open .dropdown-arrow {
@@ -256,18 +259,17 @@
 
         .profile-menu {
             position: absolute;
-            top: calc(100% + 8px);
+            top: calc(100% + 12px);
             right: 0;
             width: 220px;
             background: var(--bg-header);
-            border: 1px solid var(--border-strong);
+            border: 1px solid var(--border-subtle);
             border-radius: 8px;
-            padding: 6px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 8px;
             display: none;
             flex-direction: column;
-            gap: 2px;
-            z-index: 100;
+            z-index: 60;
         }
 
         .profile-dropdown-wrapper.open .profile-menu {
@@ -277,32 +279,51 @@
         .menu-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
             color: var(--text-main);
             text-decoration: none;
-            font-size: 13px;
-            border-radius: 6px;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
         }
 
-        .menu-item:hover,
-        .menu-item:focus-visible {
-            background: rgba(255, 255, 255, 0.05);
+        .menu-item:hover, .menu-item:focus {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-white);
             outline: none;
+        }
+
+        .menu-item .menu-item-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--text-muted);
+        }
+
+        .menu-item:hover .menu-item-icon {
+            color: var(--barber-blue);
         }
 
         .menu-divider {
             height: 1px;
             background: var(--border-subtle);
-            margin: 4px 0;
+            margin: 8px 0;
         }
 
-        .logout-item {
+        .menu-item.logout-item {
             color: var(--barber-red);
         }
 
-        .logout-item:hover {
+        .menu-item.logout-item .menu-item-icon {
+            color: var(--barber-red);
+        }
+
+        .menu-item.logout-item:hover {
             background: var(--barber-red-light);
         }
 
@@ -385,12 +406,19 @@
             height: 18px;
         }
 
-        .admin-sidebar.collapsed {
-            width: var(--sidebar-collapsed-width);
+        .admin-sidebar.collapsed .sidebar-header {
+            justify-content: center;
+            padding: 0;
         }
 
-        .admin-sidebar.collapsed .sidebar-title,
-        .admin-sidebar.collapsed .nav-label,
+        .admin-sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+
+        .admin-sidebar.collapsed .nav-label {
+            display: none;
+        }
+
         .admin-sidebar.collapsed .nav-badge {
             display: none;
         }
@@ -398,6 +426,18 @@
         .admin-sidebar.collapsed .nav-item {
             justify-content: center;
             padding: 12px 0;
+            margin: 8px 12px;
+            border-left: none;
+            border-radius: 8px;
+        }
+
+        .admin-sidebar.collapsed .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            border-left: none;
+        }
+        
+        .admin-sidebar.collapsed .nav-item.active .nav-icon-box {
+            color: var(--barber-blue);
         }
 
         .sidebar-inner {
@@ -1576,10 +1616,10 @@
             <nav class="user-nav" aria-label="Navegación de usuario y cuenta">
                 <div class="profile-dropdown-wrapper" id="profileDropdownWrapper">
                     <button type="button" class="profile-btn" id="profileBtn" aria-expanded="false" aria-haspopup="true" aria-controls="profileMenu" aria-label="Menú de perfil del administrador">
-                        <div class="user-avatar" aria-hidden="true">AD</div>
+                        <div class="user-avatar" aria-hidden="true">{{ strtoupper(substr(Auth::user()->name ?? 'AD', 0, 2)) }}</div>
                         <div class="user-meta">
-                            <span class="user-name">Administrador</span>
-                            <span class="user-role">admin@barberstudio.com</span>
+                            <span class="user-name">{{ Auth::user()->name ?? 'Administrador' }}</span>
+                            <span class="user-role">{{ Auth::user()->email ?? 'admin@barberstudio.com' }}</span>
                         </div>
                         <svg class="dropdown-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />

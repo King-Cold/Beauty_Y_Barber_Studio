@@ -143,14 +143,14 @@
         .brand-section {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             text-decoration: none;
+            color: inherit;
         }
 
         .brand-logo-img {
-            height: 40px;
+            height: 38px;
             width: auto;
-            border-radius: 6px;
             display: block;
         }
 
@@ -160,19 +160,30 @@
         }
 
         .brand-name {
-            font-size: 16px;
+            font-size: 19px;
             font-weight: 800;
             color: var(--text-white);
             letter-spacing: -0.01em;
             line-height: 1.2;
         }
 
+        .brand-badge-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
         .brand-role-badge {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            color: var(--barber-blue-light);
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-white);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
 
         /* Perfil Dropdown */
@@ -190,115 +201,137 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 6px 12px;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-white);
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 6px 12px 6px 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .profile-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--border-strong);
+            font-family: inherit;
+            color: var(--text-main);
+            transition: all 0.2s var(--ease-fluid);
         }
 
+        .profile-btn:hover,
+        .profile-btn:focus-visible {
+            background: var(--barber-blue-pale);
+            border-color: var(--border-subtle);
+            outline: none;
+        }
+
+        /* Avatar del Administrador minimalista */
         .user-avatar {
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--barber-red) 0%, var(--barber-blue) 100%);
+            background: var(--barber-blue);
+            color: var(--text-white);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-            color: #ffffff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .user-meta {
+            text-align: left;
             display: flex;
             flex-direction: column;
-            text-align: left;
         }
 
         .user-name {
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 600;
             color: var(--text-white);
             line-height: 1.2;
         }
 
         .user-role {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-muted);
             line-height: 1.2;
         }
 
         .dropdown-arrow {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             color: var(--text-muted);
             transition: transform 0.2s ease;
         }
 
+        .profile-dropdown-wrapper.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Menú flotante ultra limpio */
         .profile-menu {
-            display: none;
             position: absolute;
-            top: calc(100% + 8px);
+            top: calc(100% + 12px);
             right: 0;
             width: 220px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-strong);
-            border-radius: 12px;
-            padding: 6px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background: var(--bg-header);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 8px;
+            display: none;
+            flex-direction: column;
             z-index: 60;
-            animation: fadeIn 0.15s ease;
         }
-        .profile-menu.show {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-4px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .profile-dropdown-wrapper.open .profile-menu {
+            display: flex;
         }
 
         .menu-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 9px 12px;
-            border-radius: 8px;
-            font-size: 13px;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
             color: var(--text-main);
             text-decoration: none;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
         }
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+
+        .menu-item:hover,
+        .menu-item:focus {
+            background: rgba(255,255,255,0.05);
             color: var(--text-white);
+            outline: none;
         }
-        .menu-item-icon svg {
-            width: 16px;
-            height: 16px;
+
+        .menu-item .menu-item-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
             color: var(--text-muted);
         }
-        .menu-item:hover .menu-item-icon svg {
-            color: var(--barber-blue-light);
+
+        .menu-item:hover .menu-item-icon {
+            color: var(--barber-blue);
         }
+
         .menu-divider {
             height: 1px;
             background: var(--border-subtle);
-            margin: 4px 0;
+            margin: 8px 0;
         }
+
+        .menu-item.logout-item {
+            color: var(--barber-red);
+        }
+
+        .menu-item.logout-item .menu-item-icon {
+            color: var(--barber-red);
+        }
+
         .menu-item.logout-item:hover {
-            background: rgba(239, 68, 68, 0.1);
-            color: #f87171;
-        }
-        .menu-item.logout-item:hover .menu-item-icon svg {
-            color: #f87171;
+            background: var(--barber-red-light);
         }
 
         /* ===================================================
@@ -333,80 +366,149 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 20px 12px 20px;
+            padding: 0 24px;
+            height: 60px;
             border-bottom: 1px solid var(--border-subtle);
+            box-sizing: border-box;
         }
 
         .sidebar-title {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.15em;
             white-space: nowrap;
-            transition: opacity 0.2s ease;
-        }
-
-        .admin-sidebar.collapsed .sidebar-title {
-            opacity: 0;
-            pointer-events: none;
-            width: 0;
         }
 
         .sidebar-toggle-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-            width: 28px;
-            height: 28px;
+            background: transparent;
+            border: none;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.2s ease;
+            color: var(--text-muted);
+            border-radius: 4px;
+            transition: all 0.2s var(--ease-fluid);
+            flex-shrink: 0;
         }
-        .sidebar-toggle-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-white);
+
+        .sidebar-toggle-btn:hover,
+        .sidebar-toggle-btn:focus-visible {
+            background: var(--barber-blue-pale);
+            color: var(--barber-blue);
+            outline: none;
+            transform: scale(1.05);
         }
+
         .sidebar-toggle-btn svg {
-            width: 15px;
-            height: 15px;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ===================================================
+           ESTADO COLAPSADO (80px)
+           =================================================== */
+        .admin-sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .admin-sidebar.collapsed .sidebar-header {
+            justify-content: center;
+            padding: 0;
+        }
+
+        .admin-sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+
+        .admin-sidebar.collapsed .nav-label {
+            display: none;
+        }
+
+        .admin-sidebar.collapsed .nav-badge {
+            display: none;
+        }
+
+        .admin-sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 12px 0;
+            margin: 8px 12px;
+            border-left: none;
+            border-radius: 8px;
+        }
+
+        .admin-sidebar.collapsed .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            border-left: none;
+        }
+        
+        .admin-sidebar.collapsed .nav-item.active .nav-icon-box {
+            color: var(--barber-blue);
         }
 
         .sidebar-inner {
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
             flex: 1;
-            padding: 16px 12px;
-            overflow-y: auto;
+            min-height: 0;
+            overflow: hidden;
         }
 
         .sidebar-nav {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
+        /* Enlaces de Navegación */
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 11px 14px;
-            border-radius: 10px;
+            gap: 16px;
+            padding: 12px 24px;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 13.5px;
-            font-weight: 600;
-            border-left: 3px solid transparent;
-            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s var(--ease-fluid);
             white-space: nowrap;
+            position: relative;
+            border-left: 3px solid transparent;
         }
 
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-white);
+        .nav-item:hover,
+        .nav-item:focus-visible {
+            background: rgba(255,255,255,0.03);
+            color: var(--barber-blue);
+            outline: none;
+            border-left-color: var(--barber-blue);
         }
 
+        .nav-item:hover .nav-icon-box {
+            color: var(--barber-blue);
+        }
+
+        .nav-icon-box {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .nav-icon-box svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Opción activa elegante (Modo Oscuro) */
         .nav-item.active {
             color: var(--barber-blue-light);
             font-weight: 700;
@@ -414,17 +516,12 @@
             border-left-color: var(--barber-blue);
         }
 
-        .nav-icon-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            width: 20px;
-            height: 20px;
+        .nav-item.active .nav-icon-box {
+            color: var(--barber-blue);
         }
-        .nav-icon-box svg {
-            width: 20px;
-            height: 20px;
+
+        .nav-label {
+            white-space: nowrap;
         }
 
         .nav-badge {
@@ -436,23 +533,10 @@
             background: var(--border-subtle);
             color: var(--text-muted);
         }
+
         .nav-badge.badge-hot {
             background: var(--barber-red-light);
-            color: #f87171;
-        }
-
-        .admin-sidebar.collapsed .nav-label,
-        .admin-sidebar.collapsed .nav-badge {
-            display: none;
-        }
-
-        .admin-sidebar.collapsed .nav-item {
-            justify-content: center;
-            padding: 12px 0;
-            border-left: 3px solid transparent;
-        }
-        .admin-sidebar.collapsed .nav-item.active {
-            border-left: 3px solid var(--barber-blue);
+            color: var(--barber-red);
         }
 
         .sidebar-backdrop {
@@ -713,7 +797,7 @@
                     </svg>
                 </button>
 
-                <a href="{{ route('admin.dashboard') }}" class="brand-section" aria-label="Beauty & Barber Studio - Panel de Inicio">
+                <a href="{{ url('/admin') }}" class="brand-section" aria-label="Beauty & Barber Studio - Panel de Inicio">
                     <img 
                         src="{{ asset('images/logo.png') }}" 
                         alt="Logotipo Beauty & Barber Studio" 
@@ -722,7 +806,9 @@
                     >
                     <div class="brand-info">
                         <span class="brand-name">Beauty & Barber Studio</span>
-                        <span class="brand-role-badge">Panel Administrativo</span>
+                        <div class="brand-badge-container">
+                            <span class="brand-role-badge">Panel Administrativo</span>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -1026,18 +1112,29 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Dropdown de perfil
+            const dropdownWrapper = document.getElementById('profileDropdownWrapper');
             const profileBtn = document.getElementById('profileBtn');
-            const profileMenu = document.getElementById('profileMenu');
-            if (profileBtn && profileMenu) {
+
+            if (dropdownWrapper && profileBtn) {
                 profileBtn.addEventListener('click', function (e) {
                     e.stopPropagation();
-                    const isExpanded = profileBtn.getAttribute('aria-expanded') === 'true';
-                    profileBtn.setAttribute('aria-expanded', !isExpanded);
-                    profileMenu.classList.toggle('show');
+                    const isOpen = dropdownWrapper.classList.toggle('open');
+                    profileBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                 });
-                document.addEventListener('click', function () {
-                    profileMenu.classList.remove('show');
-                    profileBtn.setAttribute('aria-expanded', 'false');
+
+                document.addEventListener('click', function (e) {
+                    if (!dropdownWrapper.contains(e.target)) {
+                        dropdownWrapper.classList.remove('open');
+                        profileBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && dropdownWrapper.classList.contains('open')) {
+                        dropdownWrapper.classList.remove('open');
+                        profileBtn.setAttribute('aria-expanded', 'false');
+                        profileBtn.focus();
+                    }
                 });
             }
 

@@ -133,104 +133,170 @@
 
         .brand-logo-img { height: 38px; width: auto; display: block; }
 
-        .brand-info { display: flex; flex-direction: column; }
-        .brand-name { font-size: 19px; font-weight: 800; color: var(--text-white); }
+        .brand-name {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--text-white);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .brand-badge-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
         .brand-role-badge {
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            background: rgba(255,255,255,0.05); color: var(--text-white);
-            border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-white);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
 
         .user-nav { display: flex; align-items: center; gap: 16px; }
         .profile-dropdown-wrapper { position: relative; }
         .profile-btn {
-            display: flex; align-items: center; gap: 12px; padding: 6px 12px;
-            background: transparent; border: 1px solid transparent; border-radius: 8px;
-            cursor: pointer; color: inherit; transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 6px 12px 6px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text-main);
+            transition: all 0.2s var(--ease-fluid);
         }
-        .profile-btn:hover { background: rgba(255,255,255,0.05); border-color: var(--border-subtle); }
-        .user-avatar {
-            width: 38px; height: 38px; border-radius: 8px; background: var(--barber-blue-pale);
-            color: var(--barber-blue-light); display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 13px; border: 1px solid rgba(37, 99, 235, 0.3);
-        }
-        .user-meta { display: flex; flex-direction: column; text-align: left; }
-        .user-name { font-size: 13px; font-weight: 700; color: var(--text-white); }
-        .user-role { font-size: 11px; color: var(--text-muted); }
-        .dropdown-arrow { width: 16px; height: 16px; color: var(--text-muted); }
 
+        .profile-btn:hover,
+        .profile-btn:focus-visible {
+            background: var(--barber-blue-pale);
+            border-color: var(--border-subtle);
+            outline: none;
+        }
+
+        /* Avatar del Administrador minimalista */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--barber-blue);
+            color: var(--text-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-meta {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-white);
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        .dropdown-arrow {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+        }
+
+        .profile-dropdown-wrapper.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Menú flotante ultra limpio */
         .profile-menu {
             position: absolute;
+            top: calc(100% + 12px);
             right: 0;
-            top: calc(100% + 8px);
             width: 220px;
             background: var(--bg-header);
-            border: 1px solid var(--border-strong);
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 8px;
             display: none;
             flex-direction: column;
-            padding: 6px;
             z-index: 60;
         }
 
-        .profile-menu.show {
+        .profile-dropdown-wrapper.open .profile-menu {
             display: flex;
         }
 
         .menu-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             padding: 10px 12px;
-            font-size: 13px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
             color: var(--text-main);
             text-decoration: none;
-            border-radius: 6px;
-            border: none;
-            background: transparent;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+        .menu-item:hover,
+        .menu-item:focus {
+            background: rgba(255,255,255,0.05);
             color: var(--text-white);
+            outline: none;
         }
 
-        .menu-item-icon {
-            width: 18px;
-            height: 18px;
+        .menu-item .menu-item-icon {
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
             flex-shrink: 0;
+            color: var(--text-muted);
         }
 
         .menu-item:hover .menu-item-icon {
-            color: var(--barber-blue-light);
+            color: var(--barber-blue);
         }
 
         .menu-divider {
             height: 1px;
             background: var(--border-subtle);
-            margin: 6px 0;
+            margin: 8px 0;
         }
 
         .menu-item.logout-item {
-            color: #f87171;
+            color: var(--barber-red);
+        }
+
+        .menu-item.logout-item .menu-item-icon {
+            color: var(--barber-red);
         }
 
         .menu-item.logout-item:hover {
             background: var(--barber-red-light);
-            color: #fca5a5;
-        }
-
-        .menu-item.logout-item:hover .menu-item-icon {
-            color: #fca5a5;
         }
 
         /* ===================================================
@@ -1296,8 +1362,8 @@
                         <line x1="3" y1="18" x2="21" y2="18"></line>
                     </svg>
                 </button>
-                <a href="{{ url('/admin') }}" class="brand-section">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="brand-logo-img" onerror="this.style.display='none'">
+                <a href="{{ url('/admin') }}" class="brand-section" aria-label="Beauty & Barber Studio - Panel de Inicio">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logotipo Beauty & Barber Studio" class="brand-logo-img" onerror="this.style.display='none'">
                     <div class="brand-info">
                         <span class="brand-name">Beauty & Barber Studio</span>
                         <div class="brand-badge-container">
@@ -1318,7 +1384,7 @@
                         aria-controls="profileMenu"
                         aria-label="Menú de perfil del administrador"
                     >
-                        <div class="user-avatar" aria-hidden="true">AD</div>
+                        <div class="user-avatar" aria-hidden="true">{{ strtoupper(substr(Auth::user()->name ?? 'AD', 0, 2)) }}</div>
                         <div class="user-meta">
                             <span class="user-name">{{ Auth::user()->name ?? 'Administrador' }}</span>
                             <span class="user-role">{{ Auth::user()->email ?? 'admin@barberstudio.com' }}</span>
@@ -1934,19 +2000,29 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-            const profileDropdown = document.getElementById('profileDropdownWrapper');
+            // --- Menú de Perfil ---
+            const dropdownWrapper = document.getElementById('profileDropdownWrapper');
             const profileBtn = document.getElementById('profileBtn');
-            const profileMenu = document.getElementById('profileMenu');
 
-            if (profileBtn && profileMenu) {
+            if (dropdownWrapper && profileBtn) {
                 profileBtn.addEventListener('click', function (e) {
                     e.stopPropagation();
-                    profileMenu.classList.toggle('show');
+                    const isOpen = dropdownWrapper.classList.toggle('open');
+                    profileBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                 });
 
                 document.addEventListener('click', function (e) {
-                    if (!profileDropdown.contains(e.target)) {
-                        profileMenu.classList.remove('show');
+                    if (!dropdownWrapper.contains(e.target)) {
+                        dropdownWrapper.classList.remove('open');
+                        profileBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && dropdownWrapper.classList.contains('open')) {
+                        dropdownWrapper.classList.remove('open');
+                        profileBtn.setAttribute('aria-expanded', 'false');
+                        profileBtn.focus();
                     }
                 });
             }
