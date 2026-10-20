@@ -710,11 +710,6 @@
 
                     <!-- Menú flotante del perfil -->
                     <div class="profile-menu" id="profileMenu" role="menu" aria-labelledby="profileBtn">
-                        <div style="padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 4px;">
-                            <p style="font-size: 13px; font-weight: 700; color: var(--text-white); margin-bottom: 2px;">{{ $user->name }} {{ $user->apellidos ?? '' }}</p>
-                            <p style="font-size: 11px; color: var(--text-muted); word-break: break-all;">{{ $user->email }}</p>
-                        </div>
-
                         <!-- Opción: Mi Perfil -->
                         <a href="{{ route('cliente.perfil') }}" class="menu-item {{ request()->routeIs('cliente.perfil*') ? 'active' : '' }}" role="menuitem" title="Mi Perfil">
                             <div class="menu-item-icon">

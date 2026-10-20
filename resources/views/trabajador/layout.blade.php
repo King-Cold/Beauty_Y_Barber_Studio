@@ -749,14 +749,6 @@
 
                     <!-- Menú flotante del perfil -->
                     <div class="profile-menu" id="profileMenu" role="menu" aria-labelledby="profileBtn">
-                        <div style="padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 4px;">
-                            <p style="font-size: 13px; font-weight: 700; color: var(--text-white); margin-bottom: 2px;">{{ $user->name }} {{ $user->apellidos ?? '' }}</p>
-                            <p style="font-size: 11px; color: var(--text-muted); word-break: break-all;">{{ $user->email }}</p>
-                            <span style="display: inline-block; margin-top: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(37, 99, 235, 0.15); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.3); padding: 1px 6px; border-radius: 4px;">
-                                Especialista
-                            </span>
-                        </div>
-
                         <!-- Opción: Mi Perfil -->
                         <a href="{{ route('trabajador.configuracion') }}" class="menu-item" role="menuitem">
                             <div class="menu-item-icon">
