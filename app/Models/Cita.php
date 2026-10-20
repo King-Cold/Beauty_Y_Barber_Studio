@@ -521,3 +521,6 @@ class Cita extends Model
         return $this->puedeMarcarComoPagado();
     }
 }
+        return $this->puedeMarcarComoPagado();
+    }
+}
