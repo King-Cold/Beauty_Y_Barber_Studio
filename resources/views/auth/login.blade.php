@@ -1036,17 +1036,48 @@
     @endif
 
     @if(session('warning'))
+    @php
+        $warningMsg = (string) session('warning');
+        $isInactive = str_contains(strtolower($warningMsg), 'inactividad');
+        $isBookingPrompt = str_contains(strtolower($warningMsg), 'agendar') || session('warning_title') === '¡Bienvenido a Beauty & Barber Studio!';
+        $warningTitle = session('warning_title') 
+            ?? ($isBookingPrompt 
+                ? '¡Bienvenido a Beauty & Barber Studio!' 
+                : ($isInactive ? 'Sesión finalizada por inactividad' : 'Aviso importante'));
+    @endphp
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            @if($isBookingPrompt)
+            Swal.fire({
+                icon: 'info',
+                title: '{{ $warningTitle }}',
+                text: '{{ session("warning") }}',
+                html: '<div style="margin-bottom: 0.75rem; color: #f1f5f9; font-size: 1.05rem; line-height: 1.5; font-weight: 500;">{{ session("warning") }}</div>' +
+                      '<div style="font-size: 0.9rem; color: #94a3b8; line-height: 1.4;">¿Aún no tienes cuenta? Regístrate en segundos para apartar tu cita con tu estilista favorito.</div>',
+                showCancelButton: true,
+                confirmButtonColor: '#d1121d',
+                confirmButtonText: 'Iniciar sesión',
+                cancelButtonColor: '#1e40af',
+                cancelButtonText: 'Crear una cuenta',
+                background: '#0c142b',
+                color: '#ffffff',
+                focusConfirm: false
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.cancel) {
+                    window.location.href = "{{ route('register') }}";
+                }
+            });
+            @else
             Swal.fire({
                 icon: 'warning',
-                title: 'Sesión finalizada por inactividad',
+                title: '{{ $warningTitle }}',
                 text: '{{ session("warning") }}',
                 confirmButtonColor: '#1e40af',
                 confirmButtonText: 'Entendido',
                 background: '#0c142b',
                 color: '#ffffff'
             });
+            @endif
         });
     </script>
     @endif
