@@ -258,7 +258,11 @@ class Cita extends Model
     public function puedeCancelarAdministrativamente(): bool
     {
         $estado = strtolower(trim((string) $this->estado));
-        if (in_array($estado, ['cancelada', 'cancelled', 'anulada', 'completada', 'completed'], true)) {
+        if (in_array($estado, ['cancelada', 'cancelled', 'anulada', 'completada', 'completed', 'en_atencion', 'en_proceso', 'vencida'], true)) {
+            return false;
+        }
+
+        if (in_array($this->estado_visual, ['en_proceso', 'vencida'], true)) {
             return false;
         }
 
@@ -306,6 +310,9 @@ class Cita extends Model
         }
         if (in_array($estado, ['completada', 'completed'], true)) {
             return 'La cita ya ha sido completada.';
+        }
+        if (in_array($estado, ['en_atencion', 'en_proceso'], true) || $this->estado_visual === 'en_proceso') {
+            return 'No se puede cancelar una cita que ya se encuentra en atención o en proceso.';
         }
 
         if ($this->esPasada() || $this->minutos_para_inicio <= 0) {
