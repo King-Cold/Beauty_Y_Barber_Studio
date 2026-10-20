@@ -1067,7 +1067,7 @@
                     </thead>
                     <tbody>
                         @foreach($citas as $cita)
-                            <tr>
+                            <tr id="cita-row-{{ $cita->id }}" data-cita-id="{{ $cita->id }}" data-folio="{{ $cita->folio }}">
                                 {{-- Folio --}}
                                 <td>
                                     <span class="table-folio-tag">{{ $cita->folio }}</span>
@@ -1121,7 +1121,7 @@
                                 </td>
 
                                 {{-- Pago --}}
-                                <td>
+                                <td data-cita-col="pago" data-cita-id="{{ $cita->id }}">
                                     @if($cita->estado_pago === 'pagado')
                                         <span class="pago-badge pagado" title="Servicio liquidado y pagado">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10">
@@ -1142,7 +1142,7 @@
                                 </td>
 
                                 {{-- Estado --}}
-                                <td>
+                                <td data-cita-col="estado" data-cita-id="{{ $cita->id }}">
                                     <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
                                         <span class="status-badge {{ $cita->estado_visual }}">
                                             {{ $cita->estado_label }}
@@ -1156,8 +1156,8 @@
                                             </span>
                                         @endif
                                     </div>
-                                                         {{-- Acciones: Escoradas y Compactas --}}
-                                <td style="text-align: right;">
+                                 {{-- Acciones: Escoradas y Compactas --}}
+                                <td data-cita-col="acciones" data-cita-id="{{ $cita->id }}" style="text-align: right;">
                                     <div class="table-actions-group">
                                         {{-- 1. Botón Check-in de Llegada (si no ha llegado y no inicia) --}}
                                         @if($cita->puedeRegistrarCheckIn() && !$cita->puedeIniciarAtencion())
@@ -1205,8 +1205,8 @@
                                             </button>
                                         @endif
 
-                                        {{-- 4. Reagendar si está cancelada o vencida --}}
-                                        @if(in_array(strtolower($cita->estado), ['cancelada', 'vencida']))
+                                        {{-- 4. Reagendar si está vencida --}}
+                                        @if(strtolower($cita->estado) === 'vencida' || $cita->estado_visual === 'vencida')
                                             <button 
                                                 type="button" 
                                                 class="btn-reagendar-table" 
@@ -1240,7 +1240,7 @@
                                             </button>
 
                                             {{-- Editar (solo si no es completada, cancelada ni vencida) --}}
-                                            @if(!in_array(strtolower($cita->estado), ['completada', 'cancelada', 'vencida']))
+                                            @if(!in_array(strtolower($cita->estado), ['completada', 'cancelada', 'vencida']) && $cita->estado_visual !== 'vencida')
                                                 <button 
                                                     type="button" 
                                                     class="btn-tool-icon tool-editar" 
@@ -1256,7 +1256,7 @@
                                             @endif
 
                                             {{-- Cancelar: disponible solo para citas futuras que no estén completadas ni canceladas --}}
-                                            @if(!$cita->esPasada() && !in_array(strtolower($cita->estado), ['cancelada', 'completada']))
+                                            @if(!$cita->esPasada() && !in_array(strtolower($cita->estado), ['cancelada', 'completada', 'vencida']) && $cita->estado_visual !== 'vencida')
                                                 <button 
                                                     type="button" 
                                                     class="btn-tool-icon tool-cancelar" 
@@ -1287,4 +1287,18 @@
 
     {{-- MODAL DE EDICIÓN Y GESTIÓN --}}
     @include('partials.modal-editar-cita')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                const savedScroll = sessionStorage.getItem('citas_scroll_y');
+                if (savedScroll !== null) {
+                    sessionStorage.removeItem('citas_scroll_y');
+                    setTimeout(() => {
+                        window.scrollTo({ top: parseInt(savedScroll, 10), behavior: 'instant' });
+                    }, 50);
+                }
+            } catch (e) {}
+        });
+    </script>
 @endsection

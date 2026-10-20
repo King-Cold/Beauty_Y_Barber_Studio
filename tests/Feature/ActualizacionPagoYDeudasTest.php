@@ -201,6 +201,30 @@ class Subtarea24_2_ActualizacionPagoYDeudasTest extends TestCase
     }
 
     /**
+     * CA-24.2.5b: No se puede registrar el pago de una cita vencida (422) ni mostrar botón de pago.
+     */
+    public function test_no_se_puede_registrar_pago_de_una_cita_vencida(): void
+    {
+        $citaVencida = $this->crearCitaEnAtencion([
+            'estado' => 'vencida',
+            'estado_pago' => 'pendiente',
+        ]);
+
+        $this->assertFalse($citaVencida->puedeMarcarComoPagado());
+
+        $response = $this->actingAs($this->recepcionistaUser)
+            ->patchJson(route('recepcion.citas.pagar', $citaVencida->id));
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'success' => false,
+            'error' => 'No se puede registrar el pago de una cita vencida.',
+        ]);
+
+        $this->assertEquals('pendiente', $citaVencida->fresh()->estado_pago);
+    }
+
+    /**
      * CA-24.2.6: Prevención de pagos duplicados (idempotencia y bloqueo).
      */
     public function test_pago_es_idempotente_y_previene_pagos_duplicados(): void
@@ -250,6 +274,16 @@ class Subtarea24_2_ActualizacionPagoYDeudasTest extends TestCase
         $responsePagada->assertJsonPath('cita.estado_pago', 'pagado');
         $responsePagada->assertJsonPath('cita.esta_pagada', true);
         $responsePagada->assertJsonPath('cita.puede_marcar_como_pagado', false);
+
+        // Caso cita vencida: tampoco debe permitir marcarse como pagada
+        $citaVencida = $this->crearCitaEnAtencion([
+            'estado' => 'vencida',
+            'estado_pago' => 'pendiente',
+        ]);
+        $responseVencida = $this->actingAs($this->recepcionistaUser)
+            ->getJson(route('recepcion.citas.detalle', $citaVencida->id));
+        $responseVencida->assertStatus(200);
+        $responseVencida->assertJsonPath('cita.puede_marcar_como_pagado', false);
     }
 
     /**
@@ -278,4 +312,33 @@ class Subtarea24_2_ActualizacionPagoYDeudasTest extends TestCase
         $responseHistorialFinal->assertStatus(200);
         $responseHistorialFinal->assertSee('✓ Pagado');
     }
+
+    /**
+     * Citas Canceladas: Son registros terminales de auditoría.
+     * No se pueden modificar/reagendar vía backend y no muestran botón de Reagendar en la vista.
+     */
+    public function test_cita_cancelada_no_se_puede_reagendar_ni_editar(): void
+    {
+        $citaCancelada = $this->crearCitaEnAtencion([
+            'estado' => 'cancelada',
+        ]);
+
+        // Intentar actualizar/reagendar vía endpoint PUT/PATCH de recepción
+        $response = $this->actingAs($this->recepcionistaUser)
+            ->putJson(route('recepcion.citas.update', $citaCancelada->id), [
+                'service_id' => $this->servicio->id,
+                'trabajador_id' => $this->trabajador->id,
+                'fecha' => now()->addDays(2)->format('Y-m-d'),
+                'hora_inicio' => '10:00',
+            ]);
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'success' => false,
+            'error' => 'Una cita cancelada no puede ser modificada ni reagendada.',
+        ]);
+
+        $this->assertEquals('cancelada', $citaCancelada->fresh()->estado);
+    }
 }
+

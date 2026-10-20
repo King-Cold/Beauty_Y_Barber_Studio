@@ -495,7 +495,11 @@ class Cita extends Model
     public function puedeMarcarComoPagado(): bool
     {
         $estado = strtolower(trim((string) $this->estado));
-        if (in_array($estado, ['cancelada', 'cancelled', 'anulada'], true)) {
+        if (in_array($estado, ['cancelada', 'cancelled', 'anulada', 'vencida'], true)) {
+            return false;
+        }
+
+        if ($this->estado_visual === 'vencida') {
             return false;
         }
 

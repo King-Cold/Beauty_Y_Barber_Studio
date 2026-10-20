@@ -1084,19 +1084,27 @@
                     return;
                 }
 
+                // Actualizar inmediatamente en el DOM sin recargar la pantalla
+                if (window.actualizarCitaEnDOM) {
+                    window.actualizarCitaEnDOM(citaId, data.cita || { estado: 'cancelada', estado_visual: 'cancelada', estado_label: 'Cancelada' });
+                }
+
+                if (window.abrirModalDetalleCita && document.getElementById('modalDetalleCitaBackdrop')?.style.display !== 'none') {
+                    const fetchUrl = isAdmin ? `/admin/citas/${citaId}/detalle` : `/recepcion/citas/${citaId}/detalle`;
+                    window.abrirModalDetalleCita(citaId, fetchUrl);
+                }
+
                 if (window.Swal) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Cita Cancelada',
                         text: data.mensaje || 'La cita fue cancelada exitosamente.',
                         confirmButtonColor: '#1e40af',
-                        timer: 2000
-                    }).then(() => {
-                        window.recargarPreservandoVista();
+                        timer: 1500,
+                        showConfirmButton: false
                     });
                 } else {
                     alert(data.mensaje || 'Cita cancelada exitosamente.');
-                    window.recargarPreservandoVista();
                 }
             })
             .catch(err => {

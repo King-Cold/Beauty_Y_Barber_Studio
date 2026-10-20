@@ -1862,7 +1862,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($citas as $cita)
-                                        <tr>
+                                        <tr id="admin-cita-row-{{ $cita->id }}" data-cita-id="{{ $cita->id }}" data-folio="{{ $cita->folio }}">
                                             {{-- Folio --}}
                                             <td>
                                                 <span class="admin-folio-tag">{{ $cita->folio }}</span>
@@ -1916,7 +1916,7 @@
                                             </td>
 
                                             {{-- Pago --}}
-                                            <td>
+                                            <td data-cita-col="pago" data-cita-id="{{ $cita->id }}">
                                                 @if($cita->estado_pago === 'pagado')
                                                     <span class="pago-badge pagado" title="Servicio liquidado y pagado">
                                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10">
@@ -1937,7 +1937,7 @@
                                             </td>
 
                                             {{-- Estado --}}
-                                            <td>
+                                            <td data-cita-col="estado" data-cita-id="{{ $cita->id }}">
                                                 <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
                                                     <span class="status-badge {{ $cita->estado_visual }}">
                                                         {{ $cita->estado_label }}

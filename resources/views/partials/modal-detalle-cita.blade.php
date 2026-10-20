@@ -729,6 +729,7 @@
         }
 
         function cerrarModal() {
+            window.__citaIdAbierta = null;
             const m = obtenerModalDetalle();
             if (m) {
                 m.style.display = 'none';
@@ -757,6 +758,7 @@
 
         // Función global accesible para abrir el modal con datos o llamada AJAX
         window.abrirModalDetalleCita = function (citaId, detalleUrl) {
+            window.__citaIdAbierta = citaId;
             const modalEl = obtenerModalDetalle();
             if (!modalEl) {
                 console.error('Modal detalle (#modalDetalleCitaBackdrop) no encontrado en el DOM.');
@@ -937,12 +939,16 @@
 
                 // Configurar Botón Marcar como Pagado (Subtarea 24.2)
                 if (btnMarcarPagado) {
-                    if (!isAdmin && c.puede_marcar_como_pagado) {
+                    const esVencida = (c.estado === 'vencida' || c.estado_visual === 'vencida');
+                    if (!isAdmin && c.puede_marcar_como_pagado && !esVencida) {
                         btnMarcarPagado.style.display = 'inline-flex';
                         const pagarUrl = `/recepcion/citas/${c.id}/pagar`;
                         btnMarcarPagado.onclick = function() {
                             if (window.marcarPagoPrompt) {
                                 window.marcarPagoPrompt(c.id, pagarUrl, c.folio, c.precio_formateado || ('$' + Number(c.precio || 0).toFixed(2)), c.cliente?.nombre_completo, function(updatedCita) {
+                                    if (window.actualizarPagoEnDOM) {
+                                        window.actualizarPagoEnDOM(c.id, updatedCita);
+                                    }
                                     window.abrirModalDetalleCita(c.id, fetchUrl);
                                 });
                             }
@@ -987,6 +993,10 @@
 
                 // Configurar botones de acción según el estado de la cita (solo para roles no admin)
                 const estado = (c.estado || '').toLowerCase();
+                const estadoVisual = (c.estado_visual || '').toLowerCase();
+                const esVencida = (estado === 'vencida' || estadoVisual === 'vencida');
+                const esCancelada = (estado === 'cancelada' || estadoVisual === 'cancelada');
+                const esCompletada = (estado === 'completada' || estadoVisual === 'completada');
 
                 if (btnEditar && btnCancelar) {
                     const updateUrl = isAdmin ? `/admin/citas/${c.id}` : `/recepcion/citas/${c.id}`;
@@ -994,12 +1004,12 @@
                     const citaDetalleUrl = isAdmin ? `/admin/citas/${c.id}/detalle` : `/recepcion/citas/${c.id}/detalle`;
                     const editSpan = btnEditar.querySelector('span');
 
-                    if (estado === 'completada') {
-                        // Cita completada es registro contable/operativo final
+                    if (esCompletada || esCancelada) {
+                        // Cita completada o cancelada es un registro final / auditoría (solo lectura, sin editar ni reagendar)
                         btnEditar.style.display = 'none';
                         btnCancelar.style.display = 'none';
-                    } else if (estado === 'cancelada') {
-                        // En cancelada: se permite Reagendar a nuevo horario
+                    } else if (esVencida) {
+                        // En vencida: se permite Reagendar a nuevo horario (no se permite cancelarla)
                         btnEditar.style.display = 'inline-flex';
                         if (editSpan) editSpan.textContent = 'Reagendar Cita';
                         btnEditar.onclick = function() {
@@ -1008,21 +1018,9 @@
                                 window.abrirModalEditarCita(c.id, updateUrl, citaDetalleUrl);
                             }
                         };
-                        btnCancelar.style.display = 'none';
-                    } else if (estado === 'vencida') {
-                        // En vencida: se permite Reagendar (no se permite cancelar citas vencidas/pasadas)
-                        btnEditar.style.display = 'inline-flex';
-                        if (editSpan) editSpan.textContent = 'Reagendar Cita';
-                        btnEditar.onclick = function() {
-                            cerrarModal();
-                            if (window.abrirModalEditarCita) {
-                                window.abrirModalEditarCita(c.id, updateUrl, citaDetalleUrl);
-                            }
-                        };
-
                         btnCancelar.style.display = 'none';
                     } else {
-                        // Confirmada, En proceso / En atención
+                        // Confirmada, En proceso / En atención (futuras activas)
                         btnEditar.style.display = 'inline-flex';
                         if (editSpan) editSpan.textContent = 'Editar Cita';
                         btnEditar.onclick = function() {
@@ -1123,6 +1121,13 @@
                     return data;
                 })
                 .then((data) => {
+                    // Actualización inmediata en el DOM (tabla y modal) sin recargar la pantalla
+                    if (window.actualizarCitaEnDOM) {
+                        window.actualizarCitaEnDOM(citaId, data.cita);
+                    }
+                    if (typeof onCompleteCallback === 'function') {
+                        onCompleteCallback(data.cita);
+                    }
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
                             icon: 'success',
@@ -1131,22 +1136,12 @@
                             confirmButtonColor: '#1e40af',
                             background: '#0a1124',
                             color: '#f8fafc',
-                            timer: 2000,
-                            timerProgressBar: true
-                        }).then(() => {
-                            if (typeof onCompleteCallback === 'function') {
-                                onCompleteCallback(data.cita);
-                            } else {
-                                window.recargarPreservandoVista();
-                            }
+                            timer: 1500,
+                            timerProgressBar: true,
+                            showConfirmButton: false
                         });
                     } else {
                         alert(data.message || 'Check-in registrado con éxito.');
-                        if (typeof onCompleteCallback === 'function') {
-                            onCompleteCallback(data.cita);
-                        } else {
-                            window.recargarPreservandoVista();
-                        }
                     }
                 })
                 .catch((err) => {
@@ -1229,6 +1224,13 @@
                     return data;
                 })
                 .then((data) => {
+                    // Actualización inmediata en el DOM (tabla y modal) sin recargar la pantalla
+                    if (window.actualizarCitaEnDOM) {
+                        window.actualizarCitaEnDOM(citaId, data.cita);
+                    }
+                    if (typeof onCompleteCallback === 'function') {
+                        onCompleteCallback(data.cita);
+                    }
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
                             icon: 'success',
@@ -1237,22 +1239,12 @@
                             confirmButtonColor: '#1e40af',
                             background: '#0a1124',
                             color: '#f8fafc',
-                            timer: 2000,
-                            timerProgressBar: true
-                        }).then(() => {
-                            if (typeof onCompleteCallback === 'function') {
-                                onCompleteCallback(data.cita);
-                            } else {
-                                window.recargarPreservandoVista();
-                            }
+                            timer: 1500,
+                            timerProgressBar: true,
+                            showConfirmButton: false
                         });
                     } else {
                         alert(data.mensaje || 'Atención iniciada con éxito.');
-                        if (typeof onCompleteCallback === 'function') {
-                            onCompleteCallback(data.cita);
-                        } else {
-                            window.recargarPreservandoVista();
-                        }
                     }
                 })
                 .catch((err) => {
@@ -1363,6 +1355,13 @@
                     return data;
                 })
                 .then((data) => {
+                    // Actualización inmediata en el DOM (tabla y modal) sin recargar la pantalla
+                    if (window.actualizarCitaEnDOM) {
+                        window.actualizarCitaEnDOM(citaId, data.cita);
+                    }
+                    if (typeof onCompleteCallback === 'function') {
+                        onCompleteCallback(data.cita);
+                    }
                     const estadoPagoTexto = estadoPago === 'pagado' ? ' y marcada como PAGADA' : ' (queda con cobro PENDIENTE)';
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
@@ -1372,22 +1371,12 @@
                             confirmButtonColor: '#1e40af',
                             background: '#0a1124',
                             color: '#f8fafc',
-                            timer: 2500,
-                            timerProgressBar: true
-                        }).then(() => {
-                            if (typeof onCompleteCallback === 'function') {
-                                onCompleteCallback(data.cita);
-                            } else {
-                                window.recargarPreservandoVista();
-                            }
+                            timer: 1800,
+                            timerProgressBar: true,
+                            showConfirmButton: false
                         });
                     } else {
                         alert((data.mensaje || 'Servicio completado con éxito.') + estadoPagoTexto);
-                        if (typeof onCompleteCallback === 'function') {
-                            onCompleteCallback(data.cita);
-                        } else {
-                            window.recargarPreservandoVista();
-                        }
                     }
                 })
                 .catch((err) => {
@@ -1404,6 +1393,196 @@
                         alert('Error: ' + (err.message || 'No se pudo finalizar el servicio.'));
                     }
                 });
+            }
+        };
+
+        // Función Global para Actualizar Visualmente el Estado de Pago en la Tabla (Sin requerir recarga)
+        window.actualizarPagoEnDOM = function (citaId, updatedCita) {
+            if (!citaId) return;
+
+            const badgeHtml = `
+                <span class="pago-badge pagado" title="Servicio liquidado y pagado">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Pagado
+                </span>
+            `;
+
+            // 1. Celdas específicas marcadas con data-cita-col="pago"
+            const celdas = document.querySelectorAll(`[data-cita-col="pago"][data-cita-id="${citaId}"], tr[data-cita-id="${citaId}"] [data-cita-col="pago"]`);
+            celdas.forEach(cell => {
+                cell.innerHTML = badgeHtml;
+            });
+
+            // 2. Filas identificadas por ID o data-cita-id
+            const rows = document.querySelectorAll(`tr[data-cita-id="${citaId}"], #cita-row-${citaId}, #admin-cita-row-${citaId}`);
+            rows.forEach(row => {
+                const badge = row.querySelector('.pago-badge');
+                if (badge) {
+                    badge.outerHTML = badgeHtml;
+                }
+            });
+
+            // 3. Fallback por coincidencia de Folio
+            const folio = updatedCita?.folio || ('CITA-' + String(citaId).padStart(5, '0'));
+            if (folio) {
+                document.querySelectorAll('.table-folio-tag, .admin-folio-tag').forEach(tag => {
+                    if (tag.textContent.trim() === folio.trim()) {
+                        const tr = tag.closest('tr');
+                        if (tr) {
+                            const badge = tr.querySelector('.pago-badge');
+                            if (badge) {
+                                badge.outerHTML = badgeHtml;
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
+        // Función Global para Actualizar Visualmente la Cita en el DOM (Tabla y Modal) sin requerir recarga
+        window.actualizarCitaEnDOM = function (citaId, updatedCita) {
+            if (!citaId || !updatedCita) return;
+
+            // 1. Actualizar Pago si corresponde
+            if (window.actualizarPagoEnDOM && (updatedCita.estado_pago === 'pagado' || updatedCita.esta_pagada)) {
+                window.actualizarPagoEnDOM(citaId, updatedCita);
+            }
+
+            const row = document.querySelector(`tr[data-cita-id="${citaId}"], #cita-row-${citaId}, #admin-cita-row-${citaId}`);
+            if (!row) return;
+
+            const estado = (updatedCita.estado || '').toLowerCase();
+            const estadoVisual = (updatedCita.estado_visual || estado).toLowerCase();
+            const estadoLabel = updatedCita.estado_label || (estadoVisual.charAt(0).toUpperCase() + estadoVisual.slice(1));
+            const folio = updatedCita.folio || ('CITA-' + String(citaId).padStart(5, '0'));
+            const clienteNom = (updatedCita.cliente?.nombre_completo || '').replace(/'/g, "\\'");
+
+            // 2. Actualizar Columna de Estado
+            const colEstado = row.querySelector('[data-cita-col="estado"]');
+            if (colEstado) {
+                let checkInHtml = '';
+                if (updatedCita.checked_in && updatedCita.check_in_hora) {
+                    checkInHtml = `
+                        <span class="badge-checkin-table" title="Check-in registrado el ${updatedCita.fecha_formateada || ''}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Llegó ${updatedCita.check_in_hora}
+                        </span>
+                    `;
+                }
+                colEstado.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+                        <span class="status-badge ${estadoVisual}">
+                            ${estadoLabel}
+                        </span>
+                        ${checkInHtml}
+                    </div>
+                `;
+            }
+
+            // 3. Actualizar Columna de Acciones (Recepción)
+            const colAcciones = row.querySelector('[data-cita-col="acciones"]');
+            if (colAcciones) {
+                const puedeCheckIn = !!updatedCita.puede_check_in;
+                const puedeIniciar = !!updatedCita.puede_iniciar_atencion;
+                const puedeFinalizar = !!updatedCita.puede_finalizar_atencion;
+                const esVencida = (estado === 'vencida' || estadoVisual === 'vencida');
+                const esTerminal = (estado === 'completada' || estado === 'cancelada' || estadoVisual === 'completada' || estadoVisual === 'cancelada');
+
+                let btnPrincipal = '';
+                if (puedeCheckIn && !puedeIniciar) {
+                    btnPrincipal = `
+                        <button type="button" class="btn-checkin-table" onclick="registrarCheckInPrompt(${citaId}, '/recepcion/citas/${citaId}/checkin', '${folio}', '${clienteNom}')" title="Registrar llegada del cliente (Check-in)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Check-in</span>
+                        </button>
+                    `;
+                } else if (puedeIniciar) {
+                    btnPrincipal = `
+                        <button type="button" class="btn-iniciar-table" onclick="iniciarAtencionPrompt(${citaId}, '/recepcion/citas/${citaId}/estado', '${folio}', '${clienteNom}')" title="Iniciar atención del servicio (Pasa a En proceso)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="12" height="12">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            <span>Iniciar</span>
+                        </button>
+                    `;
+                } else if (puedeFinalizar) {
+                    btnPrincipal = `
+                        <button type="button" class="btn-finalizar-table" onclick="finalizarAtencionPrompt(${citaId}, '/recepcion/citas/${citaId}/estado', '${folio}', '${clienteNom}')" title="Finalizar atención del servicio (Pasa a Completada)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="12" height="12">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>Finalizar</span>
+                        </button>
+                    `;
+                } else if (esVencida) {
+                    btnPrincipal = `
+                        <button type="button" class="btn-reagendar-table" onclick="abrirModalEditarCita(${citaId}, '/recepcion/citas/${citaId}', '/recepcion/citas/${citaId}/detalle')" title="Reagendar esta cita con nuevo horario">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+                                <path d="M21 2v6h-6"></path>
+                                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                                <path d="M3 22v-6h6"></path>
+                                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                            </svg>
+                            <span>Reagendar</span>
+                        </button>
+                    `;
+                }
+
+                let btnEditar = '';
+                if (!esTerminal && !esVencida) {
+                    btnEditar = `
+                        <button type="button" class="btn-tool-icon tool-editar" onclick="abrirModalEditarCita(${citaId}, '/recepcion/citas/${citaId}', '/recepcion/citas/${citaId}/detalle')" title="Modificar servicio, especialista o fecha/hora" aria-label="Editar cita">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </button>
+                    `;
+                }
+
+                let btnCancelar = '';
+                if (!updatedCita.es_pasada && !esTerminal && !esVencida && updatedCita.puede_cancelar !== false) {
+                    btnCancelar = `
+                        <button type="button" class="btn-tool-icon tool-cancelar" onclick="cancelarCitaPrompt(${citaId}, '/recepcion/citas/${citaId}/cancelar', '${folio}')" title="Cancelar cita y liberar horario" aria-label="Cancelar cita">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </button>
+                    `;
+                }
+
+                colAcciones.innerHTML = `
+                    <div class="table-actions-group">
+                        ${btnPrincipal}
+                        <div class="table-tool-group">
+                            <button type="button" class="btn-tool-icon tool-detalles" onclick="abrirModalDetalleCita(${citaId}, '/recepcion/citas/${citaId}/detalle')" title="Consultar detalles completos de la cita" aria-label="Ver detalles">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                            ${btnEditar}
+                            ${btnCancelar}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 4. Si el modal de detalle está abierto para esta cita, actualizarlo en el lugar
+            const modalDetalle = document.getElementById('modalDetalleCitaBackdrop');
+            if (modalDetalle && modalDetalle.style.display !== 'none' && window.__citaIdAbierta === citaId) {
+                const isAdmin = window.location.pathname.startsWith('/admin');
+                const fetchUrl = isAdmin ? `/admin/citas/${citaId}/detalle` : `/recepcion/citas/${citaId}/detalle`;
+                window.abrirModalDetalleCita(citaId, fetchUrl);
             }
         };
 
@@ -1469,6 +1648,15 @@
                     return data;
                 })
                 .then((data) => {
+                    // Actualización inmediata del DOM de la tabla sin necesidad de recargar la página
+                    if (window.actualizarCitaEnDOM) {
+                        window.actualizarCitaEnDOM(citaId, data.cita);
+                    } else if (window.actualizarPagoEnDOM) {
+                        window.actualizarPagoEnDOM(citaId, data.cita);
+                    }
+                    if (typeof onCompleteCallback === 'function') {
+                        onCompleteCallback(data.cita);
+                    }
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
                             icon: 'success',
@@ -1477,22 +1665,12 @@
                             confirmButtonColor: '#1e40af',
                             background: '#0a1124',
                             color: '#f8fafc',
-                            timer: 2000,
-                            timerProgressBar: true
-                        }).then(() => {
-                            if (typeof onCompleteCallback === 'function') {
-                                onCompleteCallback(data.cita);
-                            } else {
-                                window.recargarPreservandoVista();
-                            }
+                            timer: 1500,
+                            timerProgressBar: true,
+                            showConfirmButton: false
                         });
                     } else {
                         alert(data.mensaje || 'Pago registrado con éxito.');
-                        if (typeof onCompleteCallback === 'function') {
-                            onCompleteCallback(data.cita);
-                        } else {
-                            window.recargarPreservandoVista();
-                        }
                     }
                 })
                 .catch((err) => {

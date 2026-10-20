@@ -437,6 +437,10 @@ class CitaCalendarioService
                 throw new \DomainException('No se puede registrar el pago de una cita cancelada.');
             }
 
+            if ($estadoActual === 'vencida' || $citaBloqueada->estado_visual === 'vencida') {
+                throw new \DomainException('No se puede registrar el pago de una cita vencida.');
+            }
+
             if ($citaBloqueada->estado_pago === 'pagado') {
                 return [
                     'success' => true,
@@ -579,6 +583,10 @@ class CitaCalendarioService
     public function editarCita(Cita $cita, array $datos, ?User $usuario = null): array
     {
         $estadoActual = strtolower(trim((string)$cita->estado));
+        if ($estadoActual === 'cancelada') {
+            throw new \DomainException("Una cita cancelada no puede ser modificada ni reagendada.");
+        }
+
         if ($estadoActual === 'completada') {
             // Una cita completada ya fue atendida; no se puede alterar horario, especialista o servicio
             $nuevoServicio = isset($datos['service_id']) && (int)$datos['service_id'] !== (int)$cita->service_id;
@@ -689,8 +697,8 @@ class CitaCalendarioService
                 $citaBloqueada->observaciones = $datos['observaciones'];
             }
 
-            // Si una cita cancelada o vencida es reprogramada a una nueva fecha/hora válida, se reactiva a confirmada
-            if (in_array(strtolower(trim((string)$citaBloqueada->estado)), ['cancelada', 'vencida'], true)) {
+            // Si una cita vencida es reprogramada a una nueva fecha/hora válida, se reactiva a confirmada
+            if (in_array(strtolower(trim((string)$citaBloqueada->estado)), ['vencida'], true) || $citaBloqueada->estado_visual === 'vencida') {
                 $citaBloqueada->estado = 'confirmada';
             }
 
