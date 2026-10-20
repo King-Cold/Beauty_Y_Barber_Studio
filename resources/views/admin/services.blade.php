@@ -1382,7 +1382,7 @@
                     <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
                         <div style="flex: 1; min-width: 180px;">
                             <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Precio ($) <span style="color: var(--barber-red);">*</span></label>
-                            <input type="number" step="0.01" min="0.01" name="price" value="{{ old('price') }}" required placeholder="0.00" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                            <input type="number" step="0.01" min="0.01" max="9999.99" name="price" value="{{ old('price') }}" required placeholder="0.00" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
                         </div>
                         <div style="flex: 1; min-width: 180px;">
                             <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Duración (min) <span style="color: var(--barber-red);">*</span></label>
@@ -1515,7 +1515,7 @@
                 <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 180px;">
                         <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Precio ($) <span style="color: var(--barber-red);">*</span></label>
-                        <input type="number" step="0.01" min="0.01" id="edit_price" name="price" value="{{ old('price') }}" required placeholder="0.00" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
+                        <input type="number" step="0.01" min="0.01" max="9999.99" id="edit_price" name="price" value="{{ old('price') }}" required placeholder="0.00" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: white; font-family: inherit;">
                     </div>
                     <div style="flex: 1; min-width: 180px;">
                         <label style="display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);">Duración (min) <span style="color: var(--barber-red);">*</span></label>
