@@ -189,8 +189,9 @@ class LandingController extends Controller
     {
         if (!\Illuminate\Support\Facades\Auth::check()) {
             return redirect()
-                ->route('login')
-                ->with('warning', 'Por favor, inicia sesión para agendar tu cita.');
+                ->guest(route('login'))
+                ->with('warning', 'Por favor, inicia sesión para agendar tu cita.')
+                ->with('warning_title', '¡Bienvenido a Beauty & Barber Studio!');
         }
 
         $user = \Illuminate\Support\Facades\Auth::user();

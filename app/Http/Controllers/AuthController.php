@@ -97,7 +97,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/cliente')->with('success', '¡Cuenta creada e inicio de sesión exitoso!');
+        return redirect()->intended('/cliente')->with('success', '¡Cuenta creada e inicio de sesión exitoso!');
     }
 
     public function logout(Request $request)
