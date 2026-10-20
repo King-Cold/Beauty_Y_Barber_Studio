@@ -2662,7 +2662,7 @@
                                     </svg>
                                     <span>{{ isset($citasCompletadas) && $citasCompletadas > 0 ? 'Servicios finalizados con éxito' : '0 citas concluidas' }}</span>
                                 </span>
-                                <a href="{{ route('admin.citas') }}" class="kpi-link-btn" title="Consultar agenda de citas">
+                                <a href="{{ route('admin.citas', ['estado' => 'completada']) }}" class="kpi-link-btn" title="Consultar agenda de citas">
                                     <span>Ver agenda</span>
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12" aria-hidden="true">
                                         <polyline points="9 18 15 12 9 6"></polyline>
@@ -2699,7 +2699,7 @@
                                     </svg>
                                     <span>{{ isset($citasCanceladas) && $citasCanceladas > 0 ? 'Anuladas por cliente o recepción' : '0 citas canceladas' }}</span>
                                 </span>
-                                <a href="{{ route('admin.citas') }}" class="kpi-link-btn" title="Consultar agenda de citas">
+                                <a href="{{ route('admin.citas', ['estado' => 'cancelada']) }}" class="kpi-link-btn" title="Consultar agenda de citas">
                                     <span>Ver agenda</span>
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12" aria-hidden="true">
                                         <polyline points="9 18 15 12 9 6"></polyline>
@@ -2736,7 +2736,7 @@
                                     </svg>
                                     <span>{{ isset($citasVencidas) && $citasVencidas > 0 ? 'Horario expirado sin atención' : '0 citas vencidas' }}</span>
                                 </span>
-                                <a href="{{ route('admin.citas') }}" class="kpi-link-btn" title="Consultar agenda de citas">
+                                <a href="{{ route('admin.citas', ['estado' => 'vencida']) }}" class="kpi-link-btn" title="Consultar agenda de citas">
                                     <span>Ver agenda</span>
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12" aria-hidden="true">
                                         <polyline points="9 18 15 12 9 6"></polyline>

@@ -348,8 +348,44 @@ class AdminDashboardSubtarea3Test extends TestCase
         $response->assertSee('status-tag-cancelada', false);
         $response->assertSee('status-tag-vencida', false);
 
-        // Enlace al módulo de agenda
+        // Enlaces al módulo de agenda con filtros predeterminados por estado
         $response->assertSee(route('admin.citas'));
+        $response->assertSee(route('admin.citas', ['estado' => 'completada']));
+        $response->assertSee(route('admin.citas', ['estado' => 'cancelada']));
+        $response->assertSee(route('admin.citas', ['estado' => 'vencida']));
+    }
+
+    /**
+     * Verifica que los enlaces del dashboard dirijan a la agenda con el estado predeterminado.
+     */
+    public function test_enlaces_de_agenda_abren_la_agenda_con_filtro_predeterminado(): void
+    {
+        $this->crearCita(['estado' => 'completada']);
+        $this->crearCita(['estado' => 'cancelada']);
+
+        // 1. Filtrado de completadas
+        $responseCompletada = $this->actingAs($this->adminUser)
+            ->get(route('admin.citas', ['estado' => 'completada']));
+        $responseCompletada->assertStatus(200);
+        $responseCompletada->assertViewHas('filtros', function ($filtros) {
+            return ($filtros['estado'] ?? null) === 'completada';
+        });
+
+        // 2. Filtrado de canceladas
+        $responseCancelada = $this->actingAs($this->adminUser)
+            ->get(route('admin.citas', ['estado' => 'cancelada']));
+        $responseCancelada->assertStatus(200);
+        $responseCancelada->assertViewHas('filtros', function ($filtros) {
+            return ($filtros['estado'] ?? null) === 'cancelada';
+        });
+
+        // 3. Filtrado de vencidas
+        $responseVencida = $this->actingAs($this->adminUser)
+            ->get(route('admin.citas', ['estado' => 'vencida']));
+        $responseVencida->assertStatus(200);
+        $responseVencida->assertViewHas('filtros', function ($filtros) {
+            return ($filtros['estado'] ?? null) === 'vencida';
+        });
     }
 
     /**

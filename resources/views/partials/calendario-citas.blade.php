@@ -120,12 +120,12 @@
                 <div class="cal-select-wrap">
                     <label for="calSelectEstado" class="cal-filter-label">Estado:</label>
                     <select id="calSelectEstado" class="cal-filter-select">
-                        <option value="todas">Todos los Estados</option>
-                        <option value="confirmada">Confirmada</option>
-                        <option value="en_proceso">En proceso / En atención</option>
-                        <option value="completada">Completada</option>
-                        <option value="cancelada">Cancelada</option>
-                        <option value="vencida">Vencida</option>
+                        <option value="todas" {{ (!request()->filled('estado') || request('estado') === 'todas') ? 'selected' : '' }}>Todos los Estados</option>
+                        <option value="confirmada" {{ request('estado') === 'confirmada' ? 'selected' : '' }}>Confirmada</option>
+                        <option value="en_proceso" {{ in_array(request('estado'), ['en_proceso', 'en_atencion']) ? 'selected' : '' }}>En proceso / En atención</option>
+                        <option value="completada" {{ request('estado') === 'completada' ? 'selected' : '' }}>Completada</option>
+                        <option value="cancelada" {{ request('estado') === 'cancelada' ? 'selected' : '' }}>Cancelada</option>
+                        <option value="vencida" {{ request('estado') === 'vencida' ? 'selected' : '' }}>Vencida</option>
                     </select>
                 </div>
 
@@ -1922,7 +1922,7 @@
         vista: 'mes', // 'mes' | 'semana' | 'dia'
         fechaSeleccionada: new Date(),
         filtroTrabajador: '',
-        filtroEstado: 'todas',
+        filtroEstado: @json(request('estado', 'todas')),
         terminoBusqueda: '',
         citas: [],
         horariosSucursal: HORARIOS_SUCURSAL_INICIAL,

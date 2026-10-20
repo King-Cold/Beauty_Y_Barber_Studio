@@ -2106,7 +2106,9 @@
                 const tabInUrl = urlParams.get('tab');
                 const savedTab = sessionStorage.getItem('admin_citas_tab');
 
-                if (tabInUrl === 'listado' || (!tabInUrl && savedTab === 'listado')) {
+                const hasFiltros = urlParams.has('buscar') || urlParams.has('trabajador_id') || (urlParams.has('estado') && urlParams.get('estado') !== 'todas') || urlParams.has('fecha_desde') || urlParams.has('fecha_hasta');
+
+                if (tabInUrl === 'listado' || (!tabInUrl && (hasFiltros || savedTab === 'listado'))) {
                     cambiarVistaAdmin('listado', false);
                 } else if (tabInUrl === 'calendario' || (!tabInUrl && savedTab === 'calendario')) {
                     cambiarVistaAdmin('calendario', false);
