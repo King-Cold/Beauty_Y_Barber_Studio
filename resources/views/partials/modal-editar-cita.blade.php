@@ -31,14 +31,14 @@
                     <p>Cargando información y disponibilidad...</p>
                 </div>
 
-                {{-- Banner informativo si la cita está cancelada o vencida --}}
+                {{-- Banner informativo si la cita está vencida o cancelada --}}
                 <div class="edit-alert-info" id="editModalInfoBanner" style="display: none;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        <circle cx="12" cy="8" r="1" fill="currentColor"></circle>
                     </svg>
-                    <span id="editModalInfoText">Reagendando cita: asigna una nueva fecha y horario disponible.</span>
+                    <span id="editModalInfoText">La cita se encuentra Vencida. Al seleccionar un nuevo horario válido quedará confirmada nuevamente.</span>
                 </div>
 
                 {{-- Banner de errores de validación del servidor --}}
@@ -228,6 +228,68 @@
         border-radius: 5px;
     }
 
+    /* Insignias de Estado */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2.5px 8.5px;
+        border-radius: 9999px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .status-badge::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+    }
+    .status-badge.vencida {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .status-badge.vencida::before {
+        background: #fbbf24;
+    }
+    .status-badge.cancelada {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .status-badge.cancelada::before {
+        background: #f87171;
+    }
+    .status-badge.confirmada {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-badge.confirmada::before {
+        background: #34d399;
+    }
+    .status-badge.en_proceso,
+    .status-badge.en_atencion {
+        background: rgba(0, 85, 255, 0.15);
+        color: #60a5fa;
+        border: 1px solid rgba(0, 85, 255, 0.3);
+    }
+    .status-badge.en_proceso::before,
+    .status-badge.en_atencion::before {
+        background: #60a5fa;
+    }
+    .status-badge.completada {
+        background: rgba(6, 182, 212, 0.15);
+        color: #22d3ee;
+        border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+    .status-badge.completada::before {
+        background: #22d3ee;
+    }
+
     .edit-modal-title {
         font-size: 18px;
         font-weight: 800;
@@ -307,15 +369,21 @@
     .edit-alert-info {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 10px 14px;
-        background: rgba(37, 99, 235, 0.12);
-        border: 1px solid rgba(37, 99, 235, 0.28);
-        border-radius: 8px;
-        color: #93c5fd;
+        gap: 12px;
+        padding: 12px 16px;
+        background: #091938;
+        border: 1px solid #38bdf8;
+        border-radius: 10px;
+        color: #bae6fd;
         font-size: 13px;
         font-weight: 600;
-        margin-bottom: 14px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 14px rgba(56, 189, 248, 0.15);
+    }
+
+    .edit-alert-info svg {
+        color: #38bdf8;
+        flex-shrink: 0;
     }
 
     .edit-modal-form-grid {
@@ -379,18 +447,18 @@
     .edit-client-preview {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 8px 12px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px dashed rgba(255, 255, 255, 0.12);
-        border-radius: 8px;
+        gap: 12px;
+        padding: 10px 14px;
+        background: #0f172a;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
     }
 
     .edit-client-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 7px;
-        background: rgba(139, 92, 246, 0.12);
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(139, 92, 246, 0.15);
         color: #a78bfa;
         display: flex;
         align-items: center;
@@ -426,7 +494,7 @@
 
     .btn-edit-cancelar {
         padding: 8px 16px;
-        background: rgba(255, 255, 255, 0.06);
+        background: #1e293b;
         color: #cbd5e1;
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 8px;
@@ -437,7 +505,7 @@
     }
 
     .btn-edit-cancelar:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: #334155;
         color: #ffffff;
     }
 
@@ -446,21 +514,21 @@
         align-items: center;
         gap: 6px;
         padding: 8px 18px;
-        background: #1e40af;
+        background: #2563eb;
         color: #ffffff;
-        border: 1px solid rgba(147, 197, 253, 0.28);
+        border: 1px solid rgba(147, 197, 253, 0.35);
         border-radius: 8px;
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
         transition: all 0.2s ease;
     }
 
     .btn-edit-guardar:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-        border-color: rgba(147, 197, 253, 0.45);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+        border-color: rgba(147, 197, 253, 0.5);
         background: #1d4ed8;
         color: #ffffff;
     }
@@ -759,11 +827,15 @@
                     throw new Error(data.error || 'No se obtuvieron detalles de la cita.');
                 }
                 const c = data.cita;
-                const estado = (c.estado || '').toLowerCase();
+                const rawEstado = (c.estado || '').toLowerCase().trim();
+                const estadoVisual = (c.estado_visual || rawEstado || '').toLowerCase().trim();
+                const esVencida = (estadoVisual === 'vencida' || rawEstado === 'vencida');
+                const esCancelada = (estadoVisual === 'cancelada' || rawEstado === 'cancelada');
+                const esReagendamiento = esVencida || esCancelada;
                 const submitBtnSpan = submitBtn ? submitBtn.querySelector('span') : null;
 
                 // Cita completada es inmutable en fechas/horarios
-                if (estado === 'completada') {
+                if (rawEstado === 'completada' || estadoVisual === 'completada') {
                     cerrarModal();
                     if (window.Swal) {
                         Swal.fire({
@@ -778,25 +850,27 @@
                     return;
                 }
 
-                // Ajustar títulos dinámicamente si es reagendamiento (cancelada o vencida)
-                if (estado === 'cancelada' || estado === 'vencida') {
+                // Ajustar títulos dinámicamente si es reagendamiento (vencida o cancelada)
+                if (esReagendamiento) {
                     if (modalTitle) modalTitle.textContent = 'Reagendar Cita';
                     if (submitBtnSpan) submitBtnSpan.textContent = 'Reagendar Cita';
                     if (infoBanner && infoText) {
-                        infoText.textContent = `La cita se encuentra ${c.estado_label || estado}. Al seleccionar un nuevo horario válido quedará confirmada nuevamente.`;
+                        const estadoTxt = esVencida ? 'Vencida' : (esCancelada ? 'Cancelada' : (c.estado_label || 'Vencida'));
+                        infoText.textContent = `La cita se encuentra ${estadoTxt}. Al seleccionar un nuevo horario válido quedará confirmada nuevamente.`;
                         infoBanner.style.display = 'flex';
                     }
                 } else {
                     if (modalTitle) modalTitle.textContent = 'Modificar Cita';
                     if (submitBtnSpan) submitBtnSpan.textContent = 'Guardar Cambios';
+                    if (infoBanner) infoBanner.style.display = 'none';
                 }
 
                 // Poblar datos del cliente
                 document.getElementById('editCitaFolio').textContent = c.folio || ('CITA-' + String(c.id).padStart(5, '0'));
                 const badge = document.getElementById('editCitaStatusBadge');
                 if (badge) {
-                    badge.className = 'status-badge ' + (c.estado_visual || estado || 'confirmada');
-                    badge.textContent = c.estado_label || (estado.toUpperCase());
+                    badge.className = 'status-badge ' + estadoVisual;
+                    badge.textContent = c.estado_label || (estadoVisual.toUpperCase());
                 }
 
                 document.getElementById('editCitaClienteNombre').textContent = c.cliente?.nombre_completo || 'Cliente #' + c.cliente?.id;
@@ -826,8 +900,8 @@
                     if (c.fecha) {
                         // Si la cita anterior es del pasado (ej. cancelada o vencida),
                         // sugerir por defecto la fecha de hoy para evitar que quede en estado vencida
-                        if (c.fecha < todayStr && (estado === 'cancelada' || estado === 'vencida')) {
-                            inputFecha.value = todayStr;
+                        if (c.fecha < todayStr || esReagendamiento) {
+                            inputFecha.value = (c.fecha >= todayStr) ? c.fecha : todayStr;
                         } else {
                             inputFecha.value = c.fecha;
                         }
@@ -1017,11 +1091,12 @@
             .finally(() => {
                 if (submitBtn) {
                     submitBtn.disabled = false;
+                    const isReagend = (modalTitle && modalTitle.textContent === 'Reagendar Cita');
                     submitBtn.innerHTML = `
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
-                        <span>Guardar Cambios</span>
+                        <span>${isReagend ? 'Reagendar Cita' : 'Guardar Cambios'}</span>
                     `;
                 }
             });

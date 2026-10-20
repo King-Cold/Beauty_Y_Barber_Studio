@@ -294,6 +294,69 @@
         letter-spacing: 0.05em;
     }
 
+    /* Badges visuales con punto indicador */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11.5px;
+        font-weight: 700;
+        text-transform: capitalize;
+        white-space: nowrap;
+    }
+
+    .status-badge::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* Confirmada: Fondo verde esmeralda translúcido (rgba(16, 185, 129, 0.15)), texto verde (#34d399) y punto verde */
+    .status-badge.confirmada {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-badge.confirmada::before { background: #34d399; }
+
+    /* Cancelada: Fondo rojo translúcido (rgba(239, 68, 68, 0.15)), texto rojo claro (#f87171) y punto rojo */
+    .status-badge.cancelada {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .status-badge.cancelada::before { background: #f87171; }
+
+    /* Completada: Fondo cian translúcido (rgba(6, 182, 212, 0.15)), texto cian (#22d3ee) y punto cian */
+    .status-badge.completada {
+        background: rgba(6, 182, 212, 0.15);
+        color: #22d3ee;
+        border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+    .status-badge.completada::before { background: #22d3ee; }
+
+    /* En proceso / En atención: Fondo azul translúcido (rgba(0, 85, 255, 0.15)), texto azul cielo (#60a5fa) y punto azul */
+    .status-badge.en_atencion,
+    .status-badge.en_proceso {
+        background: rgba(0, 85, 255, 0.15);
+        color: #60a5fa;
+        border: 1px solid rgba(0, 85, 255, 0.3);
+    }
+    .status-badge.en_atencion::before,
+    .status-badge.en_proceso::before { background: #60a5fa; }
+
+    /* Vencida: Fondo ámbar translúcido (rgba(245, 158, 11, 0.15)), texto ámbar (#fbbf24) y punto ámbar */
+    .status-badge.vencida {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .status-badge.vencida::before { background: #fbbf24; }
+
     .detalle-modal-title {
         font-size: 20px;
         font-weight: 800;

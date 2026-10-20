@@ -348,13 +348,15 @@
         display: inline-block;
     }
 
+    /* Confirmada: Fondo verde esmeralda translúcido (rgba(16, 185, 129, 0.15)), texto verde (#34d399) y punto verde */
     .status-badge.confirmada {
         background: rgba(16, 185, 129, 0.15);
-        color: #10b981;
+        color: #34d399;
         border: 1px solid rgba(16, 185, 129, 0.3);
     }
-    .status-badge.confirmada::before { background: #10b981; }
+    .status-badge.confirmada::before { background: #34d399; }
 
+    /* Cancelada: Fondo rojo translúcido (rgba(239, 68, 68, 0.15)), texto rojo claro (#f87171) y punto rojo */
     .status-badge.cancelada {
         background: rgba(239, 68, 68, 0.15);
         color: #f87171;
@@ -362,28 +364,50 @@
     }
     .status-badge.cancelada::before { background: #f87171; }
 
+    /* Completada: Fondo cian translúcido (rgba(6, 182, 212, 0.15)), texto cian (#22d3ee) y punto cian */
     .status-badge.completada {
         background: rgba(6, 182, 212, 0.15);
-        color: #2dd4bf;
+        color: #22d3ee;
         border: 1px solid rgba(6, 182, 212, 0.3);
     }
-    .status-badge.completada::before { background: #2dd4bf; }
+    .status-badge.completada::before { background: #22d3ee; }
 
+    /* En proceso / En atención: Fondo azul translúcido (rgba(0, 85, 255, 0.15)), texto azul cielo (#60a5fa) y punto azul */
     .status-badge.en_atencion,
     .status-badge.en_proceso {
-        background: rgba(37, 99, 235, 0.15);
+        background: rgba(0, 85, 255, 0.15);
         color: #60a5fa;
-        border: 1px solid rgba(37, 99, 235, 0.3);
+        border: 1px solid rgba(0, 85, 255, 0.3);
     }
     .status-badge.en_atencion::before,
     .status-badge.en_proceso::before { background: #60a5fa; }
 
+    /* Vencida: Fondo ámbar translúcido (rgba(245, 158, 11, 0.15)), texto ámbar (#fbbf24) y punto ámbar */
     .status-badge.vencida {
         background: rgba(245, 158, 11, 0.15);
-        color: #f59e0b;
+        color: #fbbf24;
         border: 1px solid rgba(245, 158, 11, 0.3);
     }
-    .status-badge.vencida::before { background: #f59e0b; }
+    .status-badge.vencida::before { background: #fbbf24; }
+
+    /* Insignia secundaria de Llegada (Check-in) */
+    .badge-checkin-table {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 7px;
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+        font-size: 10.5px;
+        font-weight: 700;
+        margin-top: 4px;
+        white-space: nowrap;
+    }
+    .badge-checkin-table svg {
+        color: #34d399;
+    }
 
     /* CONTENEDOR DE ACCIONES ESCORADO Y COMPACTO */
     .table-actions-group {
