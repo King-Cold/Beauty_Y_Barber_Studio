@@ -1279,8 +1279,14 @@
                                                 </button>
                                             @endif
 
-                                            {{-- Cancelar: disponible solo para citas futuras que no estén completadas ni canceladas --}}
-                                            @if(!$cita->esPasada() && !in_array(strtolower($cita->estado), ['cancelada', 'completada', 'vencida']) && $cita->estado_visual !== 'vencida')
+                                            {{-- Cancelar: disponible solo para citas futuras que no estén completadas, canceladas, vencidas ni en proceso/en atención --}}
+                                            @php
+                                                $rawEst = strtolower(trim((string)$cita->estado));
+                                                $visEst = strtolower(trim((string)$cita->estado_visual));
+                                                $esEnProceso = in_array($rawEst, ['en_atencion', 'en_proceso'], true) || in_array($visEst, ['en_atencion', 'en_proceso'], true);
+                                                $puedeCancelar = !$cita->esPasada() && !in_array($rawEst, ['cancelada', 'completada', 'vencida'], true) && $visEst !== 'vencida' && !$esEnProceso;
+                                            @endphp
+                                            @if($puedeCancelar)
                                                 <button 
                                                     type="button" 
                                                     class="btn-tool-icon tool-cancelar" 

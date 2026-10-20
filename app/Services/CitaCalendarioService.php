@@ -757,6 +757,10 @@ class CitaCalendarioService
             throw new \DomainException("No se puede cancelar una cita que ya fue completada.");
         }
 
+        if (in_array($estadoActual, ['en_atencion', 'en_proceso'], true) || $cita->estado_visual === 'en_proceso') {
+            throw new \DomainException("No se puede cancelar una cita que ya se encuentra en atención o en proceso.");
+        }
+
         // Restricción: No se permite cancelar citas correspondientes a fechas o momentos pasados
         if ($cita->esPasada()) {
             throw new \DomainException("No se puede cancelar una cita cuya fecha u hora ya ha transcurrido.");

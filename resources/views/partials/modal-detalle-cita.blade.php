@@ -1060,6 +1060,7 @@
                 const esVencida = (estado === 'vencida' || estadoVisual === 'vencida');
                 const esCancelada = (estado === 'cancelada' || estadoVisual === 'cancelada');
                 const esCompletada = (estado === 'completada' || estadoVisual === 'completada');
+                const esEnProceso = (estado === 'en_atencion' || estado === 'en_proceso' || estadoVisual === 'en_proceso' || estadoVisual === 'en_atencion');
 
                 if (btnEditar && btnCancelar) {
                     const updateUrl = isAdmin ? `/admin/citas/${c.id}` : `/recepcion/citas/${c.id}`;
@@ -1093,8 +1094,8 @@
                             }
                         };
 
-                        // Cancelar disponible únicamente si la cita es futura y cancelable
-                        if (!c.es_pasada && c.puede_cancelar !== false) {
+                        // Cancelar disponible únicamente si la cita es futura, cancelable y NO está en proceso
+                        if (!c.es_pasada && c.puede_cancelar !== false && !esEnProceso) {
                             btnCancelar.style.display = 'inline-flex';
                             btnCancelar.onclick = function() {
                                 if (window.cancelarCitaPrompt) {
@@ -1554,6 +1555,7 @@
                 const puedeFinalizar = !!updatedCita.puede_finalizar_atencion;
                 const esVencida = (estado === 'vencida' || estadoVisual === 'vencida');
                 const esTerminal = (estado === 'completada' || estado === 'cancelada' || estadoVisual === 'completada' || estadoVisual === 'cancelada');
+                const esEnProceso = (estado === 'en_atencion' || estado === 'en_proceso' || estadoVisual === 'en_proceso' || estadoVisual === 'en_atencion');
 
                 let btnPrincipal = '';
                 if (puedeCheckIn && !puedeIniciar) {
@@ -1611,7 +1613,7 @@
                 }
 
                 let btnCancelar = '';
-                if (!updatedCita.es_pasada && !esTerminal && !esVencida && updatedCita.puede_cancelar !== false) {
+                if (!updatedCita.es_pasada && !esTerminal && !esVencida && !esEnProceso && updatedCita.puede_cancelar !== false) {
                     btnCancelar = `
                         <button type="button" class="btn-tool-icon tool-cancelar" onclick="cancelarCitaPrompt(${citaId}, '/recepcion/citas/${citaId}/cancelar', '${folio}')" title="Cancelar cita y liberar horario" aria-label="Cancelar cita">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
